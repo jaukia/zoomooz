@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Transform test</title>
+		<link rel="stylesheet" href="../../style/zoomooz.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="../../js/jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
+		<script type="text/javascript" src="../../js/sylvester.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$(".zoomTarget").click(function(evt) {
+					$(this).zoomTo();
+					evt.stopPropagation();
+				});
+				$("body").click(function(evt) {
+					$(this).zoomTo({targetsize:1.0});
+					evt.stopPropagation();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="item1" class="zoomTarget"></div>
+		<div id="item2" class="zoomTarget"></div>
+		<div id="item3" class="zoomTarget">
+			<div id="item3b" class="zoomTarget"></div>
+		</div>
+		<div id="item2b" class="zoomTarget"></div>
+		<div id="item4" class="zoomTarget"></div>
+	</body>
+</html>
+	

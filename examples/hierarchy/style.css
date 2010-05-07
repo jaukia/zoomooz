@@ -1,0 +1,29 @@
+.zoom {
+	margin-left:10px;
+	margin-top:10px;
+	border:1px solid black;
+}
+
+.level2 {
+	width:80px;
+	height:80px;
+	float: left;
+	background: #aaa;
+}
+
+.level1 {
+	width:200px;
+	height:200px;
+	background: #ddd;
+	float: left;
+	font-size:30px;
+	font-family: Helvetica;
+}
+
+.level0 {
+	width:434px;
+	height:434px;
+	left:200px;
+	top:200px;
+	position:absolute;
+}
