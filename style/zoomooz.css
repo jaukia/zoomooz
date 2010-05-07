@@ -13,3 +13,10 @@ html, body {
 html {
 	overflow:hidden;
 }
+
+.debuglabel {
+	width:5px;
+	height:5px;
+	background-color:red;
+	position:absolute;
+}

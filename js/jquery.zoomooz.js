@@ -1,21 +1,11 @@
-/*
- * jquery.zoomooz.js
+/*!
+ * jquery.zoomooz.js, version 0.51
+ * http://janne.aukia.com/zoomooz
  *
  * Copyright (c) 2010 Janne Aukia (janne.aukia.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL Version 2 (GPL-LICENSE.txt) licenses.
- *
-
-TODO:
-* Put to github
-* Example cases
-
-SOME DAY:
-* CSS3 3d-transformation support
-* IE support with transformie.js
-* Changeable root element with clipping (currently mixture of document and body)
-
-*/
+ */
 
 (function($) {
 	
@@ -147,7 +137,7 @@ SOME DAY:
 	function displayLabel(pos) {
 		var x = pos.elements[0];
 		var y = pos.elements[1];
-		$("#debug").append('<div style="width:5px;height:5px;background-color:red; position:absolute; left:'+x+'px;top:'+y+'px;">&nbsp;</div>');
+		$("#debug").append('<div class="debuglabel" style="left:'+x+'px;top:'+y+'px;">&nbsp;</div>');
 	}
 	
 	//**********************************//

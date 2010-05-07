@@ -13,8 +13,8 @@
 					$(this).zoomTo();
 					evt.stopPropagation();
 				});
-				$("body").click(function(evt) {
-					$(this).zoomTo({targetsize:1.0});
+				$(document).click(function(evt) {
+					$("body").zoomTo({targetsize:1.0});
 					evt.stopPropagation();
 				});
 			});
