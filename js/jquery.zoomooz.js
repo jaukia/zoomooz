@@ -2,9 +2,24 @@
  * jquery.zoomooz.js, version 0.51
  * http://janne.aukia.com/zoomooz
  *
+ * LICENCE INFORMATION:
+ *
  * Copyright (c) 2010 Janne Aukia (janne.aukia.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL Version 2 (GPL-LICENSE.txt) licenses.
+ *
+ * LICENCE INFORMATION FOR DERIVED FUNCTIONS:
+ *
+ * Function computeTotalTransformation based
+ * on jquery.fn.offset, copyright John Resig, 2010
+ * (MIT and GPL Version 2).
+ *
+ * Functions CubicBezierAtPosition and  
+ * CubicBezierAtTime are written by Christian Effenberger, 
+ * and correspond 1:1 to WebKit project functions.
+ * "WebCore and JavaScriptCore are available under the 
+ * Lesser GNU Public License. WebKit is available under 
+ * a BSD-style license."
  */
 
 (function($) {
