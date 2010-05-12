@@ -1,5 +1,5 @@
 /*!
- * jquery.zoomooz.js, version 0.51
+ * jquery.zoomooz.js, version 0.61
  * http://janne.aukia.com/zoomooz
  *
  * LICENCE INFORMATION:
