@@ -9,7 +9,8 @@
 		<script type="text/javascript" src="../../js/sylvester.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function() {
-				$(".zoomTarget").click(function(evt) {
+				$(".zoomTarget").debug();
+			    $(".zoomTarget").click(function(evt) {
 					$(this).zoomTo();
 					evt.stopPropagation();
 				});
@@ -24,7 +25,7 @@
 		<div id="item1" class="zoomTarget"></div>
 		<div id="item2" class="zoomTarget"></div>
 		<div id="item3" class="zoomTarget">
-			<div id="item3b" class="zoomTarget"></div>
+		<div id="item3b" class="zoomTarget"></div>
 		</div>
 		<div id="item2b" class="zoomTarget"></div>
 		<div id="item4" class="zoomTarget"></div>

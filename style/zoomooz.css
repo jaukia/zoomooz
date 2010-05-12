@@ -1,6 +1,7 @@
 * {
 	-webkit-transform-origin: 0 0;
 	-moz-transform-origin: 0 0;
+	-o-transform-origin: 0 0;
 }
 
 html, body {
@@ -15,8 +16,10 @@ html {
 }
 
 .debuglabel {
-	width:5px;
-	height:5px;
+	width:4px;
+	height:4px;
 	background-color:red;
 	position:absolute;
+	margin-left:-2px;
+	margin-top:-2px;
 }

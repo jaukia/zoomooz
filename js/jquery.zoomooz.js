@@ -32,24 +32,30 @@
 	var animation_interval_timer;
 	var animation_current_affine_transform;
 	
+	var css_matrix_class;
+	
 	//**********************************//
 	//***  jQuery functions          ***//
 	//**********************************//
 	
 	$.fn.debug = function(settings) {
+		// FIXME hack! css matrix not transform specific
+	    settings = jQuery.extend(constructDefaultSettings(), settings);
+		css_matrix_class = setupMatrixClass(settings);
 		if($("#debug").length==0) {
 			$("body").append('<div id="debug"><div>');
 		} else {
 			$("#debug").html("");
 		}
-		settings = jQuery.extend(constructDefaultSettings(), settings);
 		this.each(function() {
 			showDebug($(this),settings);
 		});
 	}
 	
 	$.fn.zoomTo = function(settings) {
+		// FIXME hack! css matrix not transform specific
 		settings = jQuery.extend(constructDefaultSettings(), settings);
+		css_matrix_class = setupMatrixClass(settings);
 		this.each(function() {
 			zoomTo($(this), settings);
 		});
@@ -67,6 +73,14 @@
 		};
 	}
 	
+	function setupMatrixClass(settings) {
+		if(!settings.nativeanimation && window.WebKitCSSMatrix) {
+			return WebKitCSSMatrix;
+		} else {
+			return PureCSSMatrix;
+		}
+	}
+	
 	//**********************************//
 	//***  Main zoom function        ***//
 	//**********************************//
@@ -75,11 +89,12 @@
 		var transform = computeTotalTransformation(elem);
 		var inverse = (transform) ? transform.inverse(): null;
 		var bodytrans = makeViewportTransformation(elem, inverse, settings);
-		if($.browser.mozilla || !settings.nativeanimation) {
-    	    animateTransition(animation_current_affine_transform, affineTransformDecompose(bodytrans), settings);
+		if($.browser.mozilla || $.browser.opera || !settings.nativeanimation) {
+			var final_affine = affineTransformDecompose(bodytrans);
+		    animateTransition(animation_current_affine_transform, final_affine, settings);
 	    } else {
 	    	animation_current_affine_transform = null;
-	        setBodyTransform(matrixToCssTransformation(bodytrans), settings.duration, settings.easing);
+	        setBodyTransform(bodytrans.toString(), settings.duration, settings.easing);
 	    }
 	}
 	
@@ -88,9 +103,12 @@
 	//**********************************//
 	
 	function setBodyTransform(trans, duration, easing) {
-        var transstr = "-webkit-transform: "+trans+"; transform: "+trans+"; -moz-transform: "+trans+";";
-        if(duration) transstr += " -webkit-transition-duration: "+roundNumber(duration/1000,6)+"s;";
-        if(easing) transstr += " -webkit-transition-timing-function: "+constructEasingCss(easing)+";";
+		var transdur = roundNumber(duration/1000,6)+"s";
+		var transtiming = constructEasingCss(easing);
+		
+        var transstr = "-webkit-transform: "+trans+"; transform: "+trans+"; -moz-transform: "+trans+";"+" -o-transform: "+trans+";";
+        if(duration) transstr += " -webkit-transition-duration: "+transdur+";"+" -o-transition-duration: "+transdur+";";
+        if(easing) transstr += " -webkit-transition-timing-function: "+transtiming+";"+" -o-transition-timing-function: "+transtiming+";";
 		$(document.body).attr("style", transstr);
 	}
 	
@@ -126,33 +144,33 @@
 		var xoffset = (dw-elem.outerWidth()*scale)/2.0;
 		var yoffset = (dh-elem.outerHeight()*scale)/2.0;
 		
-		var endpostrans = Matrix.I(3);
-		endpostrans.elements[0][2] = xoffset;
-		endpostrans.elements[1][2] = yoffset;
-		endpostrans.elements[0][0] = scale;
-		endpostrans.elements[1][1] = scale;
-		if(!endtrans) endtrans = Matrix.I(3);
-		totalendtrans = endpostrans.multiply(endtrans);
-		
-		return totalendtrans;
+		var endpostrans = new css_matrix_class();
+		endpostrans = endpostrans.translate(xoffset,yoffset);
+		endpostrans = endpostrans.scale(scale,scale);
+		if(endtrans) endpostrans = endpostrans.multiply(endtrans);
+		return endpostrans;
 	}
 	
 	//**********************************//
 	//***  Debugging positioning     ***//
 	//**********************************//
 	
+	function calcPoint(e,x,y) {
+	    return [e.a*x+e.c*y+e.e,e.b*x+e.d*y+e.f];
+	}
+	
 	function showDebug(elem, settings) {
 		var transform = computeTotalTransformation(elem);
-		displayLabel(transform.multiply(Vector.create([0,0,1])));
-		displayLabel(transform.multiply(Vector.create([0,elem.outerHeight(),1])));
-		displayLabel(transform.multiply(Vector.create([elem.outerWidth(),elem.outerHeight(),1])));
-		displayLabel(transform.multiply(Vector.create([elem.outerWidth(),0,1])));
+		var e = fetchElements(transform);
+		displayLabel(calcPoint(e,0,0));
+		displayLabel(calcPoint(e,0,elem.outerHeight()));
+		displayLabel(calcPoint(e,elem.outerWidth(),elem.outerHeight()));
+		displayLabel(calcPoint(e,elem.outerWidth(),0));
 	}
 	
 	function displayLabel(pos) {
-		var x = pos.elements[0];
-		var y = pos.elements[1];
-		$("#debug").append('<div class="debuglabel" style="left:'+x+'px;top:'+y+'px;">&nbsp;</div>');
+		var label = '<div class="debuglabel" style="left:'+pos[0]+'px;top:'+pos[1]+'px;"></div>'
+		$("#debug").append(label);
 	}
 	
 	//**********************************//
@@ -160,13 +178,17 @@
 	//**********************************//
 	
 	function animateTransition(st, et, settings) {
-	   	if(!st) st = affineTransformDecompose(Matrix.I(3));
+	   	if(!st) {
+	   		st = affineTransformDecompose(new css_matrix_class());
+		}
 		animation_start_time = (new Date()).getTime();
 		if(animation_interval_timer) {
 			clearInterval(animation_interval_timer);
 			animation_interval_timer = null;
 		}
-		if(settings.easing) settings.easingfunction = constructEasingFunction(settings.easing, settings.duration);
+		if(settings.easing) {
+			settings.easingfunction = constructEasingFunction(settings.easing, settings.duration);
+		}
 		animation_interval_timer = setInterval(function() { animationStep(st, et, settings); }, 1);	
 	}
 	
@@ -195,26 +217,18 @@
 	 * https://bugzilla.mozilla.org/show_bug.cgi?id=531344
 	 */
 	function affineTransformDecompose(matrix) {
-		
-		/* [ a c e ]
-		   [ b d f ]
-		   [ 0 0 1 ] */
-		
-		m = matrix.elements;
-		var a = m[0][0], b = m[1][0], c = m[0][1];
-		var d = m[1][1], e = m[0][2], f = m[1][2];
+		var m = fetchElements(matrix);
+		var a=m.a, b=m.b, c=m.c, d=m.d, e=m.e, f=m.f;
 	
 		if(Math.abs(a*d-b*c)<0.01) {
 			console.log("fail!");
 			return;
 		}
 		
-		var tx = e;
-		var ty = f;
+		var tx = e, ty = f;
 		
 		var sx = Math.sqrt(a*a+b*b);
-		var a = a/sx;
-		var b = b/sx;
+		var a = a/sx, b = b/sx;
 		
 		var k = a*c+b*d;
 		c -= a*k;
@@ -258,13 +272,12 @@
 		var elem = input[0];
 		if( !elem || !elem.ownerDocument ) return null;
 		
-		var totalTransformation = Matrix.I(3);
+		var totalTransformation = new css_matrix_class();
 		
 		if ( elem === elem.ownerDocument.body ) {
 			var bOffset = jQuery.offset.bodyOffset( elem );
-			trans = Matrix.I(3);
-			trans.elements[0][2] += bOffset.left;
-			trans.elements[1][2] += bOffset.top;
+			trans = new css_matrix_class();
+			trans = trans.translate(bOffset.left, bOffset.top);
 			totalTransformation = totalTransformation.multiply(trans);
 			return totalTransformation;
 		}
@@ -285,13 +298,13 @@
 		
 		var top = elem.offsetTop;
 		var left = elem.offsetLeft;
-		var transformation = constructTransformation(elem,left,top);
-		totalTransformation = transformation.multiply(totalTransformation);
+		var transformation = constructTransformation().translate(left,top);
+		transformation = transformation.multiply(constructTransformation(elem));
+		totalTransformation = transformation.multiply((totalTransformation));
 		
 		// loop from node down to root
 		while ( (elem = elem.parentNode) && elem !== body && elem !== docElem ) {
-			top = 0;
-			left = 0;
+			top = 0; left = 0;
 			if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) {
 				break;
 			}
@@ -312,12 +325,14 @@
 				left += parseFloat( computedStyle.borderLeftWidth ) || 0;
 			}
 			prevComputedStyle = computedStyle;
-			var transformation = constructTransformation(elem,left,top);
-			totalTransformation = transformation.multiply(totalTransformation);
+			
+			var transformation = constructTransformation().translate(left,top);
+		    transformation = transformation.multiply(constructTransformation(elem));
+		    totalTransformation = transformation.multiply(totalTransformation);
+		
 		}
 		
-		top = 0;
-		left = 0;
+		top = 0; left = 0;
 		if ( prevComputedStyle.position === "relative" || prevComputedStyle.position === "static" ) {
 			top  += body.offsetTop;
 			left += body.offsetLeft;
@@ -326,9 +341,8 @@
 			top  += Math.max( docElem.scrollTop, body.scrollTop );
 			left += Math.max( docElem.scrollLeft, body.scrollLeft );
 		}
-		var trans = Matrix.I(3);
-		trans.elements[0][2] += left;
-		trans.elements[1][2] += top;
+		
+		var trans = new css_matrix_class().translate(left,top);
 		totalTransformation = totalTransformation.multiply(trans);
 		
 		return totalTransformation;
@@ -405,6 +419,123 @@
 		// Convert from input time to parametric value in curve, then from that to output time.
     	return solve(t, solveEpsilon(duration));
 	};
+
+	//**********************************//
+	//***  WebKitCSSMatrix in        ***//
+	//***  pure Javascript           ***//
+	//**********************************//
+	
+	function fetchElements(m) {
+		if(m instanceof PureCSSMatrix) {
+			var mv = m.m.elements;
+			return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
+					"d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
+		} else {
+			return {"a":m.a,"b":m.b,"c":m.c,"d":m.d,"e":m.e,"f":m.f};
+		}
+	}
+	
+	function constructTransformation(elem) {
+		var rawTrans = ($(elem).css("-webkit-transform") || $(elem).css("-moz-transform") || $(elem).css("-o-transform") || $(elem).css("transform"));
+		if(!rawTrans) {
+			return new css_matrix_class()
+		} else {
+			return new css_matrix_class(rawTrans);
+		}
+	}
+	
+	function PureCSSMatrix(trans) {
+		if(trans && trans!=null && trans!="none") {
+			if(trans instanceof Matrix) {
+				this.setMatrix(trans);
+			} else {
+				this.setMatrixValue(trans);
+			}
+		} else {
+			this.m = Matrix.I(3);
+		}
+	}
+	
+	PureCSSMatrix.prototype.setMatrix = function(matr) {
+		this.m = matr;
+	}
+	
+	PureCSSMatrix.prototype.setMatrixValue = function(transString) {
+		var mtr = Matrix.I(3);
+		
+		var transSplitter = /([a-z]+)\(([^\)]+)\)/g;
+		var isDeg = /deg$/;
+		
+		var items;
+		while((items = transSplitter.exec(transString)) != null) {
+			var action = items[1].toLowerCase();
+			var val = items[2].split(",");
+			if(action=="matrix") {
+				var trans = $M([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
+							   [parseFloat(val[1]),parseFloat(val[3]),parseFloat(filterNumber(val[5]))],
+							   [                0,                0,                              1]])
+			} else if(action=="translate") {
+				var trans = Matrix.I(3);
+				trans.elements[0][2] = parseFloat(filterNumber(val[0]));
+				trans.elements[1][2] = parseFloat(filterNumber(val[1]));
+			} else if(action=="scale") {
+				var sx = parseFloat(val[0]);
+				if(val.length>1) {
+					var sy = parseFloat(val[1]);
+				} else {
+					var sy = sx;
+				}
+				var trans = $M([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
+			} else if(action=="rotate") {
+				var raw = val[0];
+				var rot = parseFloat(filterNumber(raw));
+				if(raw.match(isDeg)) {
+					rot = (2*Math.PI)*rot/360.0;
+				}
+				var trans = Matrix.RotationZ(rot);
+			} else {
+				console.log("Problem with setMatrixValue", action, values);
+			}
+			
+			mtr = mtr.multiply(trans);
+		}
+		
+		this.m = mtr;
+	};
+	
+	PureCSSMatrix.prototype.multiply = function(m2) {
+		return new PureCSSMatrix(this.m.multiply(m2.m));
+	};
+	
+	PureCSSMatrix.prototype.inverse = function() {
+		return new PureCSSMatrix(this.m.inverse());
+	};
+	
+	PureCSSMatrix.prototype.translate = function(x,y) {
+		var trans = Matrix.I(3);
+		trans.elements[0][2] = x;
+		trans.elements[1][2] = y;
+		return new PureCSSMatrix(this.m.multiply(trans));
+	};
+	
+	PureCSSMatrix.prototype.scale = function(sx,sy) {
+		var trans = $M([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
+		return new PureCSSMatrix(this.m.multiply(trans));	
+	};
+	
+	PureCSSMatrix.prototype.rotate = function(rot) {
+		var trans = Matrix.RotationZ(rot);
+		return new PureCSSMatrix(this.m.multiply(trans));
+	};
+	
+	PureCSSMatrix.prototype.toString = function() {
+		var e = this.m.elements;
+		var pxstr = "";
+		if($.browser.mozilla || $.browser.opera) pxstr = "px";
+		return "matrix("+printFixedNumber(e[0][0])+", "+printFixedNumber(e[1][0])+", "+
+						 printFixedNumber(e[0][1])+", "+printFixedNumber(e[1][1])+", "+
+						 printFixedNumber(e[0][2])+pxstr+", "+printFixedNumber(e[1][2])+pxstr+")";
+	};
 	
 	//**********************************//
 	//***  Helpers                   ***//
@@ -418,42 +549,6 @@
 		return it;
 	}
 	
-	function cssToMatrixTransformation(inittransform) {
-		if(inittransform!="none" && inittransform!="") {
-			var mv = inittransform.match(/[^()]+/g)[1].split(",");
-			var matrix = $M([[parseFloat(mv[0]),parseFloat(mv[2]),parseFloat(filterNumber(mv[4]))],
-							 [parseFloat(mv[1]),parseFloat(mv[3]),parseFloat(filterNumber(mv[5]))],
-							 [                0,                0,                              1]])
-			return matrix;	
-		} else {
-			return Matrix.I(3);
-		}
-	}
-	
-	function matrixToCssTransformation(mtrx) {
-		if(mtrx==null) return null;
-		var im = mtrx.elements;
-		var vars = [im[0][0],im[1][0],im[0][1],im[1][1],im[0][2],im[1][2]];
-		for(var i=0; i<6; i++) {
-			vars[i] = roundNumber(vars[i], 6);
-		}
-		if($.browser.mozilla) {
-			vars[4] += "px";
-			vars[5] += "px";
-		}
-		return "matrix("+vars.join(", ")+")";
-	}
-	
-	function constructTransformation(elem,left,top) {
-		if(!left) left=0;
-		if(!top) top=0;
-		var rawTrans = ($(elem).css("-webkit-transform") || $(elem).css("-moz-transform") || $(elem).css("transform"));
-		var trans = cssToMatrixTransformation(rawTrans);
-		trans.elements[0][2] += left;
-		trans.elements[1][2] += top;
-		return trans;
-	}
-	
 	function roundNumber(number, precision) {
 		precision = Math.abs(parseInt(precision)) || 0;
 		var coefficient = Math.pow(10, precision);
@@ -463,5 +558,9 @@
 	function filterNumber(x) {
 		return x.match(/([0-9.\-e]+)/g);
 	}
-
+	
+	function printFixedNumber(x) {
+		return Number(x).toFixed(6);
+	}
+	
 })(jQuery);
