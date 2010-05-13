@@ -10,6 +10,9 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 				$(".zoomTarget").debug();
+			    $(window).resize(function(evt) {
+			        $(".zoomTarget").debug();
+			    });
 			    $(".zoomTarget").click(function(evt) {
 					$(this).zoomTo();
 					evt.stopPropagation();

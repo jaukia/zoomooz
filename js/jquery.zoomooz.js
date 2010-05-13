@@ -1,6 +1,11 @@
 /*!
- * jquery.zoomooz.js, version 0.61
+ * jquery.zoomooz.js, version 0.63
  * http://janne.aukia.com/zoomooz
+ *
+ * Version history:
+ * 0.63 basic Opera support
+ * 0.61 refactored to use CSSMatrix classes
+ * 0.51 initial public version
  *
  * LICENCE INFORMATION:
  *
@@ -493,8 +498,11 @@
 					rot = (2*Math.PI)*rot/360.0;
 				}
 				var trans = Matrix.RotationZ(rot);
+			} else if(action=="skew") {
+				var trans = Matrix.I(3);
+				trans.elements[0][1] = parseFloat(filterNumber(val[0]));
 			} else {
-				console.log("Problem with setMatrixValue", action, values);
+				console.log("Problem with setMatrixValue", action, val);
 			}
 			
 			mtr = mtr.multiply(trans);
