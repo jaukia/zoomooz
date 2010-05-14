@@ -98,14 +98,8 @@
 			var final_affine = affineTransformDecompose(bodytrans);
 		    animateTransition(animation_current_affine_transform, final_affine, settings);
 	    } else {
-	    	//direct matrix mode:
-	    	//animation_current_affine_transform = null;
-	        //setBodyTransform(bodytrans.toString(), settings.duration, settings.easing);
-	    	//via affine transform:
 	    	var current_affine = affineTransformDecompose(constructTransformation($(document.body)));
 	    	var final_affine = affineTransformDecompose(bodytrans);
-	    	console.log(Math.round(360*current_affine.r/(2*Math.PI))+"deg",Math.round(360*final_affine.r/(2*Math.PI))+"deg");
-	    	// here should fix rotates so that they work always via the shortest path!
 	    	setBodyTransform(matrixCompose(final_affine), settings.duration, settings.easing);
 	    }
 	}
