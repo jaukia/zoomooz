@@ -98,8 +98,15 @@
 			var final_affine = affineTransformDecompose(bodytrans);
 		    animateTransition(animation_current_affine_transform, final_affine, settings);
 	    } else {
-	    	animation_current_affine_transform = null;
-	        setBodyTransform(bodytrans.toString(), settings.duration, settings.easing);
+	    	//direct matrix mode:
+	    	//animation_current_affine_transform = null;
+	        //setBodyTransform(bodytrans.toString(), settings.duration, settings.easing);
+	    	//via affine transform:
+	    	var current_affine = affineTransformDecompose(constructTransformation($(document.body)));
+	    	var final_affine = affineTransformDecompose(bodytrans);
+	    	console.log(Math.round(360*current_affine.r/(2*Math.PI))+"deg",Math.round(360*final_affine.r/(2*Math.PI))+"deg");
+	    	// here should fix rotates so that they work always via the shortest path!
+	    	setBodyTransform(matrixCompose(final_affine), settings.duration, settings.easing);
 	    }
 	}
 	
@@ -114,6 +121,7 @@
         var transstr = "-webkit-transform: "+trans+"; transform: "+trans+"; -moz-transform: "+trans+";"+" -o-transform: "+trans+";";
         if(duration) transstr += " -webkit-transition-duration: "+transdur+";"+" -o-transition-duration: "+transdur+";";
         if(easing) transstr += " -webkit-transition-timing-function: "+transtiming+";"+" -o-transition-timing-function: "+transtiming+";";
+        
 		$(document.body).attr("style", transstr);
 	}
 	
@@ -148,11 +156,21 @@
 		
 		var xoffset = (dw-elem.outerWidth()*scale)/2.0;
 		var yoffset = (dh-elem.outerHeight()*scale)/2.0;
+		 
+		// scrolling (does not adjust "excessive" scrolling)
+		/*var doc = elem[0].ownerDocument;
+		var docElem = doc.documentElement;
+		var body = doc.body;
+		xoffset += Math.max( docElem.scrollLeft, body.scrollLeft );
+		yoffset += Math.max( docElem.scrollTop, body.scrollTop );*/
 		
 		var endpostrans = new css_matrix_class();
+		endpostrans = endpostrans.translate(-dw/2.0,-dh/2.0);
 		endpostrans = endpostrans.translate(xoffset,yoffset);
 		endpostrans = endpostrans.scale(scale,scale);
 		if(endtrans) endpostrans = endpostrans.multiply(endtrans);
+		endpostrans = endpostrans.translate(dw/2.0,dh/2.0);
+		
 		return endpostrans;
 	}
 	
@@ -254,8 +272,7 @@
 		}
 	
 		var r = Math.atan2(b,a);
-	
-		return {"tx":tx, "ty":ty, "r":r, "k":Math.atan(k), "sx":sx, "sy":sy};
+	    return {"tx":tx, "ty":ty, "r":r, "k":Math.atan(k), "sx":sx, "sy":sy};
 	}
 	
 	function matrixCompose(ia) {

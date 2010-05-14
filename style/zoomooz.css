@@ -11,6 +11,12 @@ html, body {
 	height:100%;
 }
 
+body {
+	-webkit-transform-origin: 50% 50%;
+	-moz-transform-origin: 50% 50%;
+	-o-transform-origin: 50% 50%;    
+}
+
 html {
 	overflow:hidden;
 }
