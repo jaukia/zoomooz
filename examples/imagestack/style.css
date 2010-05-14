@@ -1,0 +1,13 @@
+ img {
+	 border:1px solid #aaa;
+	 padding:10px;
+	 margin:5px;
+	 background-color:#f8f8f8;
+	 position:absolute;
+ }
+ 
+ body {
+	 padding:0px;
+	 background: -webkit-gradient(linear, left top, left bottom, color-stop(1, rgb(30,30,30)), color-stop(0, rgb(94,94,94)));
+	 background: -moz-linear-gradient(center top,rgb(30,30,30) 100%,rgb(94,94,94) 0%);
+ }

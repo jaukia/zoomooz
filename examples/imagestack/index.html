@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Flickr Image Stack Demo</title>
+		<link rel="stylesheet" href="../../style/zoomooz.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="../../js/jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
+		<script type="text/javascript" src="../../js/sylvester.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function () {
+			$(window).click(function (evt) {
+				$("body").zoomTo({targetsize: 1.0});
+				evt.stopPropagation();
+				$("img").animate({opacity: 1.0});
+			});
+			$("body").zoomTo({targetsize: 1.0});
+		
+			var searchString = "cat";
+			var path = "http://api.flickr.com/services/feeds/photos_public.gne";
+			var params = "?tags="+searchString+"&tagmode=any&format=json&jsoncallback=?";
+			$.getJSON(path+params, function (data) {
+				$.each(data.items, function (i, item) {
+					var elem = $("<img/>");
+					var smallimg = item.media.m;
+					var fullimg = smallimg.replace("_m", "");
+					elem.attr("src", fullimg);
+		
+					var xcenter = document.width / 2.0;
+					var ycenter = document.height / 2.0;
+					var maxoffset = 300, imgsize = 150;
+					var rot = "rotate(" + (Math.random() * 2 - 1) * 180 + "deg)";
+					var xpos = xcenter + (Math.random() * 2 - 1) * maxoffset - imgsize / 2;
+					var ypos = ycenter + (Math.random() * 2 - 1) * maxoffset - imgsize / 2;
+		
+					var cssAttr = {"left":xpos,"top":ypos,"height":imgsize,"opacity":0.0};
+					cssAttr["-webkit-transform"] = rot;
+					cssAttr["-o-transform"] = rot;
+					cssAttr["-moz-transform"] = rot;
+					elem.css(cssAttr);
+				
+					elem.click(function (evt) {
+						$(this).zoomTo({targetsize: 0.7});
+						$("img").not(this).animate({opacity: 0.2});
+						$(this).animate({opacity: 1.0});
+						evt.stopPropagation();
+					});
+					elem.appendTo("#output").delay(200).animate({opacity:1.0},600);
+				});
+			});
+		});
+		</script>
+	</head>
+	<body>
+		<div id="output"></div>
+	</body>
+</html>
+	

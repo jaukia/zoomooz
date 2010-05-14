@@ -1,0 +1,33 @@
+/* these are not necessary */
+
+body {
+	background-color:#eee;
+	border:1px solid grey;
+}
+
+#item1, #item2 {
+	width:300px;
+	height:200px;
+}
+
+#item1 {
+	background-color:#cfc;
+	position:absolute;
+	top:300px;
+	left:700px;
+	border:1px solid green;
+	-webkit-transform: rotate(175deg);
+	-moz-transform: rotate(175deg);
+	-o-transform: rotate(175deg);
+}
+
+#item2 {
+	background-color:#cff;
+	position:absolute;
+	top:400px;
+	left:400px;
+	border:1px solid cyan;
+	-webkit-transform: rotate(-175deg);
+	-moz-transform: rotate(-175deg);
+	-o-transform: rotate(-175deg);
+}
