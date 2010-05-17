@@ -8,32 +8,59 @@
 		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
 		<script type="text/javascript" src="../../js/sylvester.js"></script>
 		<script type="text/javascript">
-		$(document).ready(function () {
-			$(window).click(function (evt) {
-				$("body").zoomTo({targetsize: 1.0});
-				evt.stopPropagation();
-				$("img").animate({opacity: 1.0});
-			});
-			$("body").zoomTo({targetsize: 1.0});
+		$(document).ready(function(){
+		    $(document).keypress(function(evt){if(evt.keyCode==13) loadImages(true);});
+		    $("#searchtext").blur(function(evt){loadImages(false);});
+		});
 		
-			var searchString = "cat";
+		var previousSearchString = "";
+		var notLoaded = true;
+		
+		function loadImages(forceImages) {
+		    var searchString = $("#searchtext").val();
+		    if(searchString=="") return;
+		    if(!forceImages && searchString==previousSearchString) return;
+		    previousSearchString = searchString;
+		    
+		    if(notLoaded) {
+		        notLoaded = false;
+		        
+		        $(window).click(function (evt) {
+				    $("body").zoomTo({targetsize: 1.0});
+				    $("#searchtext").focus();
+			        evt.stopPropagation();
+			    });
+			    $("body").zoomTo({targetsize: 1.0});
+			    $("#searchtext").focus();
+			
+			    $("#output").click(function(evt) {
+			        $(this).zoomTo({targetsize: 0.97});
+			        evt.stopPropagation();
+			    });
+		    }
+		    
 			var path = "http://api.flickr.com/services/feeds/photos_public.gne";
 			var params = "?tags="+searchString+"&tagmode=any&format=json&jsoncallback=?";
+			$("#output").text("");
+			$("#output").zoomTo({targetsize: 0.97});
 			$.getJSON(path+params, function (data) {
-				$.each(data.items, function (i, item) {
+			    $.each(data.items, function (i, item) {
 					var elem = $("<img/>");
 					var smallimg = item.media.m;
 					var fullimg = smallimg.replace("_m", "");
 					elem.attr("src", fullimg);
-		
-					var xcenter = document.width / 2.0;
-					var ycenter = document.height / 2.0;
-					var maxoffset = 300, imgsize = 150;
+		            var parentElem = $("#output");
+		            
 					var rot = "rotate(" + (Math.random() * 2 - 1) * 180 + "deg)";
-					var xpos = xcenter + (Math.random() * 2 - 1) * maxoffset - imgsize / 2;
-					var ypos = ycenter + (Math.random() * 2 - 1) * maxoffset - imgsize / 2;
+					
+					/*var xpos = xcenter + (Math.random() * 2 - 1) * maxoffset - imgsize / 2;
+					var ypos = ycenter + (Math.random() * 2 - 1) * maxoffset - imgsize / 2;*/
 		
-					var cssAttr = {"left":xpos,"top":ypos,"height":imgsize,"opacity":0.0};
+		            var margin = 20;
+		            var width = 10;
+		            var left = margin+Math.round(Math.random()*(100-2*margin-width))+"%";
+					var top = margin+Math.round(Math.random()*(100-2*margin-width))+"%";
+					var cssAttr = {"left":left,"top":top,"width":width+"%","opacity":0.0};
 					cssAttr["-webkit-transform"] = rot;
 					cssAttr["-o-transform"] = rot;
 					cssAttr["-moz-transform"] = rot;
@@ -41,18 +68,24 @@
 				
 					elem.click(function (evt) {
 						$(this).zoomTo({targetsize: 0.7});
-						$("img").not(this).animate({opacity: 0.2});
-						$(this).animate({opacity: 1.0});
+						$("img").not(this).css({"z-index":1});
+						$(this).css({"z-index":2});
 						evt.stopPropagation();
 					});
-					elem.appendTo("#output").delay(200).animate({opacity:1.0},600);
+					elem.appendTo("#output").delay(500).animate({opacity:1.0},600);
 				});
+				
+				window.ondragstart = function() { return false };
+				window.onselectstart = function() { return false };
 			});
-		});
+		}
 		</script>
 	</head>
 	<body>
+	    <div id="container">
+	    <label>Flickr search text:</label><input id="searchtext">
 		<div id="output"></div>
+		</div>
 	</body>
 </html>
 	

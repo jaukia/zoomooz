@@ -1,3 +1,8 @@
+ img, body {
+ 	 -webkit-user-select:none;
+     -moz-user-select:none;
+ }
+
  img {
 	 border:1px solid #aaa;
 	 padding:10px;
@@ -8,6 +13,42 @@
  
  body {
 	 padding:0px;
+	 background: rgb(94,94,94);
 	 background: -webkit-gradient(linear, left top, left bottom, color-stop(1, rgb(30,30,30)), color-stop(0, rgb(94,94,94)));
 	 background: -moz-linear-gradient(center top,rgb(30,30,30) 100%,rgb(94,94,94) 0%);
+ }
+ 
+ body, html {
+     color:white;
+     font-family: Helvetica Neue, Helvetica, sans-serif;
+     line-height:32px;
+ }
+ 
+ #searchtext {
+     height:30px;
+     width:300px;
+     font-size:20px;
+     line-height:32px;
+ }
+ 
+ #container {
+     position: absolute;
+     left:200px;
+     top:100px;
+     right:200px;
+     bottom:100px;
+ }
+ 
+ #output {
+     position:absolute;
+     background-color: #999;
+     bottom:0;
+     left:0;
+     top:100px;
+     right:0;
+     overflow:hidden;
+ }
+ 
+ label {
+     padding-right:10px;
  }

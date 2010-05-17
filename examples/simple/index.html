@@ -17,15 +17,24 @@
 					$(this).zoomTo();
 					evt.stopPropagation();
 				});
-				$(document).click(function(evt) {
+				
+				$(window).click(function(evt) {
 					$("body").zoomTo({targetsize:1.0});
 					evt.stopPropagation();
 				});
+				
+				// for iPhone
+				$("#container").click(function(evt) {
+					$("body").zoomTo({targetsize:1.0});
+					evt.stopPropagation();
+				});
+				
 				$("body").zoomTo({targetsize:1.0});
 			});
 		</script>
 	</head>
 	<body>
+	    <div id="container">
 		<div id="item1" class="zoomTarget"></div>
 		<div id="item2" class="zoomTarget"></div>
 		<div id="item3" class="zoomTarget">
@@ -33,6 +42,7 @@
 		</div>
 		<div id="item2b" class="zoomTarget"></div>
 		<div id="item4" class="zoomTarget"></div>
+		</div>
 	</body>
 </html>
 	
