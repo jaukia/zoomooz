@@ -1,8 +1,9 @@
 /*!
- * jquery.zoomooz.js, version 0.63
+ * jquery.zoomooz.js, version 0.65
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.65 zoom origin to center
  * 0.63 basic Opera support
  * 0.61 refactored to use CSSMatrix classes
  * 0.51 initial public version
