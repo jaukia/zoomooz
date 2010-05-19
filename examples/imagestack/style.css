@@ -24,6 +24,10 @@
      line-height:32px;
  }
  
+ a {
+ 	color: white;
+ }
+ 
  #searchtext {
      height:30px;
      width:300px;
@@ -42,12 +46,23 @@
  #output {
      position:absolute;
      background-color: #999;
-     bottom:0;
+     bottom:0px;
      left:0;
      top:100px;
      right:0;
      overflow:hidden;
  }
+ 
+ #info, #info a {
+	 color: #999; 
+ }
+ 
+ #info {
+     position:absolute;
+	 left:0;
+	 bottom:-30px;
+	 height:30px;
+}
  
  label {
      padding-right:10px;

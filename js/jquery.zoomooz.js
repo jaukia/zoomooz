@@ -29,26 +29,30 @@
  */
 
 (function($) {
-	
+	"use strict";
+
 	//**********************************//
-	//***  Variables                 ***//
+	//***  Variables				 ***//
 	//**********************************//
 	
 	var animation_start_time;
 	var animation_interval_timer;
-	var animation_current_affine_transform;
 	
+	var regexp_filter_number = /([0-9.\-e]+)/g;
+	var regexp_trans_splitter = /([a-z]+)\(([^\)]+)\)/g;
+	var regexp_is_deg = /deg$/;
+
 	var css_matrix_class;
 	
 	//**********************************//
-	//***  jQuery functions          ***//
+	//***  jQuery functions		  ***//
 	//**********************************//
 	
 	$.fn.debug = function(settings) {
 		// FIXME hack! css matrix not transform specific
-	    settings = jQuery.extend(constructDefaultSettings(), settings);
+		settings = jQuery.extend(constructDefaultSettings(), settings);
 		css_matrix_class = setupMatrixClass(settings);
-		if($("#debug").length==0) {
+		if($("#debug").length===0) {
 			$("body").append('<div id="debug"><div>');
 		} else {
 			$("#debug").html("");
@@ -56,7 +60,7 @@
 		this.each(function() {
 			showDebug($(this),settings);
 		});
-	}
+	};
 	
 	$.fn.zoomTo = function(settings) {
 		// FIXME hack! css matrix not transform specific
@@ -66,7 +70,7 @@
 			zoomTo($(this), settings);
 		});
 		return this;
-	}
+	};
 	
 	function constructDefaultSettings() {
 		return {
@@ -88,35 +92,45 @@
 	}
 	
 	//**********************************//
-	//***  Main zoom function        ***//
+	//***  Main zoom function		***//
 	//**********************************//
 	
 	function zoomTo(elem, settings) {
 		var transform = computeTotalTransformation(elem);
 		var inverse = (transform) ? transform.inverse(): null;
 		var bodytrans = makeViewportTransformation(elem, inverse, settings);
+		
+		var current_affine = constructAffineFixingRotation($(document.body));
+		var final_affine = affineTransformDecompose(bodytrans);
+		final_affine = fixRotationToSameLap(current_affine, final_affine);
+		
 		if($.browser.mozilla || $.browser.opera || !settings.nativeanimation) {
-			var final_affine = affineTransformDecompose(bodytrans);
-		    animateTransition(animation_current_affine_transform, final_affine, settings);
-	    } else {
-	    	var current_affine = affineTransformDecompose(constructTransformation($(document.body)));
-	    	var final_affine = affineTransformDecompose(bodytrans);
-	    	setBodyTransform(matrixCompose(final_affine), settings.duration, settings.easing);
-	    }
+			animateTransition(current_affine, final_affine, settings);
+		} else {
+			setBodyTransform(matrixCompose(final_affine), settings.duration, settings.easing);
+		}
 	}
 	
 	//**********************************//
-	//***  Element positioning       ***//
+	//***  Element positioning	   ***//
 	//**********************************//
 	
 	function setBodyTransform(trans, duration, easing) {
 		var transdur = roundNumber(duration/1000,6)+"s";
 		var transtiming = constructEasingCss(easing);
 		
-        var transstr = "-webkit-transform: "+trans+"; transform: "+trans+"; -moz-transform: "+trans+";"+" -o-transform: "+trans+";";
-        if(duration) transstr += " -webkit-transition-duration: "+transdur+";"+" -o-transition-duration: "+transdur+";";
-        if(easing) transstr += " -webkit-transition-timing-function: "+transtiming+";"+" -o-transition-timing-function: "+transtiming+";";
-        
+		var transstr = " -webkit-transform: "+trans+"; transform: "+trans+";"+
+					   " -moz-transform: "+trans+"; -o-transform: "+trans+";";
+		if(duration) { 
+			transstr += " -webkit-transition-duration: "+transdur+";"+
+								 " -o-transition-duration: "+transdur+";";
+		}
+		
+		if(easing) {
+			transstr += " -webkit-transition-timing-function: "+transtiming+";"+
+							   " -o-transition-timing-function: "+transtiming+";";
+		}
+		
 		$(document.body).attr("style", transstr);
 	}
 	
@@ -152,29 +166,25 @@
 		var xoffset = (dw-elem.outerWidth()*scale)/2.0;
 		var yoffset = (dh-elem.outerHeight()*scale)/2.0;
 		 
-		// scrolling (does not adjust "excessive" scrolling)
-		/*var doc = elem[0].ownerDocument;
-		var docElem = doc.documentElement;
-		var body = doc.body;
-		xoffset += Math.max( docElem.scrollLeft, body.scrollLeft );
-		yoffset += Math.max( docElem.scrollTop, body.scrollTop );*/
 		
 		var endpostrans = new css_matrix_class();
 		endpostrans = endpostrans.translate(-dw/2.0,-dh/2.0);
 		endpostrans = endpostrans.translate(xoffset,yoffset);
 		endpostrans = endpostrans.scale(scale,scale);
-		if(endtrans) endpostrans = endpostrans.multiply(endtrans);
+		if(endtrans) {
+			endpostrans = endpostrans.multiply(endtrans);
+		}
 		endpostrans = endpostrans.translate(dw/2.0,dh/2.0);
 		
 		return endpostrans;
 	}
 	
 	//**********************************//
-	//***  Debugging positioning     ***//
+	//***  Debugging positioning	 ***//
 	//**********************************//
 	
 	function calcPoint(e,x,y) {
-	    return [e.a*x+e.c*y+e.e,e.b*x+e.d*y+e.f];
+		return [e.a*x+e.c*y+e.e,e.b*x+e.d*y+e.f];
 	}
 	
 	function showDebug(elem, settings) {
@@ -187,17 +197,17 @@
 	}
 	
 	function displayLabel(pos) {
-		var label = '<div class="debuglabel" style="left:'+pos[0]+'px;top:'+pos[1]+'px;"></div>'
+		var label = '<div class="debuglabel" style="left:'+pos[0]+'px;top:'+pos[1]+'px;"></div>';
 		$("#debug").append(label);
 	}
 	
 	//**********************************//
-	//***  Non-native animation      ***//
+	//***  Non-native animation	  ***//
 	//**********************************//
 	
 	function animateTransition(st, et, settings) {
-	   	if(!st) {
-	   		st = affineTransformDecompose(new css_matrix_class());
+		   if(!st) {
+			   st = affineTransformDecompose(new css_matrix_class());
 		}
 		animation_start_time = (new Date()).getTime();
 		if(animation_interval_timer) {
@@ -225,10 +235,7 @@
 			time_value=1.0;
 		}
 		
-		var ia = interpolateArrays(affine_start, affine_end, time_value);
-		var trans = matrixCompose(ia);
-	    setBodyTransform(trans);
-		animation_current_affine_transform = ia;
+		setBodyTransform(matrixCompose(interpolateArrays(affine_start, affine_end, time_value)));
 	}
 	
 	/* Based on pseudo-code in:
@@ -246,40 +253,42 @@
 		var tx = e, ty = f;
 		
 		var sx = Math.sqrt(a*a+b*b);
-		var a = a/sx, b = b/sx;
+		a = a/sx;
+		b = b/sx;
 		
 		var k = a*c+b*d;
 		c -= a*k;
 		d -= b*k;
 		
 		var sy = Math.sqrt(c*c+d*d);
-		var c = c/sy;
-		var d = d/sy;
-		var k = k/sy;
+		c = c/sy;
+		d = d/sy;
+		k = k/sy;
 		
-		if(a*d-b*c<0.0) {
-			var a = -a;
-			var b = -b;
-			var c = -c;
-			var d = -d;
-			var sx = -sx;
-			var sy = -sy;
+		if((a*d-b*c)<0.0) {
+			a = -a;
+			b = -b;
+			c = -c;
+			d = -d;
+			sx = -sx;
+			sy = -sy;
 		}
 	
 		var r = Math.atan2(b,a);
-	    return {"tx":tx, "ty":ty, "r":r, "k":Math.atan(k), "sx":sx, "sy":sy};
+		return {"tx":tx, "ty":ty, "r":r, "k":Math.atan(k), "sx":sx, "sy":sy};
 	}
 	
 	function matrixCompose(ia) {
-		var ret = "translate("+roundNumber(ia["tx"],6)+"px,"+roundNumber(ia["ty"],6)+"px) ";
-		ret += "rotate("+roundNumber(ia["r"],6)+"rad) skewX("+roundNumber(ia["k"],6)+"rad) ";
-		ret += "scale("+roundNumber(ia["sx"],6)+","+roundNumber(ia["sy"],6)+")";
+		var ret = "translate("+roundNumber(ia.tx,6)+"px,"+roundNumber(ia.ty,6)+"px) ";
+		ret += "rotate("+roundNumber(ia.r,6)+"rad) skewX("+roundNumber(ia.k,6)+"rad) ";
+		ret += "scale("+roundNumber(ia.sx,6)+","+roundNumber(ia.sy,6)+")";
 		return ret;
 	}
 	
+	
 	//**********************************//
-	//***  Calculating element       ***//
-	//***  total transformation      ***//
+	//***  Calculating element	   ***//
+	//***  total transformation	  ***//
 	//**********************************//
 	
 	/* Based on:
@@ -287,10 +296,13 @@
 	 */
 	function computeTotalTransformation(input) {
 		var elem = input[0];
-		if( !elem || !elem.ownerDocument ) return null;
+		if( !elem || !elem.ownerDocument ) {
+			return null;
+		}
 		
 		var totalTransformation = new css_matrix_class();
 		
+		var trans;
 		if ( elem === elem.ownerDocument.body ) {
 			var bOffset = jQuery.offset.bodyOffset( elem );
 			trans = new css_matrix_class();
@@ -307,10 +319,11 @@
 		var docElem = doc.documentElement;
 		var body = doc.body;
 		var defaultView = doc.defaultView;
+		var prevComputedStyle;
 		if(defaultView) {
-			var prevComputedStyle = defaultView.getComputedStyle( elem, null );
+			prevComputedStyle = defaultView.getComputedStyle( elem, null );
 		} else {
-			var prevComputedStyle = elem.currentStyle;
+			prevComputedStyle = elem.currentStyle;
 		}
 		
 		var top = elem.offsetTop;
@@ -343,9 +356,9 @@
 			}
 			prevComputedStyle = computedStyle;
 			
-			var transformation = constructTransformation().translate(left,top);
-		    transformation = transformation.multiply(constructTransformation(elem));
-		    totalTransformation = transformation.multiply(totalTransformation);
+			transformation = constructTransformation().translate(left,top);
+			transformation = transformation.multiply(constructTransformation(elem));
+			totalTransformation = transformation.multiply(totalTransformation);
 		
 		}
 		
@@ -359,21 +372,21 @@
 			left += Math.max( docElem.scrollLeft, body.scrollLeft );
 		}
 		
-		var trans = new css_matrix_class().translate(left,top);
-		totalTransformation = totalTransformation.multiply(trans);
+		var itertrans = new css_matrix_class().translate(left,top);
+		totalTransformation = totalTransformation.multiply(itertrans);
 		
 		return totalTransformation;
 		
 	}
 	
 	//**********************************//
-	//***  Easing functions          ***//
+	//***  Easing functions		  ***//
 	//**********************************//
 	
 	function constructEasingCss(input) {
 		if((input instanceof Array)) {
-			return "cubic-bezier("+roundNumber(input[0],6),roundNumber(input[1],6),
-								   roundNumber(input[2],6),roundNumber(input[3],6)+")"
+			return "cubic-bezier("+roundNumber(input[0],6)+","+roundNumber(input[1],6)+","+
+								   roundNumber(input[2],6)+","+roundNumber(input[3],6)+")";
 		} else {
 			return input;
 		}
@@ -395,7 +408,7 @@
 		
 		var easingFunc = function(t) {
 			return CubicBezierAtTime(t, params[0], params[1], params[2], params[3], dur);
-		}
+		};
 		
 		return easingFunc;
 	}
@@ -406,7 +419,7 @@
 		x=P1x*(3*t*t*(1-t))+P2x*(3*t*(1-t)*(1-t))+k;
 		y=P1y*(3*t*t*(1-t))+P2y*(3*t*(1-t)*(1-t))+k;
 		return {x:Math.abs(x),y:Math.abs(y)};
-	};
+	}
 	
 	// From: http://www.netzgesta.de/dev/cubic-bezier-timing-function.html
 	// 1:1 conversion to js from webkit source files
@@ -414,55 +427,118 @@
 	function CubicBezierAtTime(t,p1x,p1y,p2x,p2y,duration) {
 		var ax=0,bx=0,cx=0,ay=0,by=0,cy=0;
 		// `ax t^3 + bx t^2 + cx t' expanded using Horner's rule.
-        function sampleCurveX(t) {return ((ax*t+bx)*t+cx)*t;};
-        function sampleCurveY(t) {return ((ay*t+by)*t+cy)*t;};
-        function sampleCurveDerivativeX(t) {return (3.0*ax*t+2.0*bx)*t+cx;};
+		function sampleCurveX(t) {return ((ax*t+bx)*t+cx)*t;}
+		function sampleCurveY(t) {return ((ay*t+by)*t+cy)*t;}
+		function sampleCurveDerivativeX(t) {return (3.0*ax*t+2.0*bx)*t+cx;}
 		// The epsilon value to pass given that the animation is going to run over |dur| seconds. The longer the
 		// animation, the more precision is needed in the timing function result to avoid ugly discontinuities.
-		function solveEpsilon(duration) {return 1.0/(200.0*duration);};
-        function solve(x,epsilon) {return sampleCurveY(solveCurveX(x,epsilon));};
+		function solveEpsilon(duration) {return 1.0/(200.0*duration);}
+		function solve(x,epsilon) {return sampleCurveY(solveCurveX(x,epsilon));}
 		// Given an x value, find a parametric value it came from.
-        function solveCurveX(x,epsilon) {var t0,t1,t2,x2,d2,i;
-			function fabs(n) {if(n>=0) {return n;}else {return 0-n;}}; 
-            // First try a few iterations of Newton's method -- normally very fast.
-            for(t2=x, i=0; i<8; i++) {x2=sampleCurveX(t2)-x; if(fabs(x2)<epsilon) {return t2;} d2=sampleCurveDerivativeX(t2); if(fabs(d2)<1e-6) {break;} t2=t2-x2/d2;}
-            // Fall back to the bisection method for reliability.
-            t0=0.0; t1=1.0; t2=x; if(t2<t0) {return t0;} if(t2>t1) {return t1;}
-            while(t0<t1) {x2=sampleCurveX(t2); if(fabs(x2-x)<epsilon) {return t2;} if(x>x2) {t0=t2;}else {t1=t2;} t2=(t1-t0)*.5+t0;}
-            return t2; // Failure.
-        };
+		function solveCurveX(x,epsilon) {var t0,t1,t2,x2,d2,i;
+			function fabs(n) {if(n>=0) {return n;}else {return 0-n;}}
+			// First try a few iterations of Newton's method -- normally very fast.
+			for(t2=x, i=0; i<8; i++) {x2=sampleCurveX(t2)-x; if(fabs(x2)<epsilon) {return t2;} d2=sampleCurveDerivativeX(t2); if(fabs(d2)<1e-6) {break;} t2=t2-x2/d2;}
+			// Fall back to the bisection method for reliability.
+			t0=0.0; t1=1.0; t2=x; if(t2<t0) {return t0;} if(t2>t1) {return t1;}
+			while(t0<t1) {x2=sampleCurveX(t2); if(fabs(x2-x)<epsilon) {return t2;} if(x>x2) {t0=t2;}else {t1=t2;} t2=(t1-t0)*0.5+t0;}
+			return t2; // Failure.
+		}
 		// Calculate the polynomial coefficients, implicit first and last control points are (0,0) and (1,1).
 		cx=3.0*p1x; bx=3.0*(p2x-p1x)-cx; ax=1.0-cx-bx; cy=3.0*p1y; by=3.0*(p2y-p1y)-cy; ay=1.0-cy-by;
 		// Convert from input time to parametric value in curve, then from that to output time.
-    	return solve(t, solveEpsilon(duration));
-	};
+		return solve(t, solveEpsilon(duration));
+	}
 
 	//**********************************//
-	//***  WebKitCSSMatrix in        ***//
-	//***  pure Javascript           ***//
+	//***  CSS Matrix helpers		***//
 	//**********************************//
-	
+
 	function fetchElements(m) {
+		var mv;
+		
 		if(m instanceof PureCSSMatrix) {
-			var mv = m.m.elements;
-			return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
-					"d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
-		} else {
+			mv = m.m.elements;
+		} else if(m instanceof Matrix) {
+			mv = m.elements;
+		}
+		
+		if(!mv) {
 			return {"a":m.a,"b":m.b,"c":m.c,"d":m.d,"e":m.e,"f":m.f};
 		}
+		
+		return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
+				"d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
 	}
 	
 	function constructTransformation(elem) {
-		var rawTrans = ($(elem).css("-webkit-transform") || $(elem).css("-moz-transform") || $(elem).css("-o-transform") || $(elem).css("transform"));
+		var rawTrans = getElementTransform(elem);
 		if(!rawTrans) {
-			return new css_matrix_class()
+			return new css_matrix_class();
 		} else {
 			return new css_matrix_class(rawTrans);
 		}
 	}
 	
+	function constructAffineFixingRotation(elem) {
+		var rawTrans = getElementTransform(elem);
+		var matr;
+		if(!rawTrans) {
+			matr = new css_matrix_class();
+		} else {
+			matr = new css_matrix_class(rawTrans);
+		}
+		var current_affine = affineTransformDecompose(matr);
+		current_affine.r = getTotalRotation(rawTrans);
+		return current_affine;
+	}
+	
+	function getTotalRotation(transString) {
+		var totalRot = 0;
+		var items;
+		while((items = regexp_trans_splitter.exec(transString)) != null) {
+			var action = items[1].toLowerCase();
+			var val = items[2].split(",");
+			if(action=="matrix") {
+				var trans = $M([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
+							   [parseFloat(val[1]),parseFloat(val[3]),parseFloat(filterNumber(val[5]))],
+							   [				0,				0,							  1]]);
+				totalRot += affineTransformDecompose(trans).r;
+			} else if(action=="rotate") {
+				var raw = val[0];
+				var rot = parseFloat(filterNumber(raw));
+				if(raw.match(regexp_is_deg)) {
+					rot = (2*Math.PI)*rot/360.0;
+				}
+				totalRot += rot;
+			}
+		}
+		return totalRot;
+	}
+	
+	// TODO: use modulo instead of loops
+	function fixRotationToSameLap(current_affine, final_affine) {
+			if(Math.abs(current_affine.r-final_affine.r)>Math.PI) {
+				if(final_affine.r<current_affine.r) {
+					while(Math.abs(current_affine.r-final_affine.r)>Math.PI) {
+						final_affine.r+=(2*Math.PI);
+					}
+				} else {
+					while(Math.abs(current_affine.r-final_affine.r)>Math.PI) {
+						final_affine.r-=(2*Math.PI);
+					}
+				}
+			}
+			return final_affine;
+	}
+
+	//**********************************//
+	//***  WebKitCSSMatrix in		***//
+	//***  pure Javascript		   ***//
+	//**********************************//
+	
 	function PureCSSMatrix(trans) {
-		if(trans && trans!=null && trans!="none") {
+		if(trans && trans !== null && trans!="none") {
 			if(trans instanceof Matrix) {
 				this.setMatrix(trans);
 			} else {
@@ -475,43 +551,42 @@
 	
 	PureCSSMatrix.prototype.setMatrix = function(matr) {
 		this.m = matr;
-	}
+	};
 	
 	PureCSSMatrix.prototype.setMatrixValue = function(transString) {
 		var mtr = Matrix.I(3);
 		
-		var transSplitter = /([a-z]+)\(([^\)]+)\)/g;
-		var isDeg = /deg$/;
-		
 		var items;
-		while((items = transSplitter.exec(transString)) != null) {
+		while((items = regexp_trans_splitter.exec(transString)) != null) {
 			var action = items[1].toLowerCase();
 			var val = items[2].split(",");
+			var trans;
 			if(action=="matrix") {
-				var trans = $M([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
+				trans = $M([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
 							   [parseFloat(val[1]),parseFloat(val[3]),parseFloat(filterNumber(val[5]))],
-							   [                0,                0,                              1]])
+							   [				0,				0,							  1]]);
 			} else if(action=="translate") {
-				var trans = Matrix.I(3);
+				trans = Matrix.I(3);
 				trans.elements[0][2] = parseFloat(filterNumber(val[0]));
 				trans.elements[1][2] = parseFloat(filterNumber(val[1]));
 			} else if(action=="scale") {
 				var sx = parseFloat(val[0]);
+				var sy;
 				if(val.length>1) {
-					var sy = parseFloat(val[1]);
+					sy = parseFloat(val[1]);
 				} else {
-					var sy = sx;
+					sy = sx;
 				}
-				var trans = $M([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
+				trans = $M([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
 			} else if(action=="rotate") {
 				var raw = val[0];
 				var rot = parseFloat(filterNumber(raw));
-				if(raw.match(isDeg)) {
+				if(raw.match(regexp_is_deg)) {
 					rot = (2*Math.PI)*rot/360.0;
 				}
-				var trans = Matrix.RotationZ(rot);
+				trans = Matrix.RotationZ(rot);
 			} else if(action=="skew") {
-				var trans = Matrix.I(3);
+				trans = Matrix.I(3);
 				trans.elements[0][1] = parseFloat(filterNumber(val[0]));
 			} else {
 				console.log("Problem with setMatrixValue", action, val);
@@ -551,14 +626,16 @@
 	PureCSSMatrix.prototype.toString = function() {
 		var e = this.m.elements;
 		var pxstr = "";
-		if($.browser.mozilla || $.browser.opera) pxstr = "px";
+		if($.browser.mozilla || $.browser.opera) {
+			pxstr = "px";
+		}
 		return "matrix("+printFixedNumber(e[0][0])+", "+printFixedNumber(e[1][0])+", "+
 						 printFixedNumber(e[0][1])+", "+printFixedNumber(e[1][1])+", "+
 						 printFixedNumber(e[0][2])+pxstr+", "+printFixedNumber(e[1][2])+pxstr+")";
 	};
 	
 	//**********************************//
-	//***  Helpers                   ***//
+	//***  Helpers				   ***//
 	//**********************************//
 	
 	function interpolateArrays(st, et, pos) {
@@ -570,17 +647,24 @@
 	}
 	
 	function roundNumber(number, precision) {
-		precision = Math.abs(parseInt(precision)) || 0;
+		precision = Math.abs(parseInt(precision,10)) || 0;
 		var coefficient = Math.pow(10, precision);
 		return Math.round(number*coefficient)/coefficient;
 	}
 	
 	function filterNumber(x) {
-		return x.match(/([0-9.\-e]+)/g);
+		return x.match(regexp_filter_number);
 	}
 	
 	function printFixedNumber(x) {
 		return Number(x).toFixed(6);
+	}
+	
+	function getElementTransform(elem) {
+		return ($(elem).css("-webkit-transform") || 
+				$(elem).css("-moz-transform") || 
+				$(elem).css("-o-transform") || 
+				$(elem).css("transform"));
 	}
 	
 })(jQuery);
