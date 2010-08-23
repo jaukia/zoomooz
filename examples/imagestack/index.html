@@ -11,12 +11,35 @@
 		$(document).ready(function(){
 		    $(document).keypress(function(evt){if(evt.keyCode==13) loadImages(true);});
 		    $("#searchtext").blur(function(evt){loadImages(false);});
+		    
+		    var searchText = getUrlVars()["q"];
+            if(searchText) {
+                $("#searchtext").val(searchText);
+                loadImages(false);
+                $("body").zoomTo({targetsize: 1.0});
+            }
 		});
 		
 		var previousSearchString = "";
 		var notLoaded = true;
 		
-		function loadImages(forceImages) {
+		// from: http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
+		function getUrlVars() {
+		    var vars = [];
+		    
+		    var hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            
+            for(var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            
+		    return vars;    
+        }
+        
+        function loadImages(forceImages) {
 		    var searchString = $("#searchtext").val();
 		    if(searchString=="") return;
 		    if(!forceImages && searchString==previousSearchString) return;
@@ -53,10 +76,7 @@
 		            
 					var rot = "rotate(" + (Math.random() * 2 - 1) * 180 + "deg)";
 					
-					/*var xpos = xcenter + (Math.random() * 2 - 1) * maxoffset - imgsize / 2;
-					var ypos = ycenter + (Math.random() * 2 - 1) * maxoffset - imgsize / 2;*/
-		
-		            var margin = 20;
+					var margin = 20;
 		            var width = 10;
 		            var left = margin+Math.round(Math.random()*(100-2*margin-width))+"%";
 					var top = margin+Math.round(Math.random()*(100-2*margin-width))+"%";
@@ -87,6 +107,21 @@
 		<div id="output"></div>
 		<div id="info">Made with <a href="http://janne.aukia.com/zoomooz/">Zoomooz.js</a></div>
 		</div>
+		
+		<!--************************
+		**  GOOGLE ANALYTICS      **
+		*************************-->
+			
+			<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-16288001-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
 	</body>
 </html>
 	
