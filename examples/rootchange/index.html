@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Simple test</title>
+		<link rel="stylesheet" href="../../style/zoomooz.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="../../js/jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
+		<script type="text/javascript" src="../../js/sylvester.js"></script>
+		<script type="text/javascript">
+			
+			var zoomTargetElements = ["#container","#item1","#item2","#item2b","#item3","#item3b","#item4"];
+			var zoomTargetIndex = 0;
+			
+			$(document).ready(function() {
+				$.zoomMooz.setup({root:$("#container"),targetsize:0.8});
+				
+				$(".zoomTarget").debug();
+			    $(window).resize(function(evt) {
+			        $(".zoomTarget").debug();
+			    });
+			    $(".zoomTarget").click(function(evt) {
+					$(this).zoomTo();
+					evt.stopPropagation();
+				});
+				
+				$("#container").zoomTo();
+				
+				$("#next").click(function(evt) {
+					zoomTargetIndex++;
+					if(zoomTargetIndex>=zoomTargetElements.length) {
+						zoomTargetIndex-=zoomTargetElements.length;
+					}
+					$(zoomTargetElements[zoomTargetIndex]).zoomTo();
+				});
+				
+				$("#prev").click(function(evt) {
+					zoomTargetIndex--;
+					if(zoomTargetIndex<0) {
+						zoomTargetIndex+=zoomTargetElements.length;
+					}
+					$(zoomTargetElements[zoomTargetIndex]).zoomTo();
+				});
+			});
+		</script>
+	</head>
+	<body>
+	    <div id="container" class="zoomTarget">
+		<div id="item1" class="zoomTarget"></div>
+		<div id="item2" class="zoomTarget"></div>
+		<div id="item2b" class="zoomTarget"></div>
+		<div id="item3" class="zoomTarget">
+		<div id="item3b" class="zoomTarget"></div>
+		</div>
+		<div id="item4" class="zoomTarget"></div>
+		</div>
+	    <div id="prev">&lt;</div>
+	    <div id="next">&gt;</div>
+	</body>
+	
+	<!--************************
+		**  GOOGLE ANALYTICS      **
+		*************************-->
+			
+			<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-16288001-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</html>
+	

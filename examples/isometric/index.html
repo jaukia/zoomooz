@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Isometric test</title>
+		<link rel="stylesheet" href="../../style/zoomooz.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="../../js/jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
+		<script type="text/javascript" src="../../js/sylvester.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+			    $(".cover").click(function(evt) {
+					$(this).zoomTo();
+					$(".cover").not(this).show();
+					$(this).hide();
+					evt.stopPropagation();
+				});
+				
+				$(".box").click(function(evt) {
+					$(this).zoomTo({targetsize:0.7});
+					evt.stopPropagation();
+				});
+				
+				$(".face").click(function(evt) {
+					$(this).zoomTo();
+					evt.stopPropagation();
+				});
+				
+				$(window).click(function(evt) {
+					$("body").zoomTo({targetsize:1.0});
+					$(".cover").show();
+					evt.stopPropagation();
+				});
+				
+				// for iPhone
+				$("#container").click(function(evt) {
+					$("body").zoomTo({targetsize:1.0});
+					$(".cover").show();
+					evt.stopPropagation();
+				});
+				
+				$("body").zoomTo({targetsize:1.0});
+				$(".cover").show();
+				
+				$("input").change(function(evt) {
+				    if(evt.target.name=="color") {
+				        $("cube").removeClass("red green blue").addClass(evt.target.value);
+				    } else if(evt.target.name=="size") {
+				        $("cube").removeClass("small medium large").addClass(evt.target.value);
+				    }
+				});
+			});
+		</script>
+	</head>
+	<body>
+	    <div id="container">
+	    <div id="cube">
+	    <div class="face" id="f1">
+	        <div class="cover"></div>
+	        <div class="facecontent">
+	            <div class="box">Fusce luctus vestibulum tincidunt. Sed sed enim arcu, et placerat odio. Aenean sodales, diam a viverra volutpat, odio ipsum molestie ipsum, quis tristique lacus orci accumsan elit. Suspendisse potenti.</div>
+	            <div class="box">Ut viverra porttitor orci eget mattis. Ut posuere lectus sed sem viverra id pulvinar leo varius. Vivamus lectus nisl, facilisis id elementum at, vestibulum eu ante. Cras sem erat, suscipit a ultrices in.</div>
+	            <div class="box">Aenean posuere facilisis ligula et interdum. Nulla facilisi. Quisque faucibus semper mauris, vitae bibendum sapien adipiscing et. Morbi ornare gravida metus in ullamcorper. Nullam vel nibh lacus. Donec ut.</div>
+	            <div class="box">Nulla non dolor iaculis ante semper tempus ac ac leo. Praesent interdum, velit in mollis aliquam, leo leo condimentum nisl, at ultrices magna velit eget tellus. Vestibulum nec risus ut orci lacinia tempor.</div>
+	        </div>
+	    </div>
+		<div class="face" id="f2">
+	        <div class="cover"></div>
+	        <div class="facecontent">
+	            <div class="box">Fusce luctus vestibulum tincidunt. Sed sed enim arcu, et placerat odio. Aenean sodales, diam a viverra volutpat, odio ipsum molestie ipsum, quis tristique lacus orci accumsan elit. Suspendisse potenti.</div>
+	            <div class="box">Ut viverra porttitor orci eget mattis. Ut posuere lectus sed sem viverra id pulvinar leo varius. Vivamus lectus nisl, facilisis id elementum at, vestibulum eu ante. Cras sem erat, suscipit a ultrices in.</div>
+	            <div class="box">Aenean posuere facilisis ligula et interdum. Nulla facilisi. Quisque faucibus semper mauris, vitae bibendum sapien adipiscing et. Morbi ornare gravida metus in ullamcorper. Nullam vel nibh lacus. Donec ut.</div>
+	            <div class="box">Nulla non dolor iaculis ante semper tempus ac ac leo. Praesent interdum, velit in mollis aliquam, leo leo condimentum nisl, at ultrices magna velit eget tellus. Vestibulum nec risus ut orci lacinia tempor.</div>
+	        </div>
+	    </div>
+		<div class="face" id="f3">
+	        <div class="cover"></div>
+	        <div class="facecontent">
+	            <div class="box">Fusce luctus vestibulum tincidunt. Sed sed enim arcu, et placerat odio. Aenean sodales, diam a viverra volutpat, odio ipsum molestie ipsum, quis tristique lacus orci accumsan elit. Suspendisse potenti.</div>
+	            <div class="box">Ut viverra porttitor orci eget mattis. Ut posuere lectus sed sem viverra id pulvinar leo varius. Vivamus lectus nisl, facilisis id elementum at, vestibulum eu ante. Cras sem erat, suscipit a ultrices in.</div>
+	            <div class="box">Aenean posuere facilisis ligula et interdum. Nulla facilisi. Quisque faucibus semper mauris, vitae bibendum sapien adipiscing et. Morbi ornare gravida metus in ullamcorper. Nullam vel nibh lacus. Donec ut.</div>
+	            <div class="box">Nulla non dolor iaculis ante semper tempus ac ac leo. Praesent interdum, velit in mollis aliquam, leo leo condimentum nisl, at ultrices magna velit eget tellus. Vestibulum nec risus ut orci lacinia tempor.</div>
+	        </div>
+	    </div>
+	    </div>
+		</div>
+	</body>
+	
+	<!--************************
+		**  GOOGLE ANALYTICS      **
+		*************************-->
+			
+			<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-16288001-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</html>
+	
