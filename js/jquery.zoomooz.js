@@ -69,7 +69,9 @@
             $("#debug").html("");
         }
         this.each(function() {
-            showDebug($(this),settings);
+        	if($(this)[0] != settings.root[0]) {
+            	showDebug($(this),settings);
+            }
         });
     };
     
