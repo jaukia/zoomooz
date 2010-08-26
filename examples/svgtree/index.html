@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <title>Native SVG test</title>
+        <link rel="stylesheet" href="../../style/zoomooz.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="../../js/jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
+		<script type="text/javascript" src="../../js/sylvester.js"></script>
+		<script type="text/javascript">
+            $(document).ready(function() {
+                $('#container').click(function(evt) {
+                	$(this).zoomTo({duration:1000, targetsize:1.0});
+                	evt.stopPropagation();
+                });
+                $('.label').click(function(evt) {
+                	$(this).zoomTo({duration:1000, targetsize:0.6});
+                	evt.stopPropagation();
+                });
+            });
+        </script>
+    </head>
+    <body>
+    	<div id="container">
+			<div id="content">
+				<object class="tree" data="tree.svg" width="720" height="720" type="image/svg+xml" >
+				    <embed class="tree" src="tree.svg" width="720" height="720" type="image/svg+xml" />
+				</object>
+				<div class="label" id="label1">
+					An apple does not fall far from the tree.
+				</div>
+				<div class="label" id="label2">
+					Who reaches for the spruce, falls down onto the juniper.
+				</div>
+			</div>
+        </div>
+    </body>
+	
+	<!--************************
+		**  GOOGLE ANALYTICS      **
+		*************************-->
+			
+			<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-16288001-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</html>
