@@ -1,8 +1,9 @@
 /*
- * jquery.zoomooz.js, version 0.70
+ * jquery.zoomooz.js, version 0.71
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.71 fixed bugs with FF4
  * 0.70 support for non-body zoom root
  * 0.69 better settings management
  * 0.68 root element tuning
