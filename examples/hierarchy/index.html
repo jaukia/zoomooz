@@ -10,12 +10,12 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 				$(".zoom").click(function(evt) {
-					$(this).zoomTo();
 					evt.stopPropagation();
+					$(this).zoomTo();
 				});
 				$(window).click(function(evt) {
-					$("body").zoomTo();
 					evt.stopPropagation();
+					$("body").zoomTo();
 				});
 				$("body").zoomTo();
 			});

@@ -14,19 +14,19 @@
 			        $(".zoomTarget").debug();
 			    });
 			    $(".zoomTarget").click(function(evt) {
-					$(this).zoomTo();
 					evt.stopPropagation();
+					$(this).zoomTo();
 				});
 				
 				$(window).click(function(evt) {
-					$("body").zoomTo({targetsize:1.0});
 					evt.stopPropagation();
+					$("body").zoomTo({targetsize:1.0});
 				});
 				
 				// for iPhone
 				$("#container").click(function(evt) {
-					$("body").zoomTo({targetsize:1.0});
 					evt.stopPropagation();
+					$("body").zoomTo({targetsize:1.0});
 				});
 				
 				$("body").zoomTo({targetsize:1.0});

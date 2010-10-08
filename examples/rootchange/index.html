@@ -20,8 +20,8 @@
 			        $(".zoomTarget").debug();
 			    });
 			    $(".zoomTarget").click(function(evt) {
-					$(this).zoomTo();
 					evt.stopPropagation();
+					$(this).zoomTo();
 				});
 				
 				$("#container").zoomTo();

@@ -49,16 +49,16 @@
 		        notLoaded = false;
 		        
 		        $(window).click(function (evt) {
-				    $("body").zoomTo({targetsize: 1.0});
+				    evt.stopPropagation();
+			        $("body").zoomTo({targetsize: 1.0});
 				    $("#searchtext").focus();
-			        evt.stopPropagation();
 			    });
 			    $("body").zoomTo({targetsize: 1.0});
 			    $("#searchtext").focus();
 			
 			    $("#output").click(function(evt) {
-			        $(this).zoomTo({targetsize: 0.97});
 			        evt.stopPropagation();
+			        $(this).zoomTo({targetsize: 0.97});
 			    });
 		    }
 		    
@@ -87,10 +87,10 @@
 					elem.css(cssAttr);
 				
 					elem.click(function (evt) {
+						evt.stopPropagation();
 						$(this).zoomTo({targetsize: 0.7});
 						$("img").not(this).css({"z-index":1});
 						$(this).css({"z-index":2});
-						evt.stopPropagation();
 					});
 					elem.appendTo("#output").delay(500).animate({opacity:1.0},600);
 				});

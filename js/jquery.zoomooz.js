@@ -192,7 +192,7 @@
         var xrotorigin = dw/2.0;
         var yrotorigin = dh/2.0;
         
-        offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
+        var offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
         zoomParent.css("-webkit-transform-origin", offsetStr);
         zoomParent.css("-o-transform-origin", offsetStr);
         zoomParent.css("-moz-transform-origin", offsetStr);
@@ -673,7 +673,7 @@
     //**********************************//
     
     function interpolateArrays(st, et, pos) {
-        it = {};
+        var it = {};
         for(var i in st) {
             it[i] = st[i]+(et[i]-st[i])*pos;
         }

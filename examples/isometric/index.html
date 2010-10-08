@@ -10,33 +10,33 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 			    $(".cover").click(function(evt) {
+					evt.stopPropagation();
 					$(this).zoomTo();
 					$(".cover").not(this).show();
 					$(this).hide();
-					evt.stopPropagation();
 				});
 				
 				$(".box").click(function(evt) {
-					$(this).zoomTo({targetsize:0.7});
 					evt.stopPropagation();
+					$(this).zoomTo({targetsize:0.7});
 				});
 				
 				$(".face").click(function(evt) {
-					$(this).zoomTo();
 					evt.stopPropagation();
+					$(this).zoomTo();
 				});
 				
 				$(window).click(function(evt) {
+					evt.stopPropagation();
 					$("body").zoomTo({targetsize:1.0});
 					$(".cover").show();
-					evt.stopPropagation();
 				});
 				
 				// for iPhone
 				$("#container").click(function(evt) {
+					evt.stopPropagation();
 					$("body").zoomTo({targetsize:1.0});
 					$(".cover").show();
-					evt.stopPropagation();
 				});
 				
 				$("body").zoomTo({targetsize:1.0});
