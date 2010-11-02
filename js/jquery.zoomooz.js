@@ -96,7 +96,7 @@
             duration: 1000,
             easing: "ease",
             root: $(document.body),
-            nativeanimation: false
+            nativeanimation: true
         };
     }
     
@@ -118,20 +118,33 @@
     	var current_affine = constructAffineFixingRotation(settings.root);
 		
 		if(elem[0]===settings.root[0]) {
-    		var final_affine = affineTransformDecompose(new css_matrix_class());
+    		var viewportTransformation = {"transform":(new css_matrix_class())};
     	} else {
 			var transform = computeTotalTransformation(elem, settings.root);
 			var inverse = (transform) ? transform.inverse(): null;
-			var bodytrans = makeViewportTransformation(elem, inverse, settings);
-			var final_affine = affineTransformDecompose(bodytrans);
+			var viewportTransformation = makeViewportTransformation(elem, inverse, settings);
 		}
 		
+		var final_affine = affineTransformDecompose(viewportTransformation.transform);
 		final_affine = fixRotationToSameLap(current_affine, final_affine);
 		
-		if($.browser.mozilla || $.browser.opera || !settings.nativeanimation) {
+		var e = fetchElements(new css_matrix_class(matrixCompose(final_affine)));
+		var transformation = {matrix:[e.a,e.b,e.c,e.d,e.e,e.f]};
+		
+		if(viewportTransformation.origin) {
+			settings.root.transform({origin:viewportTransformation.origin},{preserve:true});
+			/*var offsetStr = printFixedNumber(viewportTransformation.origin[0])+"px "+printFixedNumber(viewportTransformation.origin[1])+"px";
+			settings.root.css("-webkit-transform-origin", offsetStr);
+			settings.root.css("-o-transform-origin", offsetStr);
+			settings.root.css("-moz-transform-origin", offsetStr);*/
+		}
+		
+		//if($.browser.mozilla || $.browser.opera || !settings.nativeanimation) {
+		if(!settings.nativeanimation) {
 			animateTransition(current_affine, final_affine, settings);
 		} else {
-			settings.root.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
+			settings.root.animate(transformation);
+			//settings.root.css(constructZoomRootCssTransform(final_affine, settings.duration, settings.easing));
 		}
     }
     
@@ -139,7 +152,9 @@
     //***  Element positioning       ***//
     //**********************************//
     
-    function constructZoomRootCssTransform(trans, duration, easing, rootElement) {
+    /*function constructZoomRootCssTransform(transAffine, duration, easing, rootElement) {
+    	var trans = matrixCompose(transAffine);
+    	
         var transdur = roundNumber(duration/1000,6)+"s";
         var transtiming = constructEasingCss(easing);
         
@@ -161,7 +176,7 @@
         }
         
         return propMap;
-    }
+    }*/
     
     function makeViewportTransformation(elem, endtrans, settings) {
         var zoomAmount = settings.targetsize;
@@ -192,11 +207,6 @@
         var xrotorigin = dw/2.0;
         var yrotorigin = dh/2.0;
         
-        offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
-        zoomParent.css("-webkit-transform-origin", offsetStr);
-        zoomParent.css("-o-transform-origin", offsetStr);
-        zoomParent.css("-moz-transform-origin", offsetStr);
-        
         var endpostrans = new css_matrix_class();
         endpostrans = endpostrans.translate(-xrotorigin,-yrotorigin);
         endpostrans = endpostrans.translate(xoffset,yoffset);
@@ -206,7 +216,7 @@
         }
         endpostrans = endpostrans.translate(xrotorigin,yrotorigin);
         
-        return endpostrans;
+        return {"transform":endpostrans,"origin":[xrotorigin, yrotorigin]};
     }
     
     //**********************************//
@@ -265,8 +275,25 @@
             time_value=1.0;
         }
         
-        settings.root.css(constructZoomRootCssTransform(matrixCompose(interpolateArrays(affine_start, affine_end, time_value))));
+        var transAffine = interpolateArrays(affine_start, affine_end, time_value);
+    
+    	var e = fetchElements(new css_matrix_class(matrixCompose(transAffine)));
+		var transformation = {matrix:[e.a,e.b,e.c,e.d,e.e,e.f]};
+		settings.root.transform(transformation);
+		
+		//settings.root.css(constructZoomRootCssTransform(transAffine));
+		
+    	/*if($.browser.msie) {
+    		var matrixElems = fetchElements(new css_matrix_class(matrixCompose(transAffine)));
+			settings.root[0].style.filter = "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11='"+matrixElems.a+"', M12='"+matrixElems.b+"', M21='"+matrixElems.c+"', M22='"+matrixElems.d+"')"; 
+    	} else {
+    	    settings.root.css(constructZoomRootCssTransform(transAffine));
+    	}*/
     }
+    
+    //**********************************//
+    //***  Affine compose/decompose  ***//
+    //**********************************//
     
     /* Based on pseudo-code in:
      * https://bugzilla.mozilla.org/show_bug.cgi?id=531344
@@ -413,6 +440,7 @@
     //***  Easing functions          ***//
     //**********************************//
     
+    // currently not used
     function constructEasingCss(input) {
         if((input instanceof Array)) {
             return "cubic-bezier("+roundNumber(input[0],6)+","+roundNumber(input[1],6)+","+
@@ -673,7 +701,7 @@
     //**********************************//
     
     function interpolateArrays(st, et, pos) {
-        it = {};
+        var it = {};
         for(var i in st) {
             it[i] = st[i]+(et[i]-st[i])*pos;
         }
