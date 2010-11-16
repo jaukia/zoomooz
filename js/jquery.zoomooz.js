@@ -24,12 +24,6 @@
  * on jquery.fn.offset, copyright John Resig, 2010
  * (MIT and GPL Version 2).
  *
- * Functions CubicBezierAtPosition and  
- * CubicBezierAtTime are written by Christian Effenberger, 
- * and correspond 1:1 to WebKit project functions.
- * "WebCore and JavaScriptCore are available under the 
- * Lesser GNU Public License. WebKit is available under 
- * a BSD-style license."
  */
 
 (function($) {
@@ -56,7 +50,8 @@
     $.zoomMooz = {};
     $.zoomMooz.setup = function(settings) {
     	default_settings = jQuery.extend(constructDefaultSettings(), settings);
-    	css_matrix_class = setupMatrixClass(default_settings);
+    	// TODO: also support for WebkitCSSMatrix?
+    	css_matrix_class = PureCSSMatrix;
     };
     
     $.fn.debug = function(settings) {
@@ -94,20 +89,9 @@
             targetsize: 0.9,
             scalemode: "both",
             duration: 1000,
-            easing: "ease",
+            easing: "easeInOutQuad",
             root: $(document.body),
-            nativeanimation: true
         };
-    }
-    
-    function setupMatrixClass(settings) {
-        return PureCSSMatrix;
-        
-        if(!settings.nativeanimation && window.WebKitCSSMatrix) {
-            return WebKitCSSMatrix;
-        } else {
-            return PureCSSMatrix;
-        }
     }
     
     //**********************************//
@@ -133,50 +117,14 @@
 		
 		if(viewportTransformation.origin) {
 			settings.root.transform({origin:viewportTransformation.origin},{preserve:true});
-			/*var offsetStr = printFixedNumber(viewportTransformation.origin[0])+"px "+printFixedNumber(viewportTransformation.origin[1])+"px";
-			settings.root.css("-webkit-transform-origin", offsetStr);
-			settings.root.css("-o-transform-origin", offsetStr);
-			settings.root.css("-moz-transform-origin", offsetStr);*/
 		}
 		
-		//if($.browser.mozilla || $.browser.opera || !settings.nativeanimation) {
-		if(!settings.nativeanimation) {
-			animateTransition(current_affine, final_affine, settings);
-		} else {
-			settings.root.animate(transformation);
-			//settings.root.css(constructZoomRootCssTransform(final_affine, settings.duration, settings.easing));
-		}
-    }
+		settings.root.animate(transformation, settings.duration, settings.easing);
+	}
     
     //**********************************//
     //***  Element positioning       ***//
     //**********************************//
-    
-    /*function constructZoomRootCssTransform(transAffine, duration, easing, rootElement) {
-    	var trans = matrixCompose(transAffine);
-    	
-        var transdur = roundNumber(duration/1000,6)+"s";
-        var transtiming = constructEasingCss(easing);
-        
-        var propMap = {};
-        
-        propMap["-webkit-transform"] = trans;
-        propMap["-moz-transform"] = trans;
-        propMap["-o-transform"] = trans;
-        propMap["transform"] = trans;
-        
-        if(duration) { 
-            propMap["-webkit-transition-duration"] = transdur;
-            propMap["-o-transition-duration"] = transdur;
-        }
-        
-        if(easing) {
-            propMap["-webkit-transition-timing-function"] = transtiming;
-            propMap["-o-transition-timing-function"] = transtiming;
-        }
-        
-        return propMap;
-    }*/
     
     function makeViewportTransformation(elem, endtrans, settings) {
         var zoomAmount = settings.targetsize;
@@ -239,56 +187,6 @@
     function displayLabel(pos) {
         var label = '<div class="debuglabel" style="left:'+pos[0]+'px;top:'+pos[1]+'px;"></div>';
         $("#debug").append(label);
-    }
-    
-    //**********************************//
-    //***  Non-native animation      ***//
-    //**********************************//
-    
-    function animateTransition(st, et, settings) {
-        if(!st) {
-            st = affineTransformDecompose(new css_matrix_class());
-        }
-        animation_start_time = (new Date()).getTime();
-        if(animation_interval_timer) {
-            clearInterval(animation_interval_timer);
-            animation_interval_timer = null;
-        }
-        if(settings.easing) {
-            settings.easingfunction = constructEasingFunction(settings.easing, settings.duration);
-        }
-        animation_interval_timer = setInterval(function() { animationStep(st, et, settings); }, 1);    
-    }
-    
-    function animationStep(affine_start, affine_end, settings) {
-        var current_time = (new Date()).getTime() - animation_start_time;
-        var time_value;
-        if(settings.easingfunction) {
-            time_value = settings.easingfunction(current_time/settings.duration);
-        } else {
-            time_value = current_time/settings.duration;
-        }
-        
-        if(current_time>settings.duration) {
-            clearInterval(animation_interval_timer);
-            animation_interval_timer = null;
-            time_value=1.0;
-        }
-        
-        var transAffine = interpolateArrays(affine_start, affine_end, time_value);
-    
-    	var e = fetchElements(new css_matrix_class(matrixCompose(transAffine)));
-		var transformation = {matrix:[e.a,e.b,e.c,e.d,e.e,e.f]};
-		settings.root.transform(transformation);
-		
-		//settings.root.css(constructZoomRootCssTransform(transAffine));
-		
-    	/*if($.browser.msie) {
-    		var matrixElems = fetchElements(new css_matrix_class(matrixCompose(transAffine)));
-			settings.root[0].style.filter = "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11='"+matrixElems.a+"', M12='"+matrixElems.b+"', M21='"+matrixElems.c+"', M22='"+matrixElems.d+"')"; 
-    	} else {
-    	    settings.root.css(constructZoomRootCssTransform(transAffine));
-    	}*/
     }
     
     //**********************************//
@@ -435,78 +333,6 @@
         return totalTransformation;
         
     }
-    
-    //**********************************//
-    //***  Easing functions          ***//
-    //**********************************//
-    
-    // currently not used
-    function constructEasingCss(input) {
-        if((input instanceof Array)) {
-            return "cubic-bezier("+roundNumber(input[0],6)+","+roundNumber(input[1],6)+","+
-                                   roundNumber(input[2],6)+","+roundNumber(input[3],6)+")";
-        } else {
-            return input;
-        }
-    }
-    
-    function constructEasingFunction(input, dur) {
-        var params = [];
-        if((input instanceof Array)) {
-            params = input;
-        } else {
-            switch(input) {
-                case "linear": params = [0.0,0.0,1.0,1.0]; break;
-                case "ease": params = [0.25,0.1,0.25,1.0]; break;
-                case "ease-in": params = [0.42,0.0,1.0,1.0]; break;
-                case "ease-out": params = [0.0,0.0,0.58,1.0]; break;
-                case "ease-in-out": params = [0.42,0.0,0.58,1.0]; break;
-            }
-        }
-        
-        var easingFunc = function(t) {
-            return CubicBezierAtTime(t, params[0], params[1], params[2], params[3], dur);
-        };
-        
-        return easingFunc;
-    }
-    
-    // From: http://www.netzgesta.de/dev/cubic-bezier-timing-function.html
-    function CubicBezierAtPosition(t,P1x,P1y,P2x,P2y) {
-        var x,y,k=((1-t)*(1-t)*(1-t));
-        x=P1x*(3*t*t*(1-t))+P2x*(3*t*(1-t)*(1-t))+k;
-        y=P1y*(3*t*t*(1-t))+P2y*(3*t*(1-t)*(1-t))+k;
-        return {x:Math.abs(x),y:Math.abs(y)};
-    }
-    
-    // From: http://www.netzgesta.de/dev/cubic-bezier-timing-function.html
-    // 1:1 conversion to js from webkit source files
-    // UnitBezier.h, WebCore_animation_AnimationBase.cpp
-    function CubicBezierAtTime(t,p1x,p1y,p2x,p2y,duration) {
-        var ax=0,bx=0,cx=0,ay=0,by=0,cy=0;
-        // `ax t^3 + bx t^2 + cx t' expanded using Horner's rule.
-        function sampleCurveX(t) {return ((ax*t+bx)*t+cx)*t;}
-        function sampleCurveY(t) {return ((ay*t+by)*t+cy)*t;}
-        function sampleCurveDerivativeX(t) {return (3.0*ax*t+2.0*bx)*t+cx;}
-        // The epsilon value to pass given that the animation is going to run over |dur| seconds. The longer the
-        // animation, the more precision is needed in the timing function result to avoid ugly discontinuities.
-        function solveEpsilon(duration) {return 1.0/(200.0*duration);}
-        function solve(x,epsilon) {return sampleCurveY(solveCurveX(x,epsilon));}
-        // Given an x value, find a parametric value it came from.
-        function solveCurveX(x,epsilon) {var t0,t1,t2,x2,d2,i;
-            function fabs(n) {if(n>=0) {return n;}else {return 0-n;}}
-            // First try a few iterations of Newton's method -- normally very fast.
-            for(t2=x, i=0; i<8; i++) {x2=sampleCurveX(t2)-x; if(fabs(x2)<epsilon) {return t2;} d2=sampleCurveDerivativeX(t2); if(fabs(d2)<1e-6) {break;} t2=t2-x2/d2;}
-            // Fall back to the bisection method for reliability.
-            t0=0.0; t1=1.0; t2=x; if(t2<t0) {return t0;} if(t2>t1) {return t1;}
-            while(t0<t1) {x2=sampleCurveX(t2); if(fabs(x2-x)<epsilon) {return t2;} if(x>x2) {t0=t2;}else {t1=t2;} t2=(t1-t0)*0.5+t0;}
-            return t2; // Failure.
-        }
-        // Calculate the polynomial coefficients, implicit first and last control points are (0,0) and (1,1).
-        cx=3.0*p1x; bx=3.0*(p2x-p1x)-cx; ax=1.0-cx-bx; cy=3.0*p1y; by=3.0*(p2y-p1y)-cy; ay=1.0-cy-by;
-        // Convert from input time to parametric value in curve, then from that to output time.
-        return solve(t, solveEpsilon(duration));
-    }
 
     //**********************************//
     //***  CSS Matrix helpers        ***//
@@ -589,124 +415,10 @@
         }
         return final_affine;
     }
-
-    //**********************************//
-    //***  WebKitCSSMatrix in        ***//
-    //***  pure Javascript           ***//
-    //**********************************//
-    
-    function PureCSSMatrix(trans) {
-        if(trans && trans !== null && trans!="none") {
-            if(trans instanceof Matrix) {
-                this.setMatrix(trans);
-            } else {
-                this.setMatrixValue(trans);
-            }
-        } else {
-            this.m = Matrix.I(3);
-        }
-    }
-    
-    PureCSSMatrix.prototype.setMatrix = function(matr) {
-        this.m = matr;
-    };
-    
-    PureCSSMatrix.prototype.setMatrixValue = function(transString) {
-        var mtr = Matrix.I(3);
-        
-        var items;
-        while((items = regexp_trans_splitter.exec(transString)) != null) {
-            var action = items[1].toLowerCase();
-            var val = items[2].split(",");
-            var trans;
-            if(action=="matrix") {
-                trans = $M([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
-                               [parseFloat(val[1]),parseFloat(val[3]),parseFloat(filterNumber(val[5]))],
-                               [                0,                0,                              1]]);
-            } else if(action=="translate") {
-                trans = Matrix.I(3);
-                trans.elements[0][2] = parseFloat(filterNumber(val[0]));
-                trans.elements[1][2] = parseFloat(filterNumber(val[1]));
-            } else if(action=="scale") {
-                var sx = parseFloat(val[0]);
-                var sy;
-                if(val.length>1) {
-                    sy = parseFloat(val[1]);
-                } else {
-                    sy = sx;
-                }
-                trans = $M([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
-            } else if(action=="rotate") {
-                var raw = val[0];
-                var rot = parseFloat(filterNumber(raw));
-                if(raw.match(regexp_is_deg)) {
-                    rot = (2*Math.PI)*rot/360.0;
-                }
-                trans = Matrix.RotationZ(rot);
-            } else if(action=="skew") {
-                trans = Matrix.I(3);
-                trans.elements[0][1] = parseFloat(filterNumber(val[0]));
-            } else {
-                console.log("Problem with setMatrixValue", action, val);
-            }
-            
-            mtr = mtr.multiply(trans);
-        }
-        
-        this.m = mtr;
-    };
-    
-    PureCSSMatrix.prototype.multiply = function(m2) {
-        // works on an old webkit
-        //return new PureCSSMatrix(m2.m.multiply(this.m));
-        
-        // works on a new webkit
-        return new PureCSSMatrix(this.m.multiply(m2.m));
-    };
-    
-    PureCSSMatrix.prototype.inverse = function() {
-        return new PureCSSMatrix(this.m.inverse());
-    };
-    
-    PureCSSMatrix.prototype.translate = function(x,y) {
-        var trans = Matrix.I(3);
-        trans.elements[0][2] = x;
-        trans.elements[1][2] = y;
-        return new PureCSSMatrix(this.m.multiply(trans));
-    };
-    
-    PureCSSMatrix.prototype.scale = function(sx,sy) {
-        var trans = $M([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
-        return new PureCSSMatrix(this.m.multiply(trans));    
-    };
-    
-    PureCSSMatrix.prototype.rotate = function(rot) {
-        var trans = Matrix.RotationZ(rot);
-        return new PureCSSMatrix(this.m.multiply(trans));
-    };
-    
-    PureCSSMatrix.prototype.toString = function() {
-        var e = this.m.elements;
-        var pxstr = "";
-        if($.browser.mozilla || $.browser.opera) {
-            pxstr = "px";
-        }
-        return "matrix("+printFixedNumber(e[0][0])+", "+printFixedNumber(e[1][0])+", "+
-                         printFixedNumber(e[0][1])+", "+printFixedNumber(e[1][1])+", "+
-                         printFixedNumber(e[0][2])+pxstr+", "+printFixedNumber(e[1][2])+pxstr+")";
-    };
     
     //**********************************//
     //***  Helpers                   ***//
     //**********************************//
-    
-    function interpolateArrays(st, et, pos) {
-        var it = {};
-        for(var i in st) {
-            it[i] = st[i]+(et[i]-st[i])*pos;
-        }
-        return it;
-    }
     
     function roundNumber(number, precision) {
         precision = Math.abs(parseInt(precision,10)) || 0;
