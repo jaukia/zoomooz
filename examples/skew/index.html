@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-		<title>Rotation test</title>
+		<title>Simple test</title>
 		<link rel="stylesheet" href="../../style/zoomooz.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="../../js/jquery-1.4.2.js"></script>
@@ -16,19 +16,28 @@
 			    });
 			    $(".zoomTarget").click(function(evt) {
 					evt.stopPropagation();
-					$(this).zoomTo({targetsize:0.7});
+					$(this).zoomTo();
 				});
-				$(document).click(function(evt) {
+				
+				$(window).click(function(evt) {
 					evt.stopPropagation();
 					$("body").zoomTo({targetsize:1.0});
 				});
+				
+				// for iPhone
+				$("#container").click(function(evt) {
+					evt.stopPropagation();
+					$("body").zoomTo({targetsize:1.0});
+				});
+				
 				$("body").zoomTo({targetsize:1.0});
 			});
 		</script>
 	</head>
 	<body>
-		<div id="item1" class="zoomTarget"></div>
-		<div id="item2" class="zoomTarget"></div>
+	    <div id="container">
+		<div id="item4" class="zoomTarget"></div>
+		</div>
 	</body>
 	
 	<!--************************

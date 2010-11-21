@@ -1,8 +1,9 @@
 /*
- * jquery.zoomooz.js, version 0.71
+ * jquery.zoomooz.js, version 0.72
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.72 fixed a bug with skew in Webkit
  * 0.71 fixed bugs with FF4
  * 0.70 support for non-body zoom root
  * 0.69 better settings management
@@ -102,13 +103,9 @@
     }
     
     function setupMatrixClass(settings) {
+        // could use WebKitCSSMatrix in webkit as well, which would
+        // speed up computation a bit, but this eases debugging
         return PureCSSMatrix;
-        
-        if(!settings.nativeanimation && window.WebKitCSSMatrix) {
-            return WebKitCSSMatrix;
-        } else {
-            return PureCSSMatrix;
-        }
     }
     
     //**********************************//
@@ -123,7 +120,7 @@
     	} else {
 			var transform = computeTotalTransformation(elem, settings.root);
 			var inverse = (transform) ? transform.inverse(): null;
-			var bodytrans = makeViewportTransformation(elem, inverse, settings);
+			var bodytrans = computeViewportTransformation(elem, inverse, settings);
 			var final_affine = affineTransformDecompose(bodytrans);
 		}
 		
@@ -164,7 +161,7 @@
         return propMap;
     }
     
-    function makeViewportTransformation(elem, endtrans, settings) {
+    function computeViewportTransformation(elem, endtrans, settings) {
         var zoomAmount = settings.targetsize;
         var zoomMode = settings.scalemode;
         var zoomParent = settings.root;
@@ -275,7 +272,7 @@
     function affineTransformDecompose(matrix) {
         var m = fetchElements(matrix);
         var a=m.a, b=m.b, c=m.c, d=m.d, e=m.e, f=m.f;
-    
+        
         if(Math.abs(a*d-b*c)<0.01) {
             console.log("fail!");
             return;
@@ -562,112 +559,6 @@
         }
         return final_affine;
     }
-
-    //**********************************//
-    //***  WebKitCSSMatrix in        ***//
-    //***  pure Javascript           ***//
-    //**********************************//
-    
-    function PureCSSMatrix(trans) {
-        if(trans && trans !== null && trans!="none") {
-            if(trans instanceof Matrix) {
-                this.setMatrix(trans);
-            } else {
-                this.setMatrixValue(trans);
-            }
-        } else {
-            this.m = Matrix.I(3);
-        }
-    }
-    
-    PureCSSMatrix.prototype.setMatrix = function(matr) {
-        this.m = matr;
-    };
-    
-    PureCSSMatrix.prototype.setMatrixValue = function(transString) {
-        var mtr = Matrix.I(3);
-        
-        var items;
-        while((items = regexp_trans_splitter.exec(transString)) != null) {
-            var action = items[1].toLowerCase();
-            var val = items[2].split(",");
-            var trans;
-            if(action=="matrix") {
-                trans = $M([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
-                               [parseFloat(val[1]),parseFloat(val[3]),parseFloat(filterNumber(val[5]))],
-                               [                0,                0,                              1]]);
-            } else if(action=="translate") {
-                trans = Matrix.I(3);
-                trans.elements[0][2] = parseFloat(filterNumber(val[0]));
-                trans.elements[1][2] = parseFloat(filterNumber(val[1]));
-            } else if(action=="scale") {
-                var sx = parseFloat(val[0]);
-                var sy;
-                if(val.length>1) {
-                    sy = parseFloat(val[1]);
-                } else {
-                    sy = sx;
-                }
-                trans = $M([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
-            } else if(action=="rotate") {
-                var raw = val[0];
-                var rot = parseFloat(filterNumber(raw));
-                if(raw.match(regexp_is_deg)) {
-                    rot = (2*Math.PI)*rot/360.0;
-                }
-                trans = Matrix.RotationZ(rot);
-            } else if(action=="skew") {
-                trans = Matrix.I(3);
-                trans.elements[0][1] = parseFloat(filterNumber(val[0]));
-            } else {
-                console.log("Problem with setMatrixValue", action, val);
-            }
-            
-            mtr = mtr.multiply(trans);
-        }
-        
-        this.m = mtr;
-    };
-    
-    PureCSSMatrix.prototype.multiply = function(m2) {
-        // works on an old webkit
-        //return new PureCSSMatrix(m2.m.multiply(this.m));
-        
-        // works on a new webkit
-        return new PureCSSMatrix(this.m.multiply(m2.m));
-    };
-    
-    PureCSSMatrix.prototype.inverse = function() {
-        return new PureCSSMatrix(this.m.inverse());
-    };
-    
-    PureCSSMatrix.prototype.translate = function(x,y) {
-        var trans = Matrix.I(3);
-        trans.elements[0][2] = x;
-        trans.elements[1][2] = y;
-        return new PureCSSMatrix(this.m.multiply(trans));
-    };
-    
-    PureCSSMatrix.prototype.scale = function(sx,sy) {
-        var trans = $M([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
-        return new PureCSSMatrix(this.m.multiply(trans));    
-    };
-    
-    PureCSSMatrix.prototype.rotate = function(rot) {
-        var trans = Matrix.RotationZ(rot);
-        return new PureCSSMatrix(this.m.multiply(trans));
-    };
-    
-    PureCSSMatrix.prototype.toString = function() {
-        var e = this.m.elements;
-        var pxstr = "";
-        if($.browser.mozilla || $.browser.opera) {
-            pxstr = "px";
-        }
-        return "matrix("+printFixedNumber(e[0][0])+", "+printFixedNumber(e[1][0])+", "+
-                         printFixedNumber(e[0][1])+", "+printFixedNumber(e[1][1])+", "+
-                         printFixedNumber(e[0][2])+pxstr+", "+printFixedNumber(e[1][2])+pxstr+")";
-    };
     
     //**********************************//
     //***  Helpers                   ***//
