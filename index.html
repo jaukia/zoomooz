@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Zoomooz.js</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" href="style/zoomooz.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="style/website.css" type="text/css" media="screen">
+		
+		<script type="text/javascript" src="js/jquery-1.4.2.js"></script>
+		<script type="text/javascript" src="js/sylvester.js"></script>
+		<script type="text/javascript" src="js/purecssmatrix.js"></script>
+		<script type="text/javascript" src="js/jquery.zoomooz.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+			   $(".section").click(function(evt) {
+					$(this).zoomTo({targetsize:0.75, duration:600});
+					evt.stopPropagation();
+				});
+				$(window).click(function(evt) {
+					$("body").zoomTo({targetsize:1.0});
+					evt.stopPropagation();
+				});
+				$("body").zoomTo({targetsize:1.0});
+			});
+		</script>
+	</head>
+	<body>
+	
+		<!--************************
+		**  TITLE                 **
+		*************************-->
+	
+	    <div class="section">
+	        <div class="ribbon">
+                <a href="http://github.com/jaukia/zoomooz/" rel="me">Fork me on GitHub</a>
+            </div> 
+	        <h2 id="topsubtitle">jQuery</h2>
+		    <h1>Zoomooz.js</h1>
+		    <div id="version">Version 0.72 (Nov 21, 2010, fixed a bug with skew in Webkit)</div>
+		    <div id="description">
+		        Zoomooz is an easy-to-use jQuery plugin for making any web page element zoom.
+		    </div>
+		    <div id="downloadbox">
+		        <a id="download" href="http://github.com/jaukia/zoomooz/zipball/master">Download Zoomooz.js (zip)</a>
+		    </div>
+		</div>
+			
+		<!--************************
+		**  EXAMPLES              **
+		*************************-->
+
+		    <div class="section" id="examples">
+		        <h2>Examples</h2>
+		        <div>
+		            <a class="linkblock" href="examples/imagestack/index.html"><img src="website-images/thumbnails/imagestack-clipped.png" width="200" height="150" />Flickr image stack</a>
+		            <a class="linkblock" href="examples/isometric/index.html"><img src="website-images/thumbnails/isometric-clipped.png" width="200" height="150" />Isometric cube</a>
+		        	<a class="linkblock" href="examples/svgtree/index.html"><img src="website-images/thumbnails/svgtree-clipped.png" width="200" height="150" />SVG Tree demo</a>
+					<a class="linkblock" href="examples/rootchange/index.html"><img src="website-images/thumbnails/rootchange-clipped.png" width="200" height="150" />Zooming container demo</a>
+		         </div>
+		    </div>
+		    
+		<!--************************
+		**  ENABLING THE LIBRARY  **
+		*************************-->
+	
+		    <div class="section" id="gettingstarted">
+		        <h2>Enabling the library</h2>
+		        
+		        <p>Put the following in the head-section of your page:</p>
+		        
+		        <div class="highlight">
+		        	<pre><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;style/zoomooz.css&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;js/sylvester.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;js/jquery-1.4.2.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;js/jquery.zoomooz.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre>
+				</div>
+			</div>
+
+		<!--************************
+		**  ADDING ZOOM EFFECT    **
+		*************************-->
+	
+			<div class="section" id="samplecode">
+				<h2>Adding zoom effect</h2>
+
+				<p>This adds a simple zoom on clicking to elements with class "zoomTarget". The zoom can be reset by clicking the body.</p>
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">language=</span><span class="s">&quot;javascript&quot;</span><span class="nt">&gt;</span>
+  <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> 
+    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.zoomTarget&quot;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">zoomTo</span><span class="p">();</span>
+      <span class="nx">evt</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span>
+    <span class="p">});</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">zoomTo</span><span class="p">({</span><span class="nx">targetsize</span><span class="o">:</span><span class="mf">1.0</span><span class="p">});</span>
+      <span class="nx">evt</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+			</div>
+
+		<!--************************
+		**  BROWSER SUPPORT       **
+		*************************-->
+
+			<div class="section">
+		    	<h2>Browser support</h2>
+		    	<p>Supported browsers:</p>
+		    	<div>
+		    		<img src="website-images/safari.png" alt="Safari">
+		    		<img src="website-images/chrome.png" alt="Chrome">
+		    		<img src="website-images/ff.png" alt="Firefox">
+		    		<img src="website-images/opera.png" alt="Firefox">
+		    	</div>
+		    	<p>No IE support, sorry.</p>
+		    </div>
+
+		<!--************************
+		**  DETAILED SETTINGS     **
+		*************************-->
+
+			<div class="section" id="detailedsettings">
+				<h2>Detailed settings</h2>
+				<div class="highlight"><pre><span class="nx">settings</span> <span class="o">=</span> <span class="p">{</span>
+	<span class="c1">// zoomed size relative to screen</span>
+	<span class="c1">// 0.0-1.0</span>
+	<span class="nx">targetsize</span><span class="o">:</span> <span class="mf">0.9</span><span class="p">,</span>
+	<span class="c1">// scale content to screen based on their size</span>
+	<span class="c1">// &quot;width&quot;|&quot;height&quot;|&quot;both&quot;</span>
+	<span class="nx">scalemode</span><span class="o">:</span> <span class="s2">&quot;both&quot;</span><span class="p">,</span>
+	<span class="c1">// animation duration</span>
+	<span class="nx">duration</span><span class="o">:</span> <span class="mi">1000</span><span class="p">,</span>
+	<span class="c1">// easing of animation, similar to css transition params</span>
+	<span class="c1">// &quot;linear&quot;|&quot;ease&quot;|&quot;ease-in&quot;|&quot;ease-out&quot;|
+	// &quot;ease-in-out&quot;|[p1,p2,p3,p4]</span>
+	<span class="c1">// [p1, p2, p3, p4] refer to cubic-bezier curve params</span>
+	<span class="nx">easing</span><span class="o">:</span> <span class="s2">&quot;ease&quot;</span><span class="p">,</span>
+	<span class="c1">// use browser native animation in webkit</span>
+	<span class="c1">// true|false</span>
+	<span class="nx">nativeanimation</span><span class="o">:</span> <span class="kc">true</span>
+<span class="p">}</span>
+<span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">zoomTo</span><span class="p">(</span><span class="nx">settings</span><span class="p">);</span>
+</pre></div>
+			</div>
+		    
+		<!--************************
+		**  BUGS & FEATURES       **
+		*************************-->
+
+		    <div class="section">
+		    	<h2>Bugs and issues</h2>
+		    	<div>
+		    	<ul>
+		    		<li>Scrolling pages is not supported.</li>
+		    		<li>Does not work with full-page zooming in Webkit</li>
+					<li>Requires a separate css file.</li>
+					<li>Native animation problem in Webkit: animation not working in Webkit with very long pages when zooming with rotation.</li>
+					<li>Css box-shadows make animations crawl.</li>
+				    <li>Transforming elements with text content in Opera is buggy.</li>
+				    <li>Rotation goes sometimes via the wrong direction.</li>
+				</ul>
+				</div>
+			
+				<h2>Feature ideas</h2>
+		    	<div>
+		    	<ul>
+		    		<li>Make it work in IE (could be overcome with matrix filters).</li>
+		    		<li>Support for 3d transformations.</li>
+		    		<li>Hide elements that are not shown while transforming.</li>
+		    		<li>Kinetic scrolling.</li>
+		    		<li>Change the transformation root element (current body element is always transformed).</li>
+				</ul>
+				</div>
+			</div>
+
+		<!--************************
+		**  GOOGLE ANALYTICS      **
+		*************************-->
+			
+			<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-16288001-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+	</body>
+</html>
