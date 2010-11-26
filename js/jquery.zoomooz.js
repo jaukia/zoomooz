@@ -34,6 +34,8 @@
  * a BSD-style license."
  */
 
+/*jslint sub: true */
+
 (function($) {
     "use strict";
 
@@ -57,12 +59,15 @@
     
     $.zoomMooz = {};
     $.zoomMooz.setup = function(settings) {
-    	default_settings = jQuery.extend(constructDefaultSettings(), settings);
-    	css_matrix_class = setupMatrixClass(default_settings);
+        default_settings = jQuery.extend(constructDefaultSettings(), settings);
+        css_matrix_class = setupMatrixClass(default_settings);
     };
     
     $.fn.debug = function(settings) {
-    	if(!default_settings) $.zoomMooz.setup();
+        if(!default_settings) {
+            $.zoomMooz.setup();
+        }
+        
         settings = jQuery.extend(default_settings, settings);
         
         if($("#debug").length===0) {
@@ -71,14 +76,16 @@
             $("#debug").html("");
         }
         this.each(function() {
-        	if($(this)[0] != settings.root[0]) {
-            	showDebug($(this),settings);
+            if($(this)[0] != settings.root[0]) {
+                showDebug($(this),settings);
             }
         });
     };
     
     $.fn.zoomTo = function(settings) {
-        if(!default_settings) $.zoomMooz.setup();
+        if(!default_settings) {
+            $.zoomMooz.setup();
+        }
         settings = jQuery.extend(default_settings, settings);
         
         this.each(function() {
@@ -113,24 +120,25 @@
     //**********************************//
     
     function zoomTo(elem, settings) {
-    	var current_affine = constructAffineFixingRotation(settings.root);
-		
-		if(elem[0]===settings.root[0]) {
-    		var final_affine = affineTransformDecompose(new css_matrix_class());
-    	} else {
-			var transform = computeTotalTransformation(elem, settings.root);
-			var inverse = (transform) ? transform.inverse(): null;
-			var bodytrans = computeViewportTransformation(elem, inverse, settings);
-			var final_affine = affineTransformDecompose(bodytrans);
-		}
-		
-		final_affine = fixRotationToSameLap(current_affine, final_affine);
-		
-		if($.browser.mozilla || $.browser.opera || !settings.nativeanimation) {
-			animateTransition(current_affine, final_affine, settings);
-		} else {
-			settings.root.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
-		}
+        var current_affine = constructAffineFixingRotation(settings.root);
+        
+        var final_affine;
+        if(elem[0]===settings.root[0]) {
+            final_affine = affineTransformDecompose(new css_matrix_class());
+        } else {
+            var transform = computeTotalTransformation(elem, settings.root);
+            var inverse = (transform) ? transform.inverse(): null;
+            var bodytrans = computeViewportTransformation(elem, inverse, settings);
+            final_affine = affineTransformDecompose(bodytrans);
+        }
+        
+        final_affine = fixRotationToSameLap(current_affine, final_affine);
+        
+        if($.browser.mozilla || $.browser.opera || !settings.nativeanimation) {
+            animateTransition(current_affine, final_affine, settings);
+        } else {
+            settings.root.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
+        }
     }
     
     //**********************************//
@@ -524,7 +532,7 @@
     function getTotalRotation(transString) {
         var totalRot = 0;
         var items;
-        while((items = regexp_trans_splitter.exec(transString)) != null) {
+        while((items = regexp_trans_splitter.exec(transString)) !== null) {
             var action = items[1].toLowerCase();
             var val = items[2].split(",");
             if(action=="matrix") {
@@ -567,7 +575,9 @@
     function interpolateArrays(st, et, pos) {
         var it = {};
         for(var i in st) {
-            it[i] = st[i]+(et[i]-st[i])*pos;
+            if (st.hasOwnProperty(i)) {
+                it[i] = st[i]+(et[i]-st[i])*pos;
+            }
         }
         return it;
     }
