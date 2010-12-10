@@ -2,6 +2,7 @@
 	-webkit-transform-origin: 0 0;
 	-moz-transform-origin: 0 0;
 	-o-transform-origin: 0 0;
+	-ms-transform-origin: 0 0;
 }
 
 html, body {
@@ -15,6 +16,7 @@ body {
 	-webkit-transform-origin: 50% 50%;
 	-moz-transform-origin: 50% 50%;
 	-o-transform-origin: 50% 50%;    
+	-ms-transform-origin: 50% 50%;    
 }
 
 html {

@@ -153,6 +153,7 @@
         
         propMap["-webkit-transform"] = trans;
         propMap["-moz-transform"] = trans;
+        propMap["-ms-transform"] = trans;
         propMap["-o-transform"] = trans;
         propMap["transform"] = trans;
         
@@ -200,6 +201,7 @@
         
         var offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
         zoomParent.css("-webkit-transform-origin", offsetStr);
+        zoomParent.css("-ms-transform-origin", offsetStr);
         zoomParent.css("-o-transform-origin", offsetStr);
         zoomParent.css("-moz-transform-origin", offsetStr);
         
@@ -600,6 +602,7 @@
         return ($(elem).css("-webkit-transform") || 
                 $(elem).css("-moz-transform") || 
                 $(elem).css("-o-transform") || 
+                $(elem).css("-ms-transform") || 
                 $(elem).css("transform"));
     }
     

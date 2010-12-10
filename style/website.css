@@ -30,12 +30,14 @@ body {
 .section#gettingstarted {
 	-moz-transform: translate(-55px, -20px);
 	-webkit-transform: translate(-55px, -20px);
+	-ms-transform: translate(-55px, -20px);
 	-o-transform: translate(-55px, -20px);
 }
 
 .section#examples {
 	-moz-transform: translate(25px, -45px);
 	-webkit-transform: translate(25px, -45px);
+	-ms-transform: translate(25px, -45px);
 	-o-transform: translate(25px, -45px);
 	margin-bottom:-30px;
 }
@@ -44,6 +46,7 @@ body {
 	margin-top:-40px;
 	-moz-transform: translate(25px, 0px);
 	-webkit-transform: translate(25px, 0px);
+	-ms-transform: translate(25px, 0px);
 	-o-transform: translate(25px, 0px);
 }
 
@@ -81,6 +84,7 @@ h1 {
 	top: -1.6em;
 	-moz-transform: rotate(45deg);
 	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
 	-o-transform: rotate(45deg);
 }
 .ribbon a {
