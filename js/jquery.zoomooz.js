@@ -26,12 +26,6 @@
  * on jquery.fn.offset, copyright John Resig, 2010
  * (MIT and GPL Version 2).
  *
- * Functions CubicBezierAtPosition and  
- * CubicBezierAtTime are written by Christian Effenberger, 
- * and correspond 1:1 to WebKit project functions.
- * "WebCore and JavaScriptCore are available under the 
- * Lesser GNU Public License. WebKit is available under 
- * a BSD-style license."
  */
 
 /*jslint sub: true */
@@ -43,13 +37,6 @@
     //***  Variables                 ***//
     //**********************************//
     
-    var animation_start_time;
-    var animation_interval_timer;
-    
-    var regexp_filter_number = /([0-9.\-e]+)/g;
-    var regexp_trans_splitter = /([a-z]+)\(([^\)]+)\)/g;
-    var regexp_is_deg = /deg$/;
-
     var css_matrix_class;
     var default_settings;
     
@@ -124,7 +111,7 @@
         var inverse = (transform) ? transform.inverse(): null;
         var roottrans = computeViewportTransformation(elem, inverse, settings);
         
-        $(settings.root).animateTransformation(roottrans, settings);
+        $(settings.root).animateTransformation(roottrans, settings, css_matrix_class);
     }
     
     //**********************************//
@@ -297,6 +284,24 @@
     //**********************************//
     //***  CSS Matrix helpers        ***//
     //**********************************//
+    
+    // also in animtrans
+    function fetchElements(m) {
+        var mv;
+        
+        if(m instanceof PureCSSMatrix) {
+            mv = m.m.elements;
+        } else if(m instanceof Matrix) {
+            mv = m.elements;
+        }
+        
+        if(!mv) {
+            return {"a":m.a,"b":m.b,"c":m.c,"d":m.d,"e":m.e,"f":m.f};
+        }
+        
+        return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
+                "d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
+    }
     
     function constructTransformation(elem) {
         var rawTrans = getElementTransform(elem);
