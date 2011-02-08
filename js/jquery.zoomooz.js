@@ -1,5 +1,5 @@
 /*
- * jquery.zoomooz.js, version 0.72
+ * jquery.zoomooz.js, part of:
  * http://janne.aukia.com/zoomooz
  *
  * Version history:

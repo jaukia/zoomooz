@@ -1,6 +1,9 @@
 /*
- * jquery.positioning.js, version 0.01
+ * jquery.positioning.js, part of:
  * http://janne.aukia.com/zoomooz
+ *
+ * Version history:
+ * 0.10 initial stand-alone version
  *
  * LICENCE INFORMATION:
  *
