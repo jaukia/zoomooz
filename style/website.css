@@ -1,58 +1,47 @@
 body {
-	background-color: #eee;
-	font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, sans-serif;
-	font-weight:300;
-	padding:30px;
+    font-family: Helvetica, sans-serif;
+	font-size:11px;
+	line-height:1.45em;
+}
+
+.innerContent {
+    padding:20px;
 }
 
 .section {
-	 position:relative;
-	 overflow:hidden;
-	 padding:60px;
-	 padding-top:35px;
-	 padding-bottom:65px;
-	 margin-left:auto;
-	 margin-right:auto;
-	 width:600px;
-	 background-color:white;
-	 margin-top:0px;
-	 margin-bottom:10px;
-	 border:1px solid #ccc;
+    float: left;
+	padding: 30px;
+	margin:5px;
+	width:140px;
+	background-color:black;
+	color: white;
+}
+
+img {
+    border:0;
+    
+}
+#title, #video {
+    width: 350px;
+}
+
+#video a:hover {
+    text-decoration:none;
+}
+
+#description {
+    background-color: red;
+    -webkit-transform:  translateX(50px) translateY(65px) rotate(-10deg) translateX(-50px) translateY(-50px);
+    -moz-transform:  translateX(50px) translateY(65px) rotate(-10deg) translateX(-50px) translateY(-50px);
+    z-index:100;
 }
 
 .section:hover {
-	 background-color:#f3f3ff;
-	 border:1px solid #999;
+	 background-color:#222;
 	 cursor:hand;
 	 cursor:pointer;
 }
 
-.section#gettingstarted {
-	-moz-transform: translate(-55px, -20px);
-	-webkit-transform: translate(-55px, -20px);
-	-ms-transform: translate(-55px, -20px);
-	-o-transform: translate(-55px, -20px);
-}
-
-.section#examples {
-	-moz-transform: translate(25px, -45px);
-	-webkit-transform: translate(25px, -45px);
-	-ms-transform: translate(25px, -45px);
-	-o-transform: translate(25px, -45px);
-	margin-bottom:-30px;
-}
-
-.section#samplecode {
-	margin-top:-40px;
-	-moz-transform: translate(25px, 0px);
-	-webkit-transform: translate(25px, 0px);
-	-ms-transform: translate(25px, 0px);
-	-o-transform: translate(25px, 0px);
-}
-
-h1, h2 {
-	color:#222;
-}
 
 h2#topsubtitle {
 	margin-bottom:0;
@@ -60,44 +49,24 @@ h2#topsubtitle {
 }
 
 h2 {
+    margin:0;
 	font-weight:100;
-	font-size:30px;
+	font-size:16px;
+	line-height:16px;
 }
 
 h1 {
+    font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, sans-serif;
 	margin-top: 0px;
 	margin-bottom: 5px;
-	font-size:80px;
+	font-size:74px;
 	font-weight:100;
+	line-height:90px;
 }
 
 #version {
 	font-style: italic;
 	margin-bottom:1em;
-}
-
-.ribbon {
-	background-color: black;
-	overflow: hidden;
-	position: absolute;
-	right: -5.5em;
-	top: -1.6em;
-	-moz-transform: rotate(45deg);
-	-webkit-transform: rotate(45deg);
-	-ms-transform: rotate(45deg);
-	-o-transform: rotate(45deg);
-}
-.ribbon a {
-	border: 2px solid #aaa;
-	color: #fff;
-	display: block;
-	font-weight: bold;
-	font-size: 81.25%;
-	margin: 0.05em 0 0em 0;
-	padding: 0.5em 3.5em;
-	text-align: center;
-	text-decoration: none;
-	text-shadow: 0 0 0.5em #444;
 }
 
 #description {
@@ -106,27 +75,26 @@ h1 {
 
 .linkblock {
 	display:block;
-	width:200px;
-	margin-top:15px;
 	float:left;
-	margin-right:20px;
-}
-
-.linkblock img {
-    border:1px solid #bbb;
-}
-
-.linkblock img:hover {
-	border:1px solid #357;
 }
 
 .linkblock:hover {
     text-decoration: none;
 }
 
+.linkblock, .linkblock img {
+    display:block;
+}
+
+.linkblock img {
+    margin-bottom: 5px;
+    width:100%;
+    height:auto;
+}
 
 a {
 	text-decoration: none;
+	color: #aaf;
 }
 
 a:hover {
@@ -134,22 +102,32 @@ a:hover {
 }
 
 .highlight {
-	background-color: #f3f3fb;
-	border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
-	padding:20px;
-	padding-top:10px;
-	padding-bottom:10px;
+	background-color: #333;
+	padding:3px;
+	margin:3px;
+	font-size:3px;
+	line-height:5px;
 }
 
 .section:hover .highlight {
-	background-color: white;
+	background-color: #555;
+}
+
+li {
+    margin-left:-25px;
+    margin-bottom:4px;
+    font-size:7px;
+    line-height:9px;
+}
+
+.browsers img {
+    width:32px;
 }
 
 /* Coloring */
 
 .hll { background-color: #ffffcc }
-.c { color: #8f5902; font-style: italic } /* Comment */
+.c { color: #ccc; font-style: italic } /* Comment */
 .err { color: #a40000; border: 1px solid #ef2929 } /* Error */
 .g { color: #000000 } /* Generic */
 .k { color: #006691; font-weight: bold } /* Keyword */
