@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.80 refactored position code to a separate file
  * 0.72 fixed a bug with skew in Webkit
  * 0.71 fixed bugs with FF4
  * 0.70 support for non-body zoom root

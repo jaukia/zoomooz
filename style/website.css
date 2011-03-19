@@ -4,6 +4,11 @@ body {
 	line-height:1.45em;
 }
 
+p {
+    margin-bottom: 1em;
+    margin-top: 0px;
+}
+
 .innerContent {
     padding:20px;
 }
@@ -21,6 +26,12 @@ img {
     border:0;
     
 }
+
+.description {
+    font-size:14px;
+    line-height:19px;
+}
+
 #title, #video {
     width: 350px;
 }
@@ -36,20 +47,31 @@ img {
     z-index:100;
 }
 
+#description:hover {
+    background-color: #d00;
+}
+
 .section:hover {
 	 background-color:#222;
 	 cursor:hand;
 	 cursor:pointer;
 }
 
+.downloadlink {
+    font-size:16px;
+}
 
 h2#topsubtitle {
+	font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, sans-serif;
 	margin-bottom:0;
 	padding:0;
+	font-size:25px;
+	line-height:26px;
 }
 
 h2 {
     margin:0;
+    margin-bottom:1em;
 	font-weight:100;
 	font-size:16px;
 	line-height:16px;
