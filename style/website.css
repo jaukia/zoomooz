@@ -129,6 +129,7 @@ a:hover {
 	margin:3px;
 	font-size:3px;
 	line-height:5px;
+	overflow:hidden;
 }
 
 .section:hover .highlight {
