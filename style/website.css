@@ -9,8 +9,14 @@ p {
     margin-top: 0px;
 }
 
+.topdescription {
+    margin-top:0px;
+    margin-bottom:10px;
+    font-size:14px;
+}
+
 .innerContent {
-    padding:20px;
+    margin:2%;
 }
 
 .section {
@@ -27,13 +33,30 @@ img {
     
 }
 
-.description {
-    font-size:14px;
-    line-height:19px;
+#title {
+    margin-left:2%;
+    margin-top:20px;
+    width:96%;
+    border-bottom:1px solid black;
+    margin-bottom:0.5em;
+    padding-bottom:0.5em;
 }
 
-#title, #video {
+#footer {
+    border-top:1px solid black;
+    margin-bottom:2.0em;
+    margin-left:2%;
+    width:96%;
+    margin-top:-20px;
+}
+
+#video {
     width: 350px;
+}
+
+#video img {
+    display:block;
+    text-decoration:none;
 }
 
 #video a:hover {
@@ -87,7 +110,6 @@ h1 {
 }
 
 #version {
-	font-style: italic;
 	margin-bottom:1em;
 }
 
@@ -115,8 +137,8 @@ h1 {
 }
 
 a {
-	text-decoration: none;
-	color: #aaf;
+	text-decoration: underline;
+	color: white;
 }
 
 a:hover {
