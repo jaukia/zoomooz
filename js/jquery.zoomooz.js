@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.81 basic support for scrolling
  * 0.80 refactored position code to a separate file
  * 0.72 fixed a bug with skew in Webkit
  * 0.71 fixed bugs with FF4
@@ -76,9 +77,11 @@
         }
         settings = jQuery.extend(default_settings, settings);
         
+        // um, does it make any sense to zoom to each of the matches?
         this.each(function() {
             zoomTo($(this), settings);
         });
+        
         return this;
     };
     
@@ -108,6 +111,8 @@
     //**********************************//
     
     function zoomTo(elem, settings) {
+        handleScrolling(elem);
+        
         var transform = computeTotalTransformation(elem, settings.root);
         var inverse = (transform) ? transform.inverse(): null;
         var roottrans = computeViewportTransformation(elem, inverse, settings);
@@ -115,6 +120,28 @@
         $(settings.root).animateTransformation(roottrans, settings, css_matrix_class);
     }
     
+    //**********************************//
+    //***  Handle scrolling          ***//
+    //**********************************//
+    
+    function handleScrolling(elem) {
+		if(elem[0]==$("body")[0]) {
+            // release scroll lock
+            $("html").removeClass("noScroll");
+        } else if(!$("html").hasClass("noScroll")) {
+            // safari
+            var scroll = $("body").scrollTop();
+            
+            // moz
+            if(!scroll) scroll = $("html").scrollTop();
+                    
+            $("html").addClass("noScroll");
+            
+            $("body").scrollTop(0);
+            $("body").css("cssText","-webkit-transform: translateY(-"+scroll+"px); -moz-transform: translateY(-"+scroll+"px)");
+	    }
+	}
+			
     //**********************************//
     //***  Element positioning       ***//
     //**********************************//
