@@ -125,20 +125,27 @@
     //**********************************//
     
     function handleScrolling(elem) {
-		if(elem[0]==$("body")[0]) {
+    	var $body = $("body");
+		if(elem[0]==$body[0]) {
             // release scroll lock
             $("html").removeClass("noScroll");
         } else if(!$("html").hasClass("noScroll")) {
             // safari
-            var scroll = $("body").scrollTop();
+            var scroll = $body.scrollTop();
             
             // moz
             if(!scroll) scroll = $("html").scrollTop();
                     
             $("html").addClass("noScroll");
             
-            $("body").scrollTop(0);
-            $("body").css("cssText","-webkit-transform: translateY(-"+scroll+"px); -moz-transform: translateY(-"+scroll+"px)");
+            $body.scrollTop(0);
+            
+            var transformStr = "translateY(-"+scroll+"px)";
+            $body.css("-webkit-transform", transformStr);
+            $body.css("-moz-transform", transformStr);
+            $body.css("-o-transform", transformStr);
+            $body.css("cssText","-ms-transform:"+transformStr);
+            
 	    }
 	}
 			
@@ -177,7 +184,7 @@
         
         var offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
         zoomParent.css("-webkit-transform-origin", offsetStr);
-        zoomParent.css("-ms-transform-origin", offsetStr);
+        zoomParent.css("cssText","-ms-transform-origin:"+offsetStr);
         zoomParent.css("-o-transform-origin", offsetStr);
         zoomParent.css("-moz-transform-origin", offsetStr);
         

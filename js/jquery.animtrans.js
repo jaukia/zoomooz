@@ -74,7 +74,7 @@
         
         propMap["-webkit-transform"] = trans;
         propMap["-moz-transform"] = trans;
-        propMap["-ms-transform"] = trans;
+        propMap["cssText"] = "-ms-transform: "+trans;
         propMap["-o-transform"] = trans;
         propMap["transform"] = trans;
         
