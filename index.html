@@ -22,10 +22,10 @@
 					evt.stopPropagation();
 				});
 				$(window).click(function(evt) {
-					$("body").zoomTo({targetsize:1.0});
+					$("body").zoomTo({targetsize:1.0, duration:600});
 					evt.stopPropagation();
 				});
-				$("body").zoomTo({targetsize:1.0});
+				$("body").zoomTo({targetsize:1.0, duration:600});
 				
 				$(".innerContent").masonry({columnWidth:210,animate:false});
 				

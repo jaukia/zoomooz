@@ -144,7 +144,7 @@
             $body.css("-webkit-transform", transformStr);
             $body.css("-moz-transform", transformStr);
             $body.css("-o-transform", transformStr);
-            $body.css("cssText","-ms-transform:"+transformStr);
+            //$body.css("cssText","-ms-transform:"+transformStr);
             
 	    }
 	}
@@ -184,7 +184,7 @@
         
         var offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
         zoomParent.css("-webkit-transform-origin", offsetStr);
-        zoomParent.css("cssText","-ms-transform-origin:"+offsetStr);
+        //zoomParent.css("cssText","-ms-transform-origin:"+offsetStr);
         zoomParent.css("-o-transform-origin", offsetStr);
         zoomParent.css("-moz-transform-origin", offsetStr);
         
