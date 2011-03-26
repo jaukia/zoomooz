@@ -9,6 +9,20 @@ p {
     margin-top: 0px;
 }
 
+
+a {
+	text-decoration: underline;
+	color: white;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:after {
+    content: "\00a0\00bb";
+}
+
 .topdescription {
     margin-top:0px;
     margin-bottom:10px;
@@ -17,6 +31,7 @@ p {
 
 .innerContent {
     margin:2%;
+    margin-top:15px;
 }
 
 .section {
@@ -68,6 +83,15 @@ img {
     -webkit-transform:  translateX(50px) translateY(65px) rotate(-10deg) translateX(-50px) translateY(-50px);
     -moz-transform:  translateX(50px) translateY(65px) rotate(-10deg) translateX(-50px) translateY(-50px);
     z-index:100;
+}
+
+#description a {
+    text-decoration:none;
+    font-weight:bold;
+}
+
+#description a:hover {
+    text-decoration:underline;
 }
 
 #description:hover {
@@ -134,15 +158,6 @@ h1 {
 .linkblock img {
     margin-bottom: 5px;
     height:auto;
-}
-
-a {
-	text-decoration: underline;
-	color: white;
-}
-
-a:hover {
-	text-decoration: underline;
 }
 
 .highlight {
