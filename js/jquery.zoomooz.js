@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.85 basic IE9 support
  * 0.81 basic support for scrolling
  * 0.80 refactored position code to a separate file
  * 0.72 fixed a bug with skew in Webkit

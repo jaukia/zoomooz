@@ -108,6 +108,10 @@ img {
     font-size:16px;
 }
 
+.browsers {
+    margin-bottom: 5px;
+}
+
 h2#topsubtitle {
 	font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, sans-serif;
 	margin-bottom:0;
