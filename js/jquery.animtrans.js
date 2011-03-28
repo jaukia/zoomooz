@@ -41,6 +41,22 @@
     var regexp_is_deg = /deg$/;
 
     //**********************************//
+    //***  Setup css hook for IE     ***//
+    //**********************************//
+    
+    jQuery.cssHooks["MsTransform"] = {
+        set: function( elem, value ) {
+            elem.style.msTransform = value;
+        }
+    };
+    
+    jQuery.cssHooks["MsTransformOrigin"] = {
+        set: function( elem, value ) {
+            elem.style.msTransformOrigin = value;
+        }
+    };
+
+    //**********************************//
     //***  jQuery functions          ***//
     //**********************************//
     
@@ -54,10 +70,10 @@
             var final_affine = affineTransformDecompose(transformation);
             final_affine = fixRotationToSameLap(current_affine, final_affine);
             
-            if($.browser.mozilla || $.browser.opera || !settings.nativeanimation) {
-                animateTransition(current_affine, final_affine, settings);
-            } else {
+            if($.browser.webkit && settings.nativeanimation) {
                 settings.root.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
+            } else {
+                animateTransition(current_affine, final_affine, settings);
             }
         });
     }
@@ -72,9 +88,9 @@
         
         var propMap = {};
         
+        propMap["-ms-transform"] = trans;
         propMap["-webkit-transform"] = trans;
         propMap["-moz-transform"] = trans;
-        //propMap["cssText"] = "-ms-transform: "+trans;
         propMap["-o-transform"] = trans;
         propMap["transform"] = trans;
         

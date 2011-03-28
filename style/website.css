@@ -164,8 +164,17 @@ h1 {
 	background-color: #333;
 	padding:3px;
 	margin:3px;
+	
 	font-size:3px;
 	line-height:5px;
+	
+	/*
+	font-size:12px;
+	line-height:20px;
+	width:400%;
+	-webkit-transform: scale(0.25);
+	*/
+	
 	overflow:hidden;
 }
 
