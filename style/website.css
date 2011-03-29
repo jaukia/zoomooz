@@ -82,6 +82,7 @@ img {
     background-color: red;
     -webkit-transform:  translateX(50px) translateY(65px) rotate(-10deg) translateX(-50px) translateY(-50px);
     -moz-transform:  translateX(50px) translateY(65px) rotate(-10deg) translateX(-50px) translateY(-50px);
+    -ms-transform:  translateX(50px) translateY(65px) rotate(-10deg) translateX(-50px) translateY(-50px);
     z-index:100;
 }
 
