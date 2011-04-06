@@ -142,17 +142,23 @@
             // release scroll lock
             $("html").removeClass("noScroll");
         } else if(!$("html").hasClass("noScroll")) {
-            // safari
-            var scroll = $body.scrollTop();
+        
+        // safari
+            var scrollY = $body.scrollTop();
+            var scrollX = $body.scrollLeft();
             
             // moz
-            if(!scroll) scroll = $("html").scrollTop();
-                    
+            if(!scrollY) {
+                scrollY = $("html").scrollTop();
+                scrollX = $("html").scrollLeft();
+            }
+            
             $("html").addClass("noScroll");
             
             $body.scrollTop(0);
+            $body.scrollLeft(0);
             
-            var transformStr = "translateY(-"+scroll+"px)";
+            var transformStr = "translate(-"+scrollX+"px,-"+scrollY+"px)";
             $body.css("-ms-transform", transformStr);
             $body.css("-webkit-transform", transformStr);
             $body.css("-moz-transform", transformStr);
