@@ -113,7 +113,7 @@
     //**********************************//
     
     function zoomTo(elem, settings) {
-        handleScrolling(elem);
+        handleScrolling(elem, settings);
         
         if(elem[0] === settings.root[0]) {
         	
@@ -136,33 +136,60 @@
     //***  Handle scrolling          ***//
     //**********************************//
     
-    function handleScrolling(elem) {
-    	var $body = $("body");
-		if(elem[0]==$body[0]) {
-            // release scroll lock
-            $("html").removeClass("noScroll");
-        } else if(!$("html").hasClass("noScroll")) {
+    function handleScrolling(elem, settings) {
+    	var $root = settings.root;
+    	
+    	// TODO: untested for non-body zoom roots!
+    	
+    	var $scrollElem;
+    	if($root[0] === document.body) {
+    	    $scroll = $("html");
+    	} else {
+    	    $scroll = $root;
+    	}
+    	
+    	if(elem[0] === $root[0]) {
         
-        // safari
-            var scrollY = $body.scrollTop();
-            var scrollX = $body.scrollLeft();
+            /*var scrollData = $scroll.data("original-scroll");
+            
+            if(scrollData) {
+                var elem = scrollData[0];
+                var scrollX = scrollData[1];
+                var scrollY = scrollData[2];
+                elem.scrollLeft(scrollX);
+                elem.scrollTop(scrollY);
+                $scroll.data("original-scroll",null);
+            }*/
+            
+            // release scroll lock
+            $scroll.removeClass("noScroll");
+            
+        } else if(!$scroll.hasClass("noScroll")) {
+        
+            // safari
+            var scrollY = $root.scrollTop();
+            var scrollX = $root.scrollLeft();
+            var elem = $root;
             
             // moz
             if(!scrollY) {
-                scrollY = $("html").scrollTop();
-                scrollX = $("html").scrollLeft();
+                scrollY = $scroll.scrollTop();
+                scrollX = $scroll.scrollLeft();
+                elem = $scroll;
             }
             
-            $("html").addClass("noScroll");
+            $scroll.addClass("noScroll");
             
-            $body.scrollTop(0);
-            $body.scrollLeft(0);
+            //$scroll.data("original-scroll",[elem,scrollX,scrollY]);
+            
+            $root.scrollTop(0);
+            $root.scrollLeft(0);
             
             var transformStr = "translate(-"+scrollX+"px,-"+scrollY+"px)";
-            $body.css("-ms-transform", transformStr);
-            $body.css("-webkit-transform", transformStr);
-            $body.css("-moz-transform", transformStr);
-            $body.css("-o-transform", transformStr);
+            $root.css("-ms-transform", transformStr);
+            $root.css("-webkit-transform", transformStr);
+            $root.css("-moz-transform", transformStr);
+            $root.css("-o-transform", transformStr);
             
 	    }
 	}
