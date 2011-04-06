@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.86 fixed a bug with non-body zoom root
  * 0.85 basic IE9 support
  * 0.81 basic support for scrolling
  * 0.80 refactored position code to a separate file
@@ -114,11 +115,21 @@
     function zoomTo(elem, settings) {
         handleScrolling(elem);
         
-        var transform = computeTotalTransformation(elem, settings.root);
-        var inverse = (transform) ? transform.inverse(): null;
-        var roottrans = computeViewportTransformation(elem, inverse, settings);
-        
-        $(settings.root).animateTransformation(roottrans, settings, css_matrix_class);
+        if(elem[0] === settings.root[0]) {
+        	
+        	// computeTotalTransformation does not work correctly if the
+        	// element and the root are the same
+        	
+        	$(settings.root).animateTransformation(new css_matrix_class(), settings, css_matrix_class);
+        	
+        } else {
+        	
+        	var transform = computeTotalTransformation(elem, settings.root);
+        	var inverse = (transform) ? transform.inverse(): null;
+        	var roottrans = computeViewportTransformation(elem, inverse, settings);
+        	
+        	$(settings.root).animateTransformation(roottrans, settings, css_matrix_class);
+    	}
     }
     
     //**********************************//
