@@ -141,7 +141,7 @@
     	
     	// TODO: untested for non-body zoom roots!
     	
-    	var $scrollElem;
+    	var $scroll;
     	if($root[0] === document.body) {
     	    $scroll = $("html");
     	} else {
