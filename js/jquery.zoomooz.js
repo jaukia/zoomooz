@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.90 now using jquery.transform
  * 0.86 fixed a bug with non-body zoom root
  * 0.85 basic IE9 support
  * 0.81 basic support for scrolling
@@ -45,18 +46,29 @@
     var default_settings;
     
     //**********************************//
-    //***  jQuery functions          ***//
+    //***  Public API                ***//
     //**********************************//
     
-    $.zoomMooz = {};
-    $.zoomMooz.setup = function(settings) {
-        default_settings = jQuery.extend(constructDefaultSettings(), settings);
-        css_matrix_class = setupMatrixClass(default_settings);
+    $.zoomooz = {};
+    
+    $.zoomooz.setup = function(settings) {
+        default_settings = jQuery.extend({
+            targetsize: 0.9,
+            scalemode: "both",
+            duration: 1000,
+            easing: "ease",
+            root: $(document.body),
+            nativeanimation: false
+        }, settings);
+        
+        // could use WebKitCSSMatrix in webkit as well, which would
+        // speed up computation a bit, but this eases debugging
+        css_matrix_class = PureCSSMatrix;
     };
     
     $.fn.debug = function(settings) {
         if(!default_settings) {
-            $.zoomMooz.setup();
+            $.zoomooz.setup();
         }
         
         settings = jQuery.extend(default_settings, settings);
@@ -75,7 +87,7 @@
     
     $.fn.zoomTo = function(settings) {
         if(!default_settings) {
-            $.zoomMooz.setup();
+            $.zoomooz.setup();
         }
         settings = jQuery.extend(default_settings, settings);
         
@@ -88,48 +100,24 @@
     };
     
     //**********************************//
-    //***  Setup functions           ***//
-    //**********************************//
-    
-    function constructDefaultSettings() {
-        return {
-            targetsize: 0.9,
-            scalemode: "both",
-            duration: 1000,
-            easing: "ease",
-            root: $(document.body),
-            nativeanimation: false
-        };
-    }
-    
-    function setupMatrixClass(settings) {
-        // could use WebKitCSSMatrix in webkit as well, which would
-        // speed up computation a bit, but this eases debugging
-        return PureCSSMatrix;
-    }
-    
-    //**********************************//
     //***  Main zoom function        ***//
     //**********************************//
     
     function zoomTo(elem, settings) {
         handleScrolling(elem, settings);
         
-        if(elem[0] === settings.root[0]) {
-        	
+        var trans = "";
+        if(elem[0] !== settings.root[0]) {
         	// computeTotalTransformation does not work correctly if the
         	// element and the root are the same
-        	
-        	$(settings.root).animateTransformation(new css_matrix_class(), settings, css_matrix_class);
-        	
-        } else {
-        	
-        	var transform = computeTotalTransformation(elem, settings.root);
+        
+            var transform = computeTotalTransformation(elem, settings.root);
         	var inverse = (transform) ? transform.inverse(): null;
-        	var roottrans = computeViewportTransformation(elem, inverse, settings);
         	
-        	$(settings.root).animateTransformation(roottrans, settings, css_matrix_class);
+        	trans = computeViewportTransformation(elem, inverse, settings);
     	}
+    	
+    	$(settings.root).animate({transform: trans.toString()}, settings.duration, jQuery.camelCase("easie-"+settings.easing));
     }
     
     //**********************************//
@@ -149,17 +137,6 @@
     	}
     	
     	if(elem[0] === $root[0]) {
-        
-            /*var scrollData = $scroll.data("original-scroll");
-            
-            if(scrollData) {
-                var elem = scrollData[0];
-                var scrollX = scrollData[1];
-                var scrollY = scrollData[2];
-                elem.scrollLeft(scrollX);
-                elem.scrollTop(scrollY);
-                $scroll.data("original-scroll",null);
-            }*/
             
             // release scroll lock
             $scroll.removeClass("noScroll");
@@ -179,8 +156,6 @@
             }
             
             $scroll.addClass("noScroll");
-            
-            //$scroll.data("original-scroll",[elem,scrollX,scrollY]);
             
             $root.scrollTop(0);
             $root.scrollLeft(0);
