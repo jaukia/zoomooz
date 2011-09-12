@@ -11,27 +11,23 @@
 		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function() {
-				$(".zoomTarget").debug();
-			    $(window).resize(function(evt) {
-			        $(".zoomTarget").debug();
-			    });
-			    $(".zoomTarget").click(function(evt) {
+				$(".zoomTarget").click(function(evt) {
 					evt.stopPropagation();
-					$(this).zoomTo();
+					$(this).zoomTo({debug:true});
 				});
 				
 				$(window).click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0});
+					$("body").zoomTo({targetsize:1.0,debug:true});
 				});
 				
 				// for iPhone
 				$("#container").click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0});
+					$("body").zoomTo({targetsize:1.0,debug:true});
 				});
 				
-				$("body").zoomTo({targetsize:1.0});
+				$("body").zoomTo({targetsize:1.0,debug:true});
 			});
 		</script>
 	</head>

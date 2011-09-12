@@ -54,25 +54,6 @@
         css_matrix_class = setupMatrixClass(default_settings);
     };
     
-    $.fn.debug = function(settings) {
-        if(!default_settings) {
-            $.zoomMooz.setup();
-        }
-        
-        settings = jQuery.extend(default_settings, settings);
-        
-        if($("#debug").length===0) {
-            $(settings.root).append('<div id="debug"><div>');
-        } else {
-            $("#debug").html("");
-        }
-        this.each(function() {
-            if($(this)[0] != settings.root[0]) {
-                showDebug($(this),settings);
-            }
-        });
-    };
-    
     $.fn.zoomTo = function(settings) {
         if(!default_settings) {
             $.zoomMooz.setup();
@@ -82,6 +63,15 @@
         // um, does it make any sense to zoom to each of the matches?
         this.each(function() {
             zoomTo($(this), settings);
+            
+            if(settings.debug) {
+            	if($("#debug").length===0) {
+					$(settings.root).append('<div id="debug"><div>');
+				} else {
+					$("#debug").html("");
+				}
+				showDebug($(this),settings);
+            }
         });
         
         return this;
@@ -98,7 +88,8 @@
             duration: 1000,
             easing: "ease",
             root: $(document.body),
-            nativeanimation: false
+            nativeanimation: false,
+            debug: false
         };
     }
     
