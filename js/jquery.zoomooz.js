@@ -105,7 +105,7 @@
     
     function zoomTo(elem, settings) {
         // this not working with jquery.transform?
-        //handleScrolling(elem, settings);
+        handleScrolling(elem, settings);
         
         var trans = "scale(1.0)";
         if(elem[0] !== settings.root[0]) {
