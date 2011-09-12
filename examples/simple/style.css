@@ -81,7 +81,7 @@ div {
 	width:200px;
 	height:200px;
 	border:1px solid yellow;
-	-webkit-transform: rotate(30deg) skew(20deg);
-	-moz-transform: rotate(30deg) skew(20deg);
-	-o-transform: rotate(30deg) skew(20deg);
+	-webkit-transform: skew(40deg);
+	-moz-transform: skew(40deg);
+	-o-transform: skew(40deg);
 }
