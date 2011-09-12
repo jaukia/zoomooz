@@ -58,31 +58,13 @@
             duration: 1000,
             easing: "ease",
             root: $(document.body),
-            nativeanimation: false
+            nativeanimation: false,
+            debug: false
         }, settings);
         
         // could use WebKitCSSMatrix in webkit as well, which would
         // speed up computation a bit, but this eases debugging
         css_matrix_class = PureCSSMatrix;
-    };
-    
-    $.fn.debug = function(settings) {
-        if(!default_settings) {
-            $.zoomooz.setup();
-        }
-        
-        settings = jQuery.extend(default_settings, settings);
-        
-        if($("#debug").length===0) {
-            $(settings.root).append('<div id="debug"><div>');
-        } else {
-            $("#debug").html("");
-        }
-        this.each(function() {
-            if($(this)[0] != settings.root[0]) {
-                showDebug($(this),settings);
-            }
-        });
     };
     
     $.fn.zoomTo = function(settings) {
@@ -94,6 +76,15 @@
         // um, does it make any sense to zoom to each of the matches?
         this.each(function() {
             zoomTo($(this), settings);
+            
+            if(settings.debug) {
+            	if($("#debug").length===0) {
+					$(settings.root).append('<div id="debug"><div>');
+				} else {
+					$("#debug").html("");
+				}
+				showDebug($(this),settings);
+            }
         });
         
         return this;
