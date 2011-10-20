@@ -31,8 +31,8 @@ task('concat', [], function() {
   	    fs.mkdirSync("build",0744);
   	 }
   
-	 var ownfiles = ['js/purecssmatrix.js','js/jquery.zoomooz.js','js/jquery.animtrans.js'],
-		 extrafiles = ['lib/sylvester.js'],
+	 var ownfiles = ['js/purecssmatrix.js','js/jquery.zoomooz.js'],
+		 extrafiles = ['lib/sylvester.js','lib/jquery.transform2d.js'],
 		 pathName = '.';
 	 
 	 var concatFiles = function(files, outFileName) {
