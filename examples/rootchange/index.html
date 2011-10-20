@@ -5,11 +5,10 @@
 		<link rel="stylesheet" href="../../style/zoomooz.css" type="text/css" media="screen" />
 		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="../../lib/jquery-1.4.4.js"></script>
-		<script type="text/javascript" src="../../lib/jquery.transform.js"></script>
+		<script type="text/javascript" src="../../lib/jquery.transform2d.js"></script>
 		<script type="text/javascript" src="../../lib/jquery.easie.js"></script>
 		<script type="text/javascript" src="../../lib/sylvester.js"></script>
 		<script type="text/javascript" src="../../js/purecssmatrix.js"></script>
-		<script type="text/javascript" src="../../js/jquery.animtrans.js"></script>
 		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
 		<script type="text/javascript">
 			
@@ -17,25 +16,21 @@
 			var zoomTargetIndex = 0;
 			
 			$(document).ready(function() {
-				$.zoomMooz.setup({root:$("#container"),targetsize:0.8});
+				$.zoomooz.setup({root:$("#container"),targetsize:0.8});
 				
-				$(".zoomTarget").debug();
-			    $(window).resize(function(evt) {
-			        $(".zoomTarget").debug();
-			    });
-			    $(".zoomTarget").click(function(evt) {
+				$(".zoomTarget").click(function(evt) {
 					evt.stopPropagation();
-					$(this).zoomTo();
+					$(this).zoomTo({debug:true});
 				});
 				
-				$("#container").zoomTo();
+				$("#container").zoomTo({debug:true});
 				
 				$("#next").click(function(evt) {
 					zoomTargetIndex++;
 					if(zoomTargetIndex>=zoomTargetElements.length) {
 						zoomTargetIndex-=zoomTargetElements.length;
 					}
-					$(zoomTargetElements[zoomTargetIndex]).zoomTo();
+					$(zoomTargetElements[zoomTargetIndex]).zoomTo({debug:true});
 				});
 				
 				$("#prev").click(function(evt) {
@@ -43,7 +38,7 @@
 					if(zoomTargetIndex<0) {
 						zoomTargetIndex+=zoomTargetElements.length;
 					}
-					$(zoomTargetElements[zoomTargetIndex]).zoomTo();
+					$(zoomTargetElements[zoomTargetIndex]).zoomTo({debug:true});
 				});
 			});
 		</script>
