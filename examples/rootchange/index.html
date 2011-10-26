@@ -17,13 +17,9 @@
 			$(document).ready(function() {
 				$.zoomMooz.setup({root:$("#container"),targetsize:0.8});
 				
-				$(".zoomTarget").debug();
-			    $(window).resize(function(evt) {
-			        $(".zoomTarget").debug();
-			    });
 			    $(".zoomTarget").click(function(evt) {
 					evt.stopPropagation();
-					$(this).zoomTo();
+					$(this).zoomTo({debug:true});
 				});
 				
 				$("#container").zoomTo();
@@ -33,7 +29,7 @@
 					if(zoomTargetIndex>=zoomTargetElements.length) {
 						zoomTargetIndex-=zoomTargetElements.length;
 					}
-					$(zoomTargetElements[zoomTargetIndex]).zoomTo();
+					$(zoomTargetElements[zoomTargetIndex]).zoomTo({debug:true});
 				});
 				
 				$("#prev").click(function(evt) {
@@ -41,7 +37,7 @@
 					if(zoomTargetIndex<0) {
 						zoomTargetIndex+=zoomTargetElements.length;
 					}
-					$(zoomTargetElements[zoomTargetIndex]).zoomTo();
+					$(zoomTargetElements[zoomTargetIndex]).zoomTo({debug:true});
 				});
 			});
 		</script>

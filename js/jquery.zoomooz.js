@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.87 fixed a bug with settings and a couple of demos
  * 0.86 fixed a bug with non-body zoom root
  * 0.85 basic IE9 support
  * 0.81 basic support for scrolling
@@ -58,7 +59,10 @@
         if(!default_settings) {
             $.zoomMooz.setup();
         }
-        settings = jQuery.extend(default_settings, settings);
+        
+        // first argument empty object to ensure that the default settings
+        // are not modified
+        settings = jQuery.extend({}, default_settings, settings);
         
         // um, does it make any sense to zoom to each of the matches?
         this.each(function() {
@@ -71,6 +75,10 @@
 					$("#debug").html("");
 				}
 				showDebug($(this),settings);
+            } else {
+            	if($("#debug").length!==0) {
+					$("#debug").html("");
+				}
             }
         });
         

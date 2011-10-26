@@ -13,21 +13,22 @@
 			$(document).ready(function() {
 				$(".zoomTarget").click(function(evt) {
 					evt.stopPropagation();
+					evt.preventDefault();
 					$(this).zoomTo({debug:true});
 				});
 				
 				$(window).click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0,debug:true});
+					$("body").zoomTo({targetsize:1.0});
 				});
 				
 				// for iPhone
 				$("#container").click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0,debug:true});
+					$("body").zoomTo({targetsize:1.0});
 				});
 				
-				$("body").zoomTo({targetsize:1.0,debug:true});
+				$("body").zoomTo({targetsize:1.0});
 			});
 		</script>
 	</head>

@@ -11,19 +11,15 @@
 		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function() {
-				$(".zoomTarget").debug();
-			    $(window).resize(function(evt) {
-			        $(".zoomTarget").debug();
-			    });
-			    $(".zoomTarget").click(function(evt) {
+				$(".zoomTarget").click(function(evt) {
 					evt.stopPropagation();
-					$(this).zoomTo({targetsize:0.7});
+					$(this).zoomTo({targetsize:0.7,debug:true});
 				});
 				$(document).click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0});
+					$("body").zoomTo({targetsize:1.0,debug:true});
 				});
-				$("body").zoomTo({targetsize:1.0});
+				$("body").zoomTo({targetsize:1.0,debug:true});
 			});
 		</script>
 	</head>

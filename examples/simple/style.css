@@ -2,11 +2,11 @@
 
 html {
     background-color:white;
+    overflow:hidden;
 }
 
 #container {
 	background-color:white;
-	border:1px solid #ccc;
 	margin:0;
     padding:0;
     width:100%;
