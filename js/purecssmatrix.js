@@ -60,8 +60,8 @@
             var val = items[2].split(",");
             var trans;
             if(action=="matrix") {
-                trans = $M([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
-                               [parseFloat(val[1]),parseFloat(val[3]),parseFloat(filterNumber(val[5]))],
+                trans = $M([[roundFloat(val[0]),roundFloat(val[2]),roundFloat(filterNumber(val[4]))],
+                               [roundFloat(val[1]),roundFloat(val[3]),roundFloat(filterNumber(val[5]))],
                                [                0,                0,                              1]]);
             } else if(action=="translate") {
                 trans = Matrix.I(3);
@@ -138,6 +138,10 @@
     
     function printFixedNumber(x) {
         return Number(x).toFixed(6);
+    }
+    
+    function roundFloat( x ) {
+      return Math.round(parseFloat(x) * 1E15) /1E15
     }
 
     return cssMatrix;
