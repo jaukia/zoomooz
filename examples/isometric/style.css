@@ -12,6 +12,16 @@ html {
     padding:0;
     width:100%;
     height:100%;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#cube {
+    -webkit-transform: rotate(-30deg);
+    -moz-transform: rotate(-30deg);
+    position:absolute;
+    left:50%;
+    top:50%;
 }
 
 .face {
@@ -53,14 +63,6 @@ html {
 
 #f3 .box {
     background-color:#fff;
-}
-
-#cube {
-    position:relative;
-    left:50%;
-    top:50%;
-    -webkit-transform: rotate(-30deg);
-    -moz-transform: rotate(-30deg);
 }
 
 #f1 {
