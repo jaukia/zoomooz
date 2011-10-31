@@ -98,7 +98,7 @@
         // this not working with jquery.transform?
         var animCompleteFunc = handleScrolling(elem, settings);
         
-        var trans = "scale(1.0)";
+        var trans;
         if(elem[0] !== settings.root[0]) {
         	// computeTotalTransformation does not work correctly if the
         	// element and the root are the same
@@ -107,7 +107,12 @@
         	var inverse = (transform) ? transform.inverse(): null;
         	
         	trans = computeViewportTransformation(elem, inverse, settings);
-    	}
+    	} else {
+    		trans = new css_matrix_class();
+    		
+    		var scroll = settings.root.data("zoomooz-original-scroll");
+        	if(scroll) trans = trans.translate(-scroll[0],-scroll[1]);
+        }
     	
     	$(settings.root).animate({transform: trans.toString()}, settings.duration, jQuery.camelCase("easie-"+settings.easing), animCompleteFunc);
     }
@@ -133,11 +138,23 @@
             
             // FIXME: starting a new anim while this one
             // is running causes the scroll bar to show up
+            
             animCompleteFunc = function() {
             	$scroll.removeClass("noScroll");
+            	 
+            	var transformStr = "scale(1.0)";
+					$root.css("-ms-transform", transformStr);
+					$root.css("-webkit-transform", transformStr);
+					$root.css("-moz-transform", transformStr);
+					$root.css("-o-transform", transformStr);
+					
+            	var scroll = $root.data("zoomooz-original-scroll");
+				if(scroll) {
+					console.log($root,scroll);
+					$root.scrollTop(scroll[1]);
+					$root.scrollLeft(scroll[0]);
+				}
             }
-            
-            // FIXME: should reset scrolling here
             
         } else if(!$scroll.hasClass("noScroll")) {
         
@@ -155,7 +172,7 @@
                 elem = $scroll;
             }
             
-            // FIXME: store root elem scrolling here
+            $root.data("zoomooz-original-scroll",[scrollX,scrollY]);
             
             $root.scrollTop(0);
             $root.scrollLeft(0);
