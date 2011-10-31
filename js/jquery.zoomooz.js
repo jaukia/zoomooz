@@ -131,13 +131,18 @@
     	
     	if(elem[0] === $root[0]) {
             
+            // FIXME: starting a new anim while this one
+            // is running causes the scroll bar to show up
             animCompleteFunc = function() {
-            	// release scroll lock when animation is done
             	$scroll.removeClass("noScroll");
             }
             
+            // FIXME: should reset scrolling here
+            
         } else if(!$scroll.hasClass("noScroll")) {
         
+        	$scroll.addClass("noScroll");
+            
             // safari
             var scrollY = $root.scrollTop();
             var scrollX = $root.scrollLeft();
@@ -150,7 +155,7 @@
                 elem = $scroll;
             }
             
-            $scroll.addClass("noScroll");
+            // FIXME: store root elem scrolling here
             
             $root.scrollTop(0);
             $root.scrollLeft(0);
@@ -237,6 +242,23 @@
     function displayLabel(pos) {
         var label = '<div class="debuglabel" style="left:'+pos[0]+'px;top:'+pos[1]+'px;"></div>';
         $("#debug").append(label);
+    }
+    
+    function fetchElements(m) {
+        var mv;
+        
+        if(m instanceof PureCSSMatrix) {
+            mv = m.m.elements;
+        } else if(m instanceof Matrix) {
+            mv = m.elements;
+        }
+        
+        if(!mv) {
+            return {"a":m.a,"b":m.b,"c":m.c,"d":m.d,"e":m.e,"f":m.f};
+        }
+        
+        return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
+                "d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
     }
     
     //**********************************//
@@ -331,28 +353,6 @@
         
         return totalTransformation;
         
-    }
-
-    //**********************************//
-    //***  CSS Matrix helpers        ***//
-    //**********************************//
-    
-    // also in animtrans
-    function fetchElements(m) {
-        var mv;
-        
-        if(m instanceof PureCSSMatrix) {
-            mv = m.m.elements;
-        } else if(m instanceof Matrix) {
-            mv = m.elements;
-        }
-        
-        if(!mv) {
-            return {"a":m.a,"b":m.b,"c":m.c,"d":m.d,"e":m.e,"f":m.f};
-        }
-        
-        return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
-                "d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
     }
     
     function constructTransformation(elem) {
