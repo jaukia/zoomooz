@@ -140,8 +140,8 @@
         return Number(x).toFixed(6);
     }
     
-    function roundFloat( x ) {
-      return Math.round(parseFloat(x) * 1E15) /1E15
+    function roundFloat(x) {
+        return Math.round(parseFloat(x)*1E15)/1E15;
     }
 
     return cssMatrix;
