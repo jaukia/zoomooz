@@ -96,7 +96,7 @@
     
     function zoomTo(elem, settings) {
         // this not working with jquery.transform?
-        handleScrolling(elem, settings);
+        var animCompleteFunc = handleScrolling(elem, settings);
         
         var trans = "scale(1.0)";
         if(elem[0] !== settings.root[0]) {
@@ -109,7 +109,7 @@
         	trans = computeViewportTransformation(elem, inverse, settings);
     	}
     	
-    	$(settings.root).animate({transform: trans.toString()}, settings.duration, jQuery.camelCase("easie-"+settings.easing));
+    	$(settings.root).animate({transform: trans.toString()}, settings.duration, jQuery.camelCase("easie-"+settings.easing), animCompleteFunc);
     }
     
     //**********************************//
@@ -118,6 +118,7 @@
     
     function handleScrolling(elem, settings) {
     	var $root = settings.root;
+    	var animCompleteFunc = null;
     	
     	// TODO: untested for non-body zoom roots!
     	
@@ -130,8 +131,10 @@
     	
     	if(elem[0] === $root[0]) {
             
-            // release scroll lock
-            $scroll.removeClass("noScroll");
+            animCompleteFunc = function() {
+            	// release scroll lock when animation is done
+            	$scroll.removeClass("noScroll");
+            }
             
         } else if(!$scroll.hasClass("noScroll")) {
         
@@ -159,6 +162,8 @@
             $root.css("-o-transform", transformStr);
             
 	    }
+	    
+	    return animCompleteFunc;
 	}
 			
     //**********************************//
