@@ -150,7 +150,6 @@
                     
                 var scroll = $root.data("zoomooz-original-scroll");
                 if(scroll) {
-                    console.log($root,scroll);
                     $root.scrollTop(scroll[1]);
                     $root.scrollLeft(scroll[0]);
                 }
