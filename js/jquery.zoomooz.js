@@ -78,12 +78,12 @@
             zoomTo($(this), settings);
             
             if(settings.debug) {
-            	if($("#debug").length===0) {
-					$(settings.root).append('<div id="debug"><div>');
-				} else {
-					$("#debug").html("");
-				}
-				showDebug($(this),settings);
+                if($("#debug").length===0) {
+                    $(settings.root).append('<div id="debug"><div>');
+                } else {
+                    $("#debug").html("");
+                }
+                showDebug($(this),settings);
             }
         });
         
@@ -100,21 +100,21 @@
         
         var trans;
         if(elem[0] !== settings.root[0]) {
-        	// computeTotalTransformation does not work correctly if the
-        	// element and the root are the same
+            // computeTotalTransformation does not work correctly if the
+            // element and the root are the same
         
             var transform = computeTotalTransformation(elem, settings.root);
-        	var inverse = (transform) ? transform.inverse(): null;
-        	
-        	trans = computeViewportTransformation(elem, inverse, settings);
-    	} else {
-    		trans = new css_matrix_class();
-    		
-    		var scroll = settings.root.data("zoomooz-original-scroll");
-        	if(scroll) trans = trans.translate(-scroll[0],-scroll[1]);
+            var inverse = (transform) ? transform.inverse(): null;
+            
+            trans = computeViewportTransformation(elem, inverse, settings);
+        } else {
+            trans = new css_matrix_class();
+            
+            var scroll = settings.root.data("zoomooz-original-scroll");
+            if(scroll) trans = trans.translate(-scroll[0],-scroll[1]);
         }
-    	
-    	$(settings.root).animate({transform: trans.toString()}, settings.duration, jQuery.camelCase("easie-"+settings.easing), animCompleteFunc);
+        
+        $(settings.root).animate({transform: trans.toString()}, settings.duration, jQuery.camelCase("easie-"+settings.easing), animCompleteFunc);
     }
     
     //**********************************//
@@ -122,43 +122,43 @@
     //**********************************//
     
     function handleScrolling(elem, settings) {
-    	var $root = settings.root;
-    	var animCompleteFunc = null;
-    	
-    	// TODO: untested for non-body zoom roots!
-    	
-    	var $scroll;
-    	if($root[0] === document.body) {
-    	    $scroll = $("html");
-    	} else {
-    	    $scroll = $root;
-    	}
-    	
-    	if(elem[0] === $root[0]) {
+        var $root = settings.root;
+        var animCompleteFunc = null;
+        
+        // TODO: untested for non-body zoom roots!
+        
+        var $scroll;
+        if($root[0] === document.body) {
+            $scroll = $("html");
+        } else {
+            $scroll = $root;
+        }
+        
+        if(elem[0] === $root[0]) {
             
             // FIXME: starting a new anim while this one
             // is running causes the scroll bar to show up
             
             animCompleteFunc = function() {
-            	$scroll.removeClass("noScroll");
-            	 
-            	var transformStr = "scale(1.0)";
-					$root.css("-ms-transform", transformStr);
-					$root.css("-webkit-transform", transformStr);
-					$root.css("-moz-transform", transformStr);
-					$root.css("-o-transform", transformStr);
-					
-            	var scroll = $root.data("zoomooz-original-scroll");
-				if(scroll) {
-					console.log($root,scroll);
-					$root.scrollTop(scroll[1]);
-					$root.scrollLeft(scroll[0]);
-				}
+                $scroll.removeClass("noScroll");
+                 
+                var transformStr = "scale(1.0)";
+                    $root.css("-ms-transform", transformStr);
+                    $root.css("-webkit-transform", transformStr);
+                    $root.css("-moz-transform", transformStr);
+                    $root.css("-o-transform", transformStr);
+                    
+                var scroll = $root.data("zoomooz-original-scroll");
+                if(scroll) {
+                    console.log($root,scroll);
+                    $root.scrollTop(scroll[1]);
+                    $root.scrollLeft(scroll[0]);
+                }
             }
             
         } else if(!$scroll.hasClass("noScroll")) {
         
-        	$scroll.addClass("noScroll");
+            $scroll.addClass("noScroll");
             
             // safari
             var scrollY = $root.scrollTop();
@@ -183,11 +183,11 @@
             $root.css("-moz-transform", transformStr);
             $root.css("-o-transform", transformStr);
             
-	    }
-	    
-	    return animCompleteFunc;
-	}
-			
+        }
+        
+        return animCompleteFunc;
+    }
+            
     //**********************************//
     //***  Element positioning       ***//
     //**********************************//
