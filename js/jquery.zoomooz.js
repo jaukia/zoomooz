@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.88 fixed a bug with 90 deg rotations
  * 0.87 fixed a bug with settings and a couple of demos
  * 0.86 fixed a bug with non-body zoom root
  * 0.85 basic IE9 support
