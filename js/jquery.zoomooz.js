@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.89 support for jquery 1.7
  * 0.88 fixed a bug with 90 deg rotations
  * 0.87 fixed a bug with settings and a couple of demos
  * 0.86 fixed a bug with non-body zoom root
@@ -292,8 +293,19 @@
             return totalTransformation;
         }
         
-        jQuery.offset.initialize();
-    
+        var support;
+        if(jQuery.offset.initialize) {
+            jQuery.offset.initialize();
+            support = {
+                fixedPosition:jQuery.offset.supportsFixedPosition,
+                doesNotAddBorder:jQuery.offset.doesNotAddBorder,
+                doesAddBorderForTableAndCells:jQuery.support.doesAddBorderForTableAndCells,
+                subtractsBorderForOverflowNotVisible:jQuery.offset.subtractsBorderForOverflowNotVisible
+            }
+        } else {
+            support = jQuery.support;
+        }
+        
         var offsetParent = elem.offsetParent;
         var doc = elem.ownerDocument;
         var computedStyle;
@@ -317,7 +329,7 @@
         // loop from node down to root
         while ( (elem = elem.parentNode) && elem !== body && elem !== docElem && elem !== root) {
             top = 0; left = 0;
-            if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) {
+            if ( support.fixedPosition && prevComputedStyle.position === "fixed" ) {
                 break;
             }
             computedStyle = defaultView ? defaultView.getComputedStyle(elem, null) : elem.currentStyle;
@@ -326,13 +338,13 @@
             if ( elem === offsetParent ) {
                 top  += elem.offsetTop;
                 left += elem.offsetLeft;
-                if ( jQuery.offset.doesNotAddBorder && !(jQuery.offset.doesAddBorderForTableAndCells && /^t(able|d|h)$/i.test(elem.nodeName)) ) {
+                if ( support.doesNotAddBorder && !(support.doesAddBorderForTableAndCells && /^t(able|d|h)$/i.test(elem.nodeName)) ) {
                     top  += parseFloat( computedStyle.borderTopWidth  ) || 0;
                     left += parseFloat( computedStyle.borderLeftWidth ) || 0;
                 }
                 offsetParent = elem.offsetParent;
             }
-            if ( jQuery.offset.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" ) {
+            if ( support.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" ) {
                 top  += parseFloat( computedStyle.borderTopWidth  ) || 0;
                 left += parseFloat( computedStyle.borderLeftWidth ) || 0;
             }
@@ -349,7 +361,7 @@
             top  += body.offsetTop;
             left += body.offsetLeft;
         }
-        if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) {
+        if ( support.fixedPosition && prevComputedStyle.position === "fixed" ) {
             top  += Math.max( docElem.scrollTop, body.scrollTop );
             left += Math.max( docElem.scrollLeft, body.scrollLeft );
         }
