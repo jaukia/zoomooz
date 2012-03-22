@@ -2,7 +2,9 @@
 
 body {
     overflow:hidden;
-    font-family: "Helvetica Neue"
+    font-family: "Helvetica Neue";
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
 }
 
 #container {

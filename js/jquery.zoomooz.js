@@ -98,7 +98,7 @@
             duration: 1000,
             easing: "ease",
             root: $(document.body),
-            nativeanimation: false,
+            nativeanimation: true,
             debug: false
         };
     }

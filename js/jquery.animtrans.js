@@ -186,7 +186,9 @@
     }
     
     function matrixCompose(ia) {
-        var ret = "translate("+roundNumber(ia.tx,6)+"px,"+roundNumber(ia.ty,6)+"px) ";
+        var ret = "";
+        ret += "translateZ(0) ";
+        ret += "translate("+roundNumber(ia.tx,6)+"px,"+roundNumber(ia.ty,6)+"px) ";
         ret += "rotate("+roundNumber(ia.r,6)+"rad) skewX("+roundNumber(ia.k,6)+"rad) ";
         ret += "scale("+roundNumber(ia.sx,6)+","+roundNumber(ia.sy,6)+")";
         return ret;

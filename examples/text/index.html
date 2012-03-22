@@ -14,21 +14,21 @@
 				$(".zoomTarget").click(function(evt) {
 					evt.stopPropagation();
 					evt.preventDefault();
-					$(this).zoomTo({debug:true});
+					$(this).zoomTo({debug:true, nativeanimation:true});
 				});
 				
 				$(window).click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0});
+					$("body").zoomTo({targetsize:1.0, nativeanimation:true});
 				});
 				
 				// for iPhone
 				$("#container").click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0});
+					$("body").zoomTo({targetsize:1.0, nativeanimation:true});
 				});
 				
-				$("body").zoomTo({targetsize:1.0});
+				$("body").zoomTo({targetsize:1.0, nativeanimation:true});
 			});
 		</script>
 	</head>
