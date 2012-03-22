@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Simple test</title>
+		<link rel="stylesheet" href="../../style/zoomooz.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="../../lib/jquery-1.4.4.js"></script>
+		<script type="text/javascript" src="../../lib/sylvester.js"></script>
+		<script type="text/javascript" src="../../js/purecssmatrix.js"></script>
+		<script type="text/javascript" src="../../js/jquery.animtrans.js"></script>
+		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$(".zoomTarget").click(function(evt) {
+					evt.stopPropagation();
+					evt.preventDefault();
+					$(this).zoomTo({debug:true});
+				});
+				
+				$(window).click(function(evt) {
+					evt.stopPropagation();
+					$("body").zoomTo({targetsize:1.0});
+				});
+				
+				// for iPhone
+				$("#container").click(function(evt) {
+					evt.stopPropagation();
+					$("body").zoomTo({targetsize:1.0});
+				});
+				
+				$("body").zoomTo({targetsize:1.0});
+			});
+		</script>
+	</head>
+	<body>
+	    <div id="container">
+            <h1>Webkit text bug</h1>
+        
+            <p>Small font sizes look bad when zoomed to in Webkit. There is a way to make them look better but it requires making the text with double font size and then using css-transform to scale the element to half the size.</p>
+            
+            <p>If the element is not then absolutely positioned or cropped with overflow:hidden, the flow of the content will behave a bit weirdly.</p>
+	    
+	        <div id="item" class="zoomTarget">
+                This is some tiny text 1
+            </div>
+            
+            <div id="item2" class="zoomTarget">
+                <span>This is some tiny text 3</span>
+            </div>
+            
+	    </div>
+	</body>
+	
+	<!--************************
+		**  GOOGLE ANALYTICS      **
+		*************************-->
+			
+			<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-16288001-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</html>
+	

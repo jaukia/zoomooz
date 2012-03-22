@@ -1,0 +1,54 @@
+/* these are not necessary */
+
+body {
+    overflow:hidden;
+    font-family: "Helvetica Neue"
+}
+
+#container {
+    padding:50px;
+    padding-bottom:0px;
+}
+
+h1, p {
+    padding-bottom:25px;
+}
+
+div {
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+#item, #item2, #item3 {
+	float:left;
+}
+
+#item {
+	background-color:#fee;
+	padding:30px;
+	border:1px solid red;
+	font-size:3px;
+	margin-right:50px;
+	margin-bottom:50px;
+}
+
+#item2 {
+	background-color:#eef;
+	border:1px solid blue;
+	padding:30px;
+	font-size:3px;
+	margin-right:50px;
+	margin-bottom:50px;
+	width:93px;
+	height:66px;
+	overflow:hidden;
+	box-sizing:border-box;
+}
+
+#item2 span {
+    display:block;
+	font-size:15px;
+	width:465px;
+	-webkit-transform: scale(0.2);
+	-moz-transform: scale(0.2);
+	-o-transform: scale(0.2);
+}
