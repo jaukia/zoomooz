@@ -42,6 +42,7 @@ div {
 	height:66px;
 	overflow:hidden;
 	box-sizing:border-box;
+	-moz-box-sizing: border-box;
 }
 
 #item2 span {
