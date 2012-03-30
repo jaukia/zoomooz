@@ -11,7 +11,7 @@ body {
     user-select: none;
 }
 
-.section:hover, .highlight:hover, body:hover, .innerContent:hover {
+html:hover, .section:hover, .highlight:hover, body:hover, .innerContent:hover {
     cursor:move;
 }
 
