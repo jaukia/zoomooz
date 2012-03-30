@@ -101,7 +101,7 @@
     };
     
     cssMatrix.prototype.inverse = function() {
-        if(this.m.elements[0][0]<0.000001) {
+        if(Math.abs(this.m.elements[0][0])<0.000001) {
             /* fixes a weird displacement problem with 90 deg rotations */
             this.m.elements[0][0] = 0;
         }

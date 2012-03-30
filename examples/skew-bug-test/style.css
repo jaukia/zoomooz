@@ -1,0 +1,13 @@
+#f3 {
+    position:absolute;
+    width:200px;
+    height:200px;
+    left:550px;
+    top:350px;
+    padding:40px;
+    border:1px solid green;
+    
+    /* only problem when angle > 90deg ?! */
+    -webkit-transform: rotate(120deg);
+    -moz-transform: rotate(120deg);
+}

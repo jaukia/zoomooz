@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Isometric test</title>
+		<link rel="stylesheet" href="../../style/zoomooz.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="../../lib/jquery-1.4.4.js"></script>
+		<script type="text/javascript" src="../../lib/sylvester.js"></script>
+		<script type="text/javascript" src="../../js/purecssmatrix.js"></script>
+		<script type="text/javascript" src="../../js/jquery.animtrans.js"></script>
+		<script type="text/javascript" src="../../js/jquery.zoomooz.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+			    $("#f3").click(function(evt) {
+					evt.stopPropagation();
+					$(this).zoomTo({debug:true,targetsize:0.4});
+				});
+			});
+		</script>
+	</head>
+	<body>
+	    <div id="f3">
+	    </div>
+	</body>
+
+</html>
+	
