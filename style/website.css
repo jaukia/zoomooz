@@ -168,20 +168,28 @@ h1 {
     height:auto;
 }
 
+#gettingstarted {
+    height:115px;
+}
+
+#detailedsettings {
+    height:130px;
+}
+
+#samplecode {
+    height:180px;
+}
+
 .highlight {
 	background-color: #333;
-	padding:3px;
-	margin:3px;
-	
-	font-size:3px;
-	line-height:5px;
-	
-	/*
+	position:absolute;
+	width:auto;
+	padding-right:50px;
+	padding-left:20px;
 	font-size:12px;
 	line-height:20px;
-	width:400%;
+	width:240%;
 	-webkit-transform: scale(0.25);
-	*/
 	
 	overflow:hidden;
 }
