@@ -10,9 +10,12 @@ html, body {
 	padding: 0;
 	width:100%;
 	height:100%;
+    /* having overflow:auto for body here ensures that top-margin of the
+       first element of the body does not cause any weird errors */
+	overflow:auto;
 }
 
-html.noScroll {
+html.noScroll, html.noScroll body {
 	overflow:hidden;
 }
 

@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.90 fixing margin on first body child
  * 0.89 support for jquery 1.7
  * 0.88 fixed a bug with 90 deg rotations
  * 0.87 fixed a bug with settings and a couple of demos
