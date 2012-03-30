@@ -2,6 +2,13 @@ body {
     font-family: Helvetica, sans-serif;
 	font-size:11px;
 	line-height:1.45em;
+	
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 p {
@@ -198,7 +205,7 @@ h1 {
 	overflow:hidden;
 }
 
-.section:hover .highlight {
+.section .highlight:hover {
 	background-color: #555;
 }
 
