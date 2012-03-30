@@ -324,6 +324,7 @@
     
     // TODO: use modulo instead of loops
     function fixRotationToSameLap(current_affine, final_affine) {
+        
         if(Math.abs(current_affine.r-final_affine.r)>Math.PI) {
             if(final_affine.r<current_affine.r) {
                 while(Math.abs(current_affine.r-final_affine.r)>Math.PI) {

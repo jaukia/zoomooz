@@ -13,14 +13,14 @@
 			$(document).ready(function() {
 			    $(".cover").click(function(evt) {
 					evt.stopPropagation();
-					$(this).zoomTo();
+					$(this).zoomTo({debug:true,targetsize:0.3});
 					$(".cover").not(this).show();
 					$(this).hide();
 				});
 				
 				$(".box").click(function(evt) {
 					evt.stopPropagation();
-					$(this).zoomTo({targetsize:0.7});
+					$(this).zoomTo({debug:true,targetsize:0.7});
 				});
 				
 				$(".face").click(function(evt) {
@@ -30,18 +30,18 @@
 				
 				$(window).click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0});
+					$("body").zoomTo({debug:true,targetsize:1.0});
 					$(".cover").show();
 				});
 				
 				// for iPhone
 				$("#container").click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0});
+					$("body").zoomTo({debug:true,targetsize:1.0});
 					$(".cover").show();
 				});
 				
-				$("body").zoomTo({targetsize:1.0});
+				$("body").zoomTo({debug:true,targetsize:1.0});
 				$(".cover").show();
 				
 				$("input").change(function(evt) {
