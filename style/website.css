@@ -11,6 +11,14 @@ body {
     user-select: none;
 }
 
+.section:hover, .highlight:hover, body:hover, .innerContent:hover {
+    cursor:move;
+}
+
+a:hover {
+    cursor:pointer;cursor:hand;
+}
+
 p {
     margin-bottom: 1em;
     margin-top: 0px;
@@ -18,15 +26,23 @@ p {
 
 
 a {
-	text-decoration: underline;
 	color: white;
+	text-decoration:none;
 }
 
-a:hover {
+a img {
+    border: 1px solid transparent;
+}
+
+a img:hover {
+    border:1px solid #666;
+}
+
+a.linkText:hover {
 	text-decoration: underline;
 }
 
-a:after {
+a.linkText:after {
     content: "\00a0\00bb";
 }
 
@@ -84,10 +100,6 @@ img {
     text-decoration:none;
 }
 
-#video a:hover {
-    text-decoration:none;
-}
-
 #description {
     background-color: red;
     -webkit-transform:  translateX(50px) translateY(65px) rotate(-10deg) translateX(-50px) translateY(-50px);
@@ -111,8 +123,6 @@ img {
 
 .section:hover {
 	 background-color:#222;
-	 cursor:hand;
-	 cursor:pointer;
 }
 
 .downloadlink {
@@ -159,11 +169,8 @@ h1 {
 .linkblock {
 	display:block;
 	float:left;
-	height:130px;
-}
-
-.linkblock:hover {
-    text-decoration: none;
+	margin:0px;
+	padding:0px;
 }
 
 .linkblock, .linkblock img {
