@@ -49,8 +49,10 @@ img {
 }
 
 #title {
-    margin-left:2%;
-    margin-top:20px;
+    /* of some reason, a margin-top here caused
+       problems with zoomooz element position calculations!
+       padding-top works better. */
+    padding-top:20px;
     width:96%;
     border-bottom:1px solid black;
     margin-bottom:0.5em;
