@@ -177,7 +177,7 @@ h1 {
 }
 
 #samplecode {
-    height:180px;
+    height:200px;
 }
 
 .highlight {
@@ -189,7 +189,11 @@ h1 {
 	font-size:12px;
 	line-height:20px;
 	width:240%;
+	
 	-webkit-transform: scale(0.25);
+	-moz-transform: scale(0.25);
+	-ms-transform: scale(0.25);
+	transform: scale(0.25);
 	
 	overflow:hidden;
 }
