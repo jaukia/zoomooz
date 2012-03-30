@@ -54,6 +54,7 @@ img {
        padding-top works better. */
     padding-top:20px;
     width:96%;
+    margin-left:2%;
     border-bottom:1px solid black;
     margin-bottom:0.5em;
     padding-bottom:0.5em;
@@ -61,7 +62,7 @@ img {
 
 #footer {
     border-top:1px solid black;
-    margin-bottom:2.0em;
+    padding-bottom:20px;
     margin-left:2%;
     width:96%;
     margin-top:-20px;
