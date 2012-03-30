@@ -152,16 +152,19 @@
     	
     	if(elem[0] === $root[0]) {
         
-            /*var scrollData = $scroll.data("original-scroll");
+            var scrollData = $scroll.data("original-scroll");
             
             if(scrollData) {
                 var elem = scrollData[0];
                 var scrollX = scrollData[1];
                 var scrollY = scrollData[2];
-                elem.scrollLeft(scrollX);
-                elem.scrollTop(scrollY);
+                
+                /* does not work correctly unless the final scroll is set
+                   first when the zooming out is done */
+                elem.animate({scrollLeft:scrollX},settings.duration);
+                elem.animate({scrollTop:scrollY},settings.duration);
                 $scroll.data("original-scroll",null);
-            }*/
+            }
             
             // release scroll lock
             $scroll.removeClass("noScroll");
@@ -182,10 +185,15 @@
             
             $scroll.addClass("noScroll");
             
-            //$scroll.data("original-scroll",[elem,scrollX,scrollY]);
+            $scroll.data("original-scroll",[elem,scrollX,scrollY]);
             
-            $root.scrollTop(0);
-            $root.scrollLeft(0);
+            // hack for kinda animating the scroll.
+            // the scroll animating should be incorporated into the
+            // default anim in some way.
+            //
+            // this is better than noting.
+            $root.animate({scrollTop:0},settings.duration);
+            $root.animate({scrollLeft:0},settings.duration);
             
             var transformStr = "translate(-"+scrollX+"px,-"+scrollY+"px)";
             $root.css("-ms-transform", transformStr);
