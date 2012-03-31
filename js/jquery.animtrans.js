@@ -187,7 +187,8 @@
     
     function matrixCompose(ia) {
         var ret = "";
-        ret += "translateZ(0) ";
+        /* this probably made safari 5.1.1. + os 10.6.8 + non-unibody mac? */
+        //ret += "translateZ(0) ";
         ret += "translate("+roundNumber(ia.tx,6)+"px,"+roundNumber(ia.ty,6)+"px) ";
         ret += "rotate("+roundNumber(ia.r,6)+"rad) skewX("+roundNumber(ia.k,6)+"rad) ";
         ret += "scale("+roundNumber(ia.sx,6)+","+roundNumber(ia.sy,6)+")";
