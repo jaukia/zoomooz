@@ -6,39 +6,23 @@
 		
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-		<!--<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>-->
+		<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>
 		
-		<script type="text/javascript" src="../../src/js/jquery.zoomooz-helpers.js"></script>
+		<!--<script type="text/javascript" src="../../src/js/jquery.zoomooz-helpers.js"></script>
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-anim.js"></script>
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-core.js"></script>
 		<script type="text/javascript" src="../../src/js/purecssmatrix.js"></script>
-		<script type="text/javascript" src="../../src/js/sylvester.src.stripped.js"></script>
+		<script type="text/javascript" src="../../src/js/sylvester.src.stripped.js"></script>-->
 		
 		<script type="text/javascript">
-			
-			var zoomTargetElements = ["#container","#item1","#item2","#item2b","#item3","#item3b","#item4"];
-			var zoomTargetIndex = 0;
-			
 			$(document).ready(function() {
-				$.zoomooz.setup({root:$("#container"),targetsize:0.8});
-				
-			    $("#outerContainer, #container").click(function(evt) {
-					evt.stopPropagation();
-				    $("#container").zoomTo();
-				});
-				
-				$(".item").click(function(evt) {
-					evt.stopPropagation();
-					$(this).zoomTo();
-				});
-				
-				$("#container").zoomTo();
+				$(".item").makeZooming({root:$("#content"),targetsize:0.8});
 			});
 		</script>
 	</head>
 	<body>
-		<div id="outerContainer">
-			<div id="container">
+		<div id="viewport">
+			<div id="content">
 			    <div class="item">Lorem ipsum dolor sit amet.</div>
 			    <div class="item">Donec faucibus pharetra vestibulum.</div>
 			    <div class="item">Fusce nec sapien sit amet nisi dictum iaculis.</div>
@@ -60,7 +44,7 @@
 		**  GOOGLE ANALYTICS      **
 		*************************-->
 			
-			<!--<script type="text/javascript">
+			<script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
@@ -68,7 +52,7 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 try {
 var pageTracker = _gat._getTracker("UA-16288001-1");
 pageTracker._trackPageview();
-} catch(err) {}</script>-->
+} catch(err) {}</script>
 
 </html>
 	

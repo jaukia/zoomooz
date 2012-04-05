@@ -1,18 +1,20 @@
-/* these are not necessary */
-
 html {
     background-color:#eee;
 }
 
-#container {
+#content, #viewport {
 	width:800px;
     height:600px;
 }
 
-#outerContainer {
+#viewport {
 	background-color: white;
-	width:815px;
-	height:600px;
+	
+	/* for the scrollbar */
+	padding-right:15px;
+
+    /* this needs to have some kind of positioning, absolute
+       or relative */
 	position:relative;
 	
 	margin-left:auto;

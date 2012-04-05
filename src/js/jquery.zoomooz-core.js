@@ -98,6 +98,33 @@
         return this;
     };
     
+    $.fn.makeZooming = function(settings) {
+        if(!default_settings) {
+            $.zoomooz.setup();
+        }
+        
+        // first argument empty object to ensure that 
+        // the default settings are not modified
+        settings = jQuery.extend({}, default_settings, settings);
+        
+        var setupClickHandler = function(clickTarget,zoomTarget) {
+            clickTarget.click(function(evt) {
+                zoomTarget.zoomTo(settings);
+                evt.stopPropagation();
+            });
+            clickTarget.addClass("zoomTarget");
+        }
+        
+        this.each(function() {
+            setupClickHandler($(this),$(this));
+        });
+        
+        if(!settings.root.hasClass("zoomTarget")) {
+            setupClickHandler(settings.root,settings.root);
+            setupClickHandler(settings.root.parent(),settings.root);
+        }
+    }
+    
     //**********************************//
     //***  Setup functions           ***//
     //**********************************//
@@ -116,9 +143,16 @@
             return retVal;
         }
         
+        var textSelectionDisabling = "-webkit-touch-callout: none;";
+        helpers.forEachPrefix(function(prefix) {
+            textSelectionDisabling += prefix+"user-select:none;";
+        },true);
+            
         // FIXME: could we remove the body origin assignment?
         // FIXME: do we need the html and body assignments always?
         style.innerHTML = ".noScroll{overflow:hidden !important;}" +
+                          ".zoomTarget{"+textSelectionDisabling+"}"+
+                          ".zoomTarget:hover{cursor:move;}"+
                           "* {"+setPrefix("0")+"} body {"+setPrefix("50%")+"}";
         
         document.getElementsByTagName('head')[0].appendChild(style);
