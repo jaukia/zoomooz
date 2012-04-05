@@ -153,7 +153,8 @@
             
         // FIXME: could we remove the body origin assignment?
         // FIXME: do we need the html and body assignments always?
-        style.innerHTML = ".noScroll{overflow:hidden !important;}" +
+        style.innerHTML = "html {width:100%; height:100%;}" +
+                          ".noScroll{overflow:hidden !important;}" +
                           ".zoomTarget{"+textSelectionDisabling+"}"+
                           ".zoomTarget:hover{cursor:pointer!important;}"+
                           ".selectedZoomTarget:hover{cursor:auto!important;}"+
@@ -185,15 +186,17 @@
         // computeTotalTransformation does not work correctly if the
         // element and the root are the same
         if(elem[0] !== settings.root[0]) {
-        	rootTransformation = computeViewportTransformation(elem, 
-        	    computeTotalTransformation(elem, settings.root).inverse(), 
-        	    settings);
+            console.log("zooming to non-root");
+            var inv = computeTotalTransformation(elem, settings.root).inverse();
+            rootTransformation = computeViewportTransformation(elem, inv, settings);
         	    
         	animateEndCallback = function() {
-        	    $(".zoomTarget").removeClass("selectedZoomTarget");
+        	    console.log("non-root callback");
+        	    $(".selectedZoomTarget").removeClass("selectedZoomTarget");
         	    elem.addClass("selectedZoomTarget");
-        	}
+        	};
         } else {
+            console.log("zooming to root");
             rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
             animateEndCallback = function() {
                 var $root = $(settings.root);
@@ -205,7 +208,7 @@
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
                 
-                $(".zoomTarget").removeClass("selectedZoomTarget");
+                $(".selectedZoomTarget").removeClass("selectedZoomTarget");
         	    elem.addClass("selectedZoomTarget");
         	    elem.parent().addClass("selectedZoomTarget");
             };
@@ -233,7 +236,7 @@
                 return {"elem": $scroll, "x":0,"y:":0};
             }
             
-        } else if(!$scroll.hasClass("noScroll")) {
+        } else if(!$root.data("original-scroll")) {
         
             // safari
             var scrollY = $root.scrollTop();
@@ -275,6 +278,8 @@
         
         var dw = zoomViewport.width();
         var dh = zoomViewport.height();
+        console.log("view port size:",zoomViewport.width(),zoomViewport.height());
+        console.log("zoom root size:",zoomParent.width(),zoomParent.height());
         
         var relw = dw/elem.outerWidth();
         var relh = dh/elem.outerHeight();

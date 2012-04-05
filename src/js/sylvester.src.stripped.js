@@ -35,6 +35,19 @@ Matrix.prototype = {
   dup: function() {
     return Matrix.create(this.elements);
   },
+  
+  // Maps the matrix to another matrix (of the same dimensions) according to the given function
+  /*map: function(fn) {
+    var els = [], ni = this.elements.length, ki = ni, i, nj, kj = this.elements[0].length, j;
+    do { i = ki - ni;
+      nj = kj;
+      els[i] = [];
+      do { j = kj - nj;
+        els[i][j] = fn(this.elements[i][j], i + 1, j + 1);
+      } while (--nj);
+    } while (--ni);
+    return Matrix.create(els);
+  },*/
 
   // Returns true iff the matrix can multiply the argument from the left
   canMultiplyFromLeft: function(matrix) {
@@ -43,15 +56,15 @@ Matrix.prototype = {
     // this.columns should equal matrix.rows
     return (this.elements[0].length == M.length);
   },
-
+  
   // Returns the result of multiplying the matrix from the right by the argument.
   // If the argument is a scalar then just multiply all the elements. If the argument is
   // a vector, a vector is returned, which saves you having to remember calling
   // col(1) on the result.
   multiply: function(matrix) {
-    if (!matrix.elements) {
+    /*if (!matrix.elements) {
       return this.map(function(x) { return x * matrix; });
-    }
+    }*/
     var returnVector = matrix.modulus ? true : false;
     var M = matrix.elements || matrix;
     if (typeof(M[0][0]) == 'undefined') { M = Matrix.create(M).elements; }

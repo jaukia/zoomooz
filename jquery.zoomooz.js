@@ -745,7 +745,8 @@ if(!$.zoomooz) {
             
         // FIXME: could we remove the body origin assignment?
         // FIXME: do we need the html and body assignments always?
-        style.innerHTML = ".noScroll{overflow:hidden !important;}" +
+        style.innerHTML = "html {width:100%; height:100%;}" +
+                          ".noScroll{overflow:hidden !important;}" +
                           ".zoomTarget{"+textSelectionDisabling+"}"+
                           ".zoomTarget:hover{cursor:pointer!important;}"+
                           ".selectedZoomTarget:hover{cursor:auto!important;}"+
@@ -777,15 +778,17 @@ if(!$.zoomooz) {
         // computeTotalTransformation does not work correctly if the
         // element and the root are the same
         if(elem[0] !== settings.root[0]) {
-        	rootTransformation = computeViewportTransformation(elem, 
-        	    computeTotalTransformation(elem, settings.root).inverse(), 
-        	    settings);
+            console.log("zooming to non-root");
+            var inv = computeTotalTransformation(elem, settings.root).inverse();
+            rootTransformation = computeViewportTransformation(elem, inv, settings);
         	    
         	animateEndCallback = function() {
-        	    $(".zoomTarget").removeClass("selectedZoomTarget");
+        	    console.log("non-root callback");
+        	    $(".selectedZoomTarget").removeClass("selectedZoomTarget");
         	    elem.addClass("selectedZoomTarget");
-        	}
+        	};
         } else {
+            console.log("zooming to root");
             rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
             animateEndCallback = function() {
                 var $root = $(settings.root);
@@ -797,7 +800,7 @@ if(!$.zoomooz) {
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
                 
-                $(".zoomTarget").removeClass("selectedZoomTarget");
+                $(".selectedZoomTarget").removeClass("selectedZoomTarget");
         	    elem.addClass("selectedZoomTarget");
         	    elem.parent().addClass("selectedZoomTarget");
             };
@@ -825,7 +828,7 @@ if(!$.zoomooz) {
                 return {"elem": $scroll, "x":0,"y:":0};
             }
             
-        } else if(!$scroll.hasClass("noScroll")) {
+        } else if(!$root.data("original-scroll")) {
         
             // safari
             var scrollY = $root.scrollTop();
@@ -867,6 +870,8 @@ if(!$.zoomooz) {
         
         var dw = zoomViewport.width();
         var dh = zoomViewport.height();
+        console.log("view port size:",zoomViewport.width(),zoomViewport.height());
+        console.log("zoom root size:",zoomParent.width(),zoomParent.height());
         
         var relw = dw/elem.outerWidth();
         var relh = dh/elem.outerHeight();
@@ -1089,6 +1094,19 @@ Matrix.prototype = {
   dup: function() {
     return Matrix.create(this.elements);
   },
+  
+  // Maps the matrix to another matrix (of the same dimensions) according to the given function
+  /*map: function(fn) {
+    var els = [], ni = this.elements.length, ki = ni, i, nj, kj = this.elements[0].length, j;
+    do { i = ki - ni;
+      nj = kj;
+      els[i] = [];
+      do { j = kj - nj;
+        els[i][j] = fn(this.elements[i][j], i + 1, j + 1);
+      } while (--nj);
+    } while (--ni);
+    return Matrix.create(els);
+  },*/
 
   // Returns true iff the matrix can multiply the argument from the left
   canMultiplyFromLeft: function(matrix) {
@@ -1097,15 +1115,15 @@ Matrix.prototype = {
     // this.columns should equal matrix.rows
     return (this.elements[0].length == M.length);
   },
-
+  
   // Returns the result of multiplying the matrix from the right by the argument.
   // If the argument is a scalar then just multiply all the elements. If the argument is
   // a vector, a vector is returned, which saves you having to remember calling
   // col(1) on the result.
   multiply: function(matrix) {
-    if (!matrix.elements) {
+    /*if (!matrix.elements) {
       return this.map(function(x) { return x * matrix; });
-    }
+    }*/
     var returnVector = matrix.modulus ? true : false;
     var M = matrix.elements || matrix;
     if (typeof(M[0][0]) == 'undefined') { M = Matrix.create(M).elements; }
