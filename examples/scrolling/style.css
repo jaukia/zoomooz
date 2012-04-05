@@ -19,6 +19,7 @@ html {
 	
 	margin:35px auto 0px auto;
 	-webkit-box-shadow: 0 0px 10px rgba(0,0,0,0.2);
+	-moz-box-shadow: 0 0px 10px rgba(0,0,0,0.2);
     
     overflow-y:scroll;
 }
