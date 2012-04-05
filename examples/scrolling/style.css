@@ -1,27 +1,23 @@
 html {
     background-color:#eee;
-    font-family: 'Fjord One', serif;
-    font-size: 22px;
+    font: 22px 'Fjord One', serif;
 }
 
-#content, #viewport {
-	width:800px;
-    height:600px;
+.clearer {
+    clear:both;
 }
 
 #viewport {
 	background-color: white;
-	
-	/* for the scrollbar */
-	padding-right:15px;
 
+	width:800px;
+    height:600px;
+	
     /* this needs to have some kind of positioning, absolute
        or relative */
 	position:relative;
 	
-	margin-left:auto;
-	margin-right:auto;
-	margin-top:35px;
+	margin:35px auto 0px auto;
 	-webkit-box-shadow: 0 0px 10px rgba(0,0,0,0.2);
     
     overflow-y:scroll;
@@ -30,7 +26,7 @@ html {
 .item {
     float:left;
     background-color:#eeeedf;
-	width:260px;
+	width:250px;
 	margin:20px;
 	padding:50px;
 	overflow:hidden;

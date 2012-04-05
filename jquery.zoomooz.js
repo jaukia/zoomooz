@@ -671,6 +671,7 @@ if(!$.zoomooz) {
         
         // um, does it make any sense to zoom to each of the matches?
         this.each(function() {
+        
             zoomTo($(this), settings);
             
             if(settings.debug) {
@@ -714,6 +715,8 @@ if(!$.zoomooz) {
         if(!settings.root.hasClass("zoomTarget")) {
             setupClickHandler(settings.root,settings.root);
             setupClickHandler(settings.root.parent(),settings.root);
+            
+            settings.root.click();
         }
     }
     
@@ -744,7 +747,8 @@ if(!$.zoomooz) {
         // FIXME: do we need the html and body assignments always?
         style.innerHTML = ".noScroll{overflow:hidden !important;}" +
                           ".zoomTarget{"+textSelectionDisabling+"}"+
-                          ".zoomTarget:hover{cursor:move;}"+
+                          ".zoomTarget:hover{cursor:pointer!important;}"+
+                          ".selectedZoomTarget:hover{cursor:auto!important;}"+
                           "* {"+setPrefix("0")+"} body {"+setPrefix("50%")+"}";
         
         document.getElementsByTagName('head')[0].appendChild(style);
@@ -776,6 +780,11 @@ if(!$.zoomooz) {
         	rootTransformation = computeViewportTransformation(elem, 
         	    computeTotalTransformation(elem, settings.root).inverse(), 
         	    settings);
+        	    
+        	animateEndCallback = function() {
+        	    $(".zoomTarget").removeClass("selectedZoomTarget");
+        	    elem.addClass("selectedZoomTarget");
+        	}
         } else {
             rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
             animateEndCallback = function() {
@@ -787,6 +796,10 @@ if(!$.zoomooz) {
                 $scroll.removeClass("noScroll");
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
+                
+                $(".zoomTarget").removeClass("selectedZoomTarget");
+        	    elem.addClass("selectedZoomTarget");
+        	    elem.parent().addClass("selectedZoomTarget");
             };
         }
     	
@@ -850,9 +863,10 @@ if(!$.zoomooz) {
         var zoomAmount = settings.targetsize;
         var zoomMode = settings.scalemode;
         var zoomParent = settings.root;
+        var zoomViewport = $(zoomParent).parent();
         
-        var dw = $(zoomParent).width();
-        var dh = $(zoomParent).height();
+        var dw = zoomViewport.width();
+        var dh = zoomViewport.height();
         
         var relw = dw/elem.outerWidth();
         var relh = dh/elem.outerHeight();
