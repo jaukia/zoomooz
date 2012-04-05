@@ -526,6 +526,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.91 simplifying code base and scrolling for non-body zoom roots
  * 0.90 fixing margin on first body child
  * 0.89 support for jquery 1.7
  * 0.88 fixed a bug with 90 deg rotations
@@ -639,7 +640,7 @@
         // FIXME: could we remove the body origin assignment?
         // FIXME: do we need the html and body assignments always?
         style.innerHTML = "html,body {margin:0;padding:0;width:100%;height:100%;} " +
-                          ".noScroll {overflow:hidden;}" +
+                          ".noScroll {overflow:hidden !important;}" +
                           "* {"+setPrefix("0")+"} body {"+setPrefix("50%")+"}";
         
         document.getElementsByTagName('head')[0].appendChild(style);
@@ -652,7 +653,10 @@
             duration: 1000,
             easing: "ease",
             root: $(document.body),
-            nativeanimation: true,
+            /* FIXME: i believe there are issues with native anim at least on chrome for mac
+               so i disabled the default native animation for now. should have a better look
+               at this at some point. */
+            nativeanimation: false,
             debug: false
         };
     }
@@ -692,16 +696,9 @@
     //**********************************//
     
     function handleScrolling(elem, settings) {
+    	
     	var $root = settings.root;
-    	
-    	// TODO: untested for non-body zoom roots!
-    	
-    	var $scroll;
-    	if($root[0] === document.body) {
-    	    $scroll = $("html");
-    	} else {
-    	    $scroll = $root;
-    	}
+    	var $scroll = $root.parent();
     	
     	if(elem[0] === $root[0]) {
         
@@ -745,8 +742,8 @@
             // default anim in some way.
             //
             // this is better than noting.
-            $root.animate({scrollTop:0},settings.duration);
-            $root.animate({scrollLeft:0},settings.duration);
+            elem.animate({scrollTop:0},settings.duration);
+            elem.animate({scrollLeft:0},settings.duration);
             
             var transformStr = "translate(-"+scrollX+"px,-"+scrollY+"px)";
             for(var i=0;i<browser_prefixes.length;i++) {
@@ -984,6 +981,9 @@
     }
     
 })(jQuery);
+// Everything but the relevant parts stripped out by Janne Aukia
+// for Zoomooz on April 4 2012 by using jscoverage coverage analysis tool.
+
 // === Sylvester ===
 // Vector and Matrix mathematics modules for JavaScript
 // Copyright (c) 2007 James Coglan
