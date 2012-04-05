@@ -1,5 +1,7 @@
 html {
     background-color:#eee;
+    font-family: 'Fjord One', serif;
+    font-size: 22px;
 }
 
 #content, #viewport {
@@ -27,9 +29,9 @@ html {
 
 .item {
     float:left;
-    background-color:#eee;
-	width:320px;
-	height:110px;
+    background-color:#eeeedf;
+	width:260px;
 	margin:20px;
-	padding:20px;
+	padding:50px;
+	overflow:hidden;
 }
