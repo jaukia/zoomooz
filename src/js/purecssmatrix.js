@@ -136,6 +136,21 @@
                          printFixedNumber(e[0][2])+pxstr+", "+printFixedNumber(e[1][2])+pxstr+")";
     };
     
+    //****************************************//
+    //***  Not part of the WebkitCSSMatrix ***//
+    //***  interface (but used in Zoomooz) ***//
+    //****************************************//
+    
+    cssMatrix.prototype.elements = function() {
+        var mv = this.m.elements;
+        return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
+                "d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
+    }
+    
+    //**********************************//
+    //***  Helpers                   ***//
+    //**********************************//
+    
     function filterNumber(x) {
         return x.match(regexp_filter_number);
     }

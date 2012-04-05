@@ -1,5 +1,5 @@
 /*
- * jquery.zoomooz.js, part of:
+ * jquery.zoomooz-core.js, part of:
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
@@ -46,10 +46,9 @@
     //***  Variables                 ***//
     //**********************************//
     
-    var css_matrix_class;
     var default_settings;
-    var browser_prefixes = ["-moz-","-webkit-","-o-","-ms-"];
-    
+    var helpers = $.zoomooz.helpers;
+
     //**********************************//
     //***  Static setup              ***//
     //**********************************//
@@ -60,15 +59,17 @@
     //***  jQuery functions          ***//
     //**********************************//
     
-    $.zoomMooz = {};
-    $.zoomMooz.setup = function(settings) {
+    if(!$.zoomooz) {
+        $.zoomooz = {};
+    }
+    
+    $.zoomooz.setup = function(settings) {
         default_settings = jQuery.extend(constructDefaultSettings(), settings);
-        css_matrix_class = setupMatrixClass(default_settings);
     };
     
     $.fn.zoomTo = function(settings) {
         if(!default_settings) {
-            $.zoomMooz.setup();
+            $.zoomooz.setup();
         }
         
         // first argument empty object to ensure that the default settings
@@ -108,9 +109,9 @@
         
         var setPrefix = function(val) {
             var retVal = "";
-            for(var i=0;i<browser_prefixes.length;i++) {
-                retVal += browser_prefixes[i]+"transform-origin: "+val+" "+val+";";
-            }
+            helpers.forEachPrefix(function(prefix) {
+                retVal += prefix+"transform-origin: "+val+" "+val+";";
+            });
             return retVal;
         }
         
@@ -128,20 +129,9 @@
             targetsize: 0.9,
             scalemode: "both",
             duration: 1000,
-            easing: "ease",
             root: $(document.body),
-            /* FIXME: i believe there are issues with native anim at least on chrome for mac
-               so i disabled the default native animation for now. should have a better look
-               at this at some point. */
-            nativeanimation: false,
             debug: false
         };
-    }
-    
-    function setupMatrixClass(settings) {
-        // could use WebKitCSSMatrix in webkit as well, which would
-        // speed up computation a bit, but this eases debugging
-        return PureCSSMatrix;
     }
     
     //**********************************//
@@ -151,21 +141,18 @@
     function zoomTo(elem, settings) {
         handleScrolling(elem, settings);
         
-        if(elem[0] === settings.root[0]) {
-        	
-        	// computeTotalTransformation does not work correctly if the
-        	// element and the root are the same
-        	
-        	$(settings.root).animateTransformation(new css_matrix_class(), settings, css_matrix_class);
-        	
-        } else {
-        	
+        var rootTransformation = null;
+        
+        // computeTotalTransformation does not work correctly if the
+        // element and the root are the same
+        if(elem[0] !== settings.root[0]) {
         	var transform = computeTotalTransformation(elem, settings.root);
         	var inverse = (transform) ? transform.inverse(): null;
-        	var roottrans = computeViewportTransformation(elem, inverse, settings);
-        	
-        	$(settings.root).animateTransformation(roottrans, settings, css_matrix_class);
-    	}
+        	rootTransformation = computeViewportTransformation(elem, inverse, settings);
+        }
+    		
+        $(settings.root).animateTransformation(rootTransformation, settings);
+        
     }
     
     //**********************************//
@@ -223,9 +210,9 @@
             elem.animate({scrollLeft:0},settings.duration);
             
             var transformStr = "translate(-"+scrollX+"px,-"+scrollY+"px)";
-            for(var i=0;i<browser_prefixes.length;i++) {
-                $root.css(browser_prefixes[i]+"transform", transformStr);
-            }
+            helpers.forEachPrefix(function(prefix) {
+                $root.css(prefix+"transform", transformStr);
+            });
             
 	    }
 	}
@@ -265,11 +252,11 @@
         
         var offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
         
-        for(var i=0;i<browser_prefixes.length;i++) {
-            zoomParent.css(browser_prefixes[i]+"transform-origin", offsetStr);
-        }
+        helpers.forEachPrefix(function(prefix) {
+             zoomParent.css(prefix+"transform-origin", offsetStr);
+        });
         
-        var endpostrans = new css_matrix_class();
+        var endpostrans = new PureCSSMatrix();
         endpostrans = endpostrans.translate(-xrotorigin,-yrotorigin);
         endpostrans = endpostrans.translate(xoffset,yoffset);
         endpostrans = endpostrans.scale(scale,scale);
@@ -290,8 +277,7 @@
     }
     
     function showDebug(elem, settings) {
-        var transform = computeTotalTransformation(elem, settings.root);
-        var e = fetchElements(transform);
+        var e = computeTotalTransformation(elem, settings.root).elements();
         displayLabel(calcPoint(e,0,0));
         displayLabel(calcPoint(e,0,elem.outerHeight()));
         displayLabel(calcPoint(e,elem.outerWidth(),elem.outerHeight()));
@@ -319,12 +305,12 @@
             return null;
         }
         
-        var totalTransformation = new css_matrix_class();
+        var totalTransformation = new PureCSSMatrix();
         
         var trans;
         if ( elem === elem.ownerDocument.body ) {
             var bOffset = jQuery.offset.bodyOffset( elem );
-            trans = new css_matrix_class();
+            trans = new PureCSSMatrix();
             trans = trans.translate(bOffset.left, bOffset.top);
             totalTransformation = totalTransformation.multiply(trans);
             return totalTransformation;
@@ -403,42 +389,11 @@
             left += Math.max( docElem.scrollLeft, body.scrollLeft );
         }
         
-        var itertrans = (new css_matrix_class()).translate(left,top);
+        var itertrans = (new PureCSSMatrix()).translate(left,top);
         totalTransformation = totalTransformation.multiply(itertrans);
         
         return totalTransformation;
         
-    }
-
-    //**********************************//
-    //***  CSS Matrix helpers        ***//
-    //**********************************//
-    
-    // also in animtrans
-    function fetchElements(m) {
-        var mv;
-        
-        if(m instanceof PureCSSMatrix) {
-            mv = m.m.elements;
-        } else if(m instanceof Matrix) {
-            mv = m.elements;
-        }
-        
-        if(!mv) {
-            return {"a":m.a,"b":m.b,"c":m.c,"d":m.d,"e":m.e,"f":m.f};
-        }
-        
-        return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
-                "d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
-    }
-    
-    function constructTransformation(elem) {
-        var rawTrans = getElementTransform(elem);
-        if(!rawTrans) {
-            return new css_matrix_class();
-        } else {
-            return new css_matrix_class(rawTrans);
-        }
     }
     
     //**********************************//
@@ -449,12 +404,13 @@
         return Number(x).toFixed(6);
     }
     
-    function getElementTransform(elem) {
-        return ($(elem).css("-webkit-transform") || 
-                $(elem).css("-moz-transform") || 
-                $(elem).css("-o-transform") || 
-                $(elem).css("-ms-transform") || 
-                $(elem).css("transform"));
-    }
+    function constructTransformation(elem) {
+        var rawTrans = helpers.getElementTransform(elem);
+        if(!rawTrans) {
+            return new PureCSSMatrix();
+        } else {
+            return new PureCSSMatrix(rawTrans);
+        }
+    }  
     
 })(jQuery);

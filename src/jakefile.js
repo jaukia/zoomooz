@@ -30,7 +30,7 @@ task('concat', [], function() {
   	    fs.mkdirSync("build",0744);
   	 }
   
-	 var ownfiles = ['js/purecssmatrix.js','js/jquery.zoomooz-anim.js','js/jquery.zoomooz-core.js'],
+	 var ownfiles = ['js/purecssmatrix.js','js/jquery.zoomooz-helpers.js','js/jquery.zoomooz-anim.js','js/jquery.zoomooz-core.js'],
 		 extrafiles = ['js/sylvester.src.stripped.js'],
 		 pathName = '.';
 	 
