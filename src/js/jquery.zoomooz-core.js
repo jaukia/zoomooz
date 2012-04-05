@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.91 simplifying code base and scrolling for non-body zoom roots
  * 0.90 fixing margin on first body child
  * 0.89 support for jquery 1.7
  * 0.88 fixed a bug with 90 deg rotations
@@ -47,6 +48,13 @@
     
     var css_matrix_class;
     var default_settings;
+    var browser_prefixes = ["-moz-","-webkit-","-o-","-ms-"];
+    
+    //**********************************//
+    //***  Static setup              ***//
+    //**********************************//
+    
+    setupCssStyles();
     
     //**********************************//
     //***  jQuery functions          ***//
@@ -92,6 +100,29 @@
     //***  Setup functions           ***//
     //**********************************//
     
+    /* setup css styles in javascript to not need an extra zoomooz.css file for the user to load.
+       having the styles here helps also at keeping the css requirements minimal. */
+    function setupCssStyles() {
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        
+        var setPrefix = function(val) {
+            var retVal = "";
+            for(var i=0;i<browser_prefixes.length;i++) {
+                retVal += browser_prefixes[i]+"transform-origin: "+val+" "+val+";";
+            }
+            return retVal;
+        }
+        
+        // FIXME: could we remove the body origin assignment?
+        // FIXME: do we need the html and body assignments always?
+        style.innerHTML = "html,body {margin:0;padding:0;width:100%;height:100%;} " +
+                          ".noScroll {overflow:hidden !important;}" +
+                          "* {"+setPrefix("0")+"} body {"+setPrefix("50%")+"}";
+        
+        document.getElementsByTagName('head')[0].appendChild(style);
+    }
+    
     function constructDefaultSettings() {
         return {
             targetsize: 0.9,
@@ -99,7 +130,10 @@
             duration: 1000,
             easing: "ease",
             root: $(document.body),
-            nativeanimation: true,
+            /* FIXME: i believe there are issues with native anim at least on chrome for mac
+               so i disabled the default native animation for now. should have a better look
+               at this at some point. */
+            nativeanimation: false,
             debug: false
         };
     }
@@ -139,16 +173,9 @@
     //**********************************//
     
     function handleScrolling(elem, settings) {
+    	
     	var $root = settings.root;
-    	
-    	// TODO: untested for non-body zoom roots!
-    	
-    	var $scroll;
-    	if($root[0] === document.body) {
-    	    $scroll = $("html");
-    	} else {
-    	    $scroll = $root;
-    	}
+    	var $scroll = $root.parent();
     	
     	if(elem[0] === $root[0]) {
         
@@ -192,14 +219,13 @@
             // default anim in some way.
             //
             // this is better than noting.
-            $root.animate({scrollTop:0},settings.duration);
-            $root.animate({scrollLeft:0},settings.duration);
+            elem.animate({scrollTop:0},settings.duration);
+            elem.animate({scrollLeft:0},settings.duration);
             
             var transformStr = "translate(-"+scrollX+"px,-"+scrollY+"px)";
-            $root.css("-ms-transform", transformStr);
-            $root.css("-webkit-transform", transformStr);
-            $root.css("-moz-transform", transformStr);
-            $root.css("-o-transform", transformStr);
+            for(var i=0;i<browser_prefixes.length;i++) {
+                $root.css(browser_prefixes[i]+"transform", transformStr);
+            }
             
 	    }
 	}
@@ -238,10 +264,10 @@
         var yrotorigin = dh/2.0;
         
         var offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
-        zoomParent.css("-ms-transform-origin", offsetStr);
-        zoomParent.css("-webkit-transform-origin", offsetStr);
-        zoomParent.css("-o-transform-origin", offsetStr);
-        zoomParent.css("-moz-transform-origin", offsetStr);
+        
+        for(var i=0;i<browser_prefixes.length;i++) {
+            zoomParent.css(browser_prefixes[i]+"transform-origin", offsetStr);
+        }
         
         var endpostrans = new css_matrix_class();
         endpostrans = endpostrans.translate(-xrotorigin,-yrotorigin);
@@ -273,7 +299,9 @@
     }
     
     function displayLabel(pos) {
-        var label = '<div class="debuglabel" style="left:'+pos[0]+'px;top:'+pos[1]+'px;"></div>';
+        var labelStyle = "width:4px;height:4px;background-color:red;position:absolute;margin-left:-2px;margin-top:-2px;";
+        labelStyle += 'left:'+pos[0]+'px;top:'+pos[1]+'px;';
+        var label = '<div class="debuglabel" style="'+labelStyle+'"></div>';
         $("#debug").append(label);
     }
     

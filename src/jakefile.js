@@ -1,3 +1,5 @@
+/* run the build with "jake" command */
+
 if (typeof global.system !== 'undefined') {
     print('Narwhal Jake not supported (use node-jake instead)');
     return;
@@ -15,11 +17,8 @@ var pro = uglify.uglify;
 
 var spawn = require('child_process').spawn;
 
-var ownFilesMergedFileName = "build/jquery.zoomooz-merged.js";
-var withLibsMergedFileName = "build/jquery.zoomooz-merged-libs.js";
-
-var ownFilesMinifiedFileName = "build/jquery.zoomooz-merged-min.js";
-var withLibsMinifiedFileName = "build/jquery.zoomooz-merged-libs-min.js";
+var withLibsMergedFileName = "../jquery.zoomooz.js";
+var withLibsMinifiedFileName = "../jquery.zoomooz.min.js";
 
 desc('Concatenates javascript files');
 task('concat', [], function() {
@@ -31,8 +30,8 @@ task('concat', [], function() {
   	    fs.mkdirSync("build",0744);
   	 }
   
-	 var ownfiles = ['js/purecssmatrix.js','js/jquery.zoomooz.js','js/jquery.animtrans.js'],
-		 extrafiles = ['lib/sylvester.js'],
+	 var ownfiles = ['js/purecssmatrix.js','js/jquery.zoomooz-anim.js','js/jquery.zoomooz-core.js'],
+		 extrafiles = ['js/sylvester.src.stripped.js'],
 		 pathName = '.';
 	 
 	 var concatFiles = function(files, outFileName) {
@@ -48,7 +47,7 @@ task('concat', [], function() {
 	 
 	 var withLibs = ownfiles.concat(extrafiles);
 	 
-	 concatFiles(ownfiles, ownFilesMergedFileName);
+	 /*concatFiles(ownfiles, ownFilesMergedFileName);*/
 	 concatFiles(withLibs, withLibsMergedFileName);
 	 
      complete();
@@ -68,7 +67,7 @@ task('minify', [], function() {
     fs.closeSync(outFile);
   }
   
-  minifyFile(ownFilesMergedFileName, ownFilesMinifiedFileName);
+  /*minifyFile(ownFilesMergedFileName, ownFilesMinifiedFileName);*/
   minifyFile(withLibsMergedFileName, withLibsMinifiedFileName);
   
 });

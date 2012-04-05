@@ -60,7 +60,7 @@
             var val = items[2].split(",");
             var trans;
             if(action=="matrix") {
-                trans = $M([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
+                trans = Matrix.create([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
                                [parseFloat(val[1]),parseFloat(val[3]),parseFloat(filterNumber(val[5]))],
                                [                0,                0,                              1]]);
             } else if(action=="translate") {
@@ -75,7 +75,7 @@
                 } else {
                     sy = sx;
                 }
-                trans = $M([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
+                trans = Matrix.create([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
             } else if(action=="rotate") {
                 trans = Matrix.RotationZ(rawRotationToRadians(val[0]));
             } else if(action=="skew" || action=="skewx") {
@@ -116,7 +116,7 @@
     };
     
     cssMatrix.prototype.scale = function(sx,sy) {
-        var trans = $M([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
+        var trans = Matrix.create([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
         return new cssMatrix(this.m.multiply(trans));    
     };
     

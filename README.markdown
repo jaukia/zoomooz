@@ -2,6 +2,8 @@
 
 Zoomooz is an easy-to-use jQuery plugin for making any web page element zoom.
 
+Size of Zoomooz is 5KB gzipped, 14KB minified and 43KB originally (as of April 4 2012). This includes everything but jQuery.
+
 ## Installation and usage
 
 Basically, just have a look at the examples and start hacking away.
@@ -14,28 +16,16 @@ There is an optional build process. Currently the only thing it does is that it 
 
 ### Setting up the build tools
 
-1. Download and install Node.js:
+1. Download and install Node.js (npm should install automatically):
 
   http://nodejs.org/#download
-  
-        ./configure
-        make
-        make install
-
-1. Install npm (sudo with own risk if problems):
-
-        curl http://npmjs.org/install.sh | sh
-        sudo chown -R $USER /usr/local/lib/node/
-        sudo chown -R $USER /usr/local/bin/
     
-1. Install node-jake:
+2. Install node-jake and uglify-js:
 
         npm install jake
-
-1. Install uglify-js:
-
         npm install uglify-js
 
 ### Running the build
 
+    cd src
     jake

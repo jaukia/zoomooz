@@ -4,8 +4,10 @@
 		<title>Simple test</title>
 		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
 		
+		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 		<!--<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>-->
+		
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-anim.js"></script>
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-core.js"></script>
 		<script type="text/javascript" src="../../src/js/purecssmatrix.js"></script>
@@ -19,47 +21,37 @@
 			$(document).ready(function() {
 				$.zoomMooz.setup({root:$("#container"),targetsize:0.8});
 				
-			    $(".zoomTarget").click(function(evt) {
+			    $("#outerContainer, #container").click(function(evt) {
 					evt.stopPropagation();
-					$(this).zoomTo({debug:true});
+				    $("#container").zoomTo();
+				});
+				
+				$(".item").click(function(evt) {
+					evt.stopPropagation();
+					$(this).zoomTo();
 				});
 				
 				$("#container").zoomTo();
-				
-				$("#next").click(function(evt) {
-					zoomTargetIndex++;
-					if(zoomTargetIndex>=zoomTargetElements.length) {
-						zoomTargetIndex-=zoomTargetElements.length;
-					}
-					$(zoomTargetElements[zoomTargetIndex]).zoomTo({debug:true});
-				});
-				
-				$("#prev").click(function(evt) {
-					zoomTargetIndex--;
-					if(zoomTargetIndex<0) {
-						zoomTargetIndex+=zoomTargetElements.length;
-					}
-					$(zoomTargetElements[zoomTargetIndex]).zoomTo({debug:true});
-				});
 			});
 		</script>
 	</head>
 	<body>
-		<h3>Zooming inside a container</h3>
-	    <div id="outerContainer">
-			<div id="container" class="zoomTarget">
-			<div id="item1" class="zoomTarget"></div>
-			<div id="item2" class="zoomTarget"></div>
-			<div id="item2b" class="zoomTarget"></div>
-			<div id="item3" class="zoomTarget">
-			<div id="item3b" class="zoomTarget"></div>
+		<div id="outerContainer">
+			<div id="container">
+			    <div class="item">Lorem ipsum dolor sit amet.</div>
+			    <div class="item">Donec faucibus pharetra vestibulum.</div>
+			    <div class="item">Fusce nec sapien sit amet nisi dictum iaculis.</div>
+			    <div class="item">Curabitur non urna sollicitudin diam feugiat dapibus a eget ipsum.</div>
+			    <div class="item">Donec a tincidunt lorem.</div>
+			    <div class="item">Cras faucibus egestas blandit.</div>
+			    <div class="item">Curabitur orci augue, cursus a sodales ac, tincidunt ut eros.</div>
+			    <div class="item">Mauris sagittis condimentum dapibus.</div>
+			    <div class="item">Quisque interdum sollicitudin nisi, sit amet hendrerit quam suscipit iaculis.</div>
+			    <div class="item">Morbi mollis enim non orci scelerisque at venenatis libero sodales</div>
+			    <div class="item">Sed lorem mauris, semper quis placerat quis, ultrices at ligula.</div>
+			    <div class="item">Vestibulum ante ipsum primis in faucibus.</div>
+			    <div class="item"> Etiam fringilla, nisl id bibendum feugiat, leo sem sollicitudin libero.</div>
 			</div>
-			<div id="item4" class="zoomTarget"></div>
-			</div>
-	    </div>
-	    <div id="navigation">
-			<div id="prev">&lt;</div>
-			<div id="next">&gt;</div>
 		</div>
 	</body>
 	
@@ -67,7 +59,7 @@
 		**  GOOGLE ANALYTICS      **
 		*************************-->
 			
-			<script type="text/javascript">
+			<!--<script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
@@ -75,7 +67,7 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 try {
 var pageTracker = _gat._getTracker("UA-16288001-1");
 pageTracker._trackPageview();
-} catch(err) {}</script>
+} catch(err) {}</script>-->
 
 </html>
 	

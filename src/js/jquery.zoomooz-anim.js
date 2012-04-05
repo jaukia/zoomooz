@@ -307,7 +307,7 @@
             var action = items[1].toLowerCase();
             var val = items[2].split(",");
             if(action=="matrix") {
-                var trans = $M([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
+                var trans = Matrix.create([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
                                [parseFloat(val[1]),parseFloat(val[3]),parseFloat(filterNumber(val[5]))],
                                [                0,                0,                              1]]);
                 totalRot += affineTransformDecompose(trans).r;

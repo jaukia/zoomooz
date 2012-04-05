@@ -2,19 +2,22 @@
 <html>
 	<head>
 		<title>Zoomooz.js</title>
-		<!-- testing -->
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<link rel="stylesheet" href="style/zoomooz.css" type="text/css" media="screen">
-		<link rel="stylesheet" href="style/website.css" type="text/css" media="screen">
-		<link rel="stylesheet" href="style/prettyPhoto.css" type="text/css" media="screen">
 		
-		<script type="text/javascript" src="lib/jquery-1.4.4.js"></script>
-		<script type="text/javascript" src="lib/sylvester.js"></script>
-		<script type="text/javascript" src="lib/jquery.masonry.min.js"></script>
-		<script type="text/javascript" src="lib/jquery.prettyPhoto.js"></script>
-		<script type="text/javascript" src="js/purecssmatrix.js"></script>
-		<script type="text/javascript" src="js/jquery.animtrans.js"></script>
-		<script type="text/javascript" src="js/jquery.zoomooz.js"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" src="jquery.zoomooz.min.js"></script>
+		
+		<!--<script type="text/javascript" src="src/js/jquery.zoomooz-anim.js"></script>
+		<script type="text/javascript" src="src/js/jquery.zoomooz-core.js"></script>
+		<script type="text/javascript" src="src/js/purecssmatrix.js"></script>
+		<script type="text/javascript" src="src/js/sylvester.src.stripped.js"></script>-->
+		
+		<link rel="stylesheet" href="website-assets/website.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="website-assets/prettyPhoto.css" type="text/css" media="screen">
+		<script type="text/javascript" src="website-assets/lib/jquery.masonry.min.js"></script>
+		<script type="text/javascript" src="website-assets/lib/jquery.prettyPhoto.js"></script>
 		
 		<script type="text/javascript">
 			$(document).ready(function() {
@@ -59,7 +62,7 @@
 	
 	     <div class="section" id="video">
             <a href="http://www.youtube.com/watch?v=faSRI1iAang" rel="prettyPhoto">
-                <img src="website-images/video.jpg" width="350" height="259" />
+                <img src="website-assets/images/video.jpg" width="350" height="259" />
             </a>
             <a class="linkText" href="http://www.youtube.com/watch?v=faSRI1iAang" rel="prettyPhoto">
             	Zoomooz on iPad video
@@ -71,7 +74,7 @@
 		    <p>
 		        <a class="downloadlink" href="http://github.com/jaukia/zoomooz/zipball/master">Download Zoomooz.js (zip)</a>
 		    </p>
-		    <div id="version">Version 0.90 (March 30, 2012, fixing margin on first body child)</div>
+		    <div id="version">Version 0.91 (April 5, 2012, simplifying code base and scrolling for non-body zoom roots)</div>
             <p>
             <a class="downloadlink" href="http://github.com/jaukia/zoomooz/" rel="me">Fork me on GitHub!</a>
 		    </p>
@@ -128,19 +131,19 @@
 		*************************-->
 
 		    <div class="section" style="height:130px;">
-		            <a class="linkblock" href="examples/imagestack/index.html"><img src="website-images/thumbnails/imagestack-clipped.png" width="140" height="105" /></a>
+		            <a class="linkblock" href="examples/imagestack/index.html"><img src="website-assets/images/thumbnails/imagestack-clipped.png" width="140" height="105" /></a>
 		            <a class="linkText" href="examples/imagestack/index.html">Flickr image stack</a>
 		    </div>
 		    <div class="section" style="height:130px;">
-		            <a class="linkblock" href="examples/isometric/index.html"><img src="website-images/thumbnails/isometric-clipped.png" width="140" height="105" /></a>
+		            <a class="linkblock" href="examples/isometric/index.html"><img src="website-assets/images/thumbnails/isometric-clipped.png" width="140" height="105" /></a>
 		            <a class="linkText" href="examples/isometric/index.html">Isometric cube</a>
 		    </div>
 		    <div class="section" style="height:130px;">
-		        	<a class="linkblock" href="examples/svgtree/index.html"><img src="website-images/thumbnails/svgtree-clipped.png" width="140" height="105" /></a>
+		        	<a class="linkblock" href="examples/svgtree/index.html"><img src="website-assets/images/thumbnails/svgtree-clipped.png" width="140" height="105" /></a>
 		        	<a class="linkText" href="examples/svgtree/index.html">SVG Tree demo</a>
 			</div>
 		    <div class="section" style="height:130px;">
-		    		<a class="linkblock" href="examples/rootchange/index.html"><img src="website-images/thumbnails/rootchange-clipped.png" width="140" height="105" /></a>
+		    		<a class="linkblock" href="examples/rootchange/index.html"><img src="website-assets/images/thumbnails/rootchange-clipped.png" width="140" height="105" /></a>
 		    		<a class="linkText" href="examples/rootchange/index.html">Zooming container demo</a>
 		    </div>
 		    
@@ -195,11 +198,11 @@
 		    	<h2>Browser support</h2>
 		    	<p>All major browser platforms supported now:</p>
 		    	<div class="browsers">
-		    		<img src="website-images/safari.png" width="32" height="32" alt="Safari">
-		    		<img src="website-images/chrome.png" width="32" height="32" alt="Chrome">
-		    		<img src="website-images/ff.png" width="32" height="32" alt="Firefox"><br />
-		    		<img src="website-images/opera.png" width="32" height="32" alt="Opera">
-		    		<img src="website-images/ie.png" width="32" height="32" alt="IE">
+		    		<img src="website-assets/images/safari.png" width="32" height="32" alt="Safari">
+		    		<img src="website-assets/images/chrome.png" width="32" height="32" alt="Chrome">
+		    		<img src="website-assets/images/ff.png" width="32" height="32" alt="Firefox"><br />
+		    		<img src="website-assets/images/opera.png" width="32" height="32" alt="Opera">
+		    		<img src="website-assets/images/ie.png" width="32" height="32" alt="IE">
 		    	</div>
 		    	<p>Supported versions</p>
 		    	<ul>
