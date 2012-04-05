@@ -118,8 +118,7 @@
         
         // FIXME: could we remove the body origin assignment?
         // FIXME: do we need the html and body assignments always?
-        style.innerHTML = "html,body {margin:0;padding:0;width:100%;height:100%;} " +
-                          ".noScroll {overflow:hidden !important;}" +
+        style.innerHTML = ".noScroll{overflow:hidden !important;}" +
                           "* {"+setPrefix("0")+"} body {"+setPrefix("50%")+"}";
         
         document.getElementsByTagName('head')[0].appendChild(style);
@@ -154,9 +153,11 @@
         } else {
             rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
             animateEndCallback = function() {
-                $(settings.root).setTransformation(new PureCSSMatrix());
+                var $root = $(settings.root);
                 var $scroll = scrollData.elem;
-                console.log("resetting to",scrollData);
+                
+                $root.setTransformation(new PureCSSMatrix());
+                $root.data("original-scroll",null);
                 $scroll.removeClass("noScroll");
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
@@ -180,7 +181,6 @@
         
             var scrollData = $root.data("original-scroll");
             if(scrollData) {
-                $root.data("original-scroll",null);
                 return scrollData;
             } else {
                 return {"elem": $scroll, "x":0,"y:":0};

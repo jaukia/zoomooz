@@ -5,23 +5,21 @@ html {
 }
 
 #container {
-	margin:0;
-    padding:0;
-    width:800px;
+	width:800px;
     height:600px;
-    position:relative;
 }
 
 #outerContainer {
-	margin:0;
-    padding:0;
-    width:815px;
-	height:600px;
 	background-color: white;
+	width:815px;
+	height:600px;
+	position:relative;
+	
 	margin-left:auto;
 	margin-right:auto;
 	margin-top:35px;
 	-webkit-box-shadow: 0 0px 10px rgba(0,0,0,0.2);
+    
     overflow-y:scroll;
 }
 
