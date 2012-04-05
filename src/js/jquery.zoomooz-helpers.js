@@ -16,10 +16,8 @@ if(!$.zoomooz) {
     $.zoomooz = {};
 }
 
- $.zoomooz.helpers = (function($) {
+ $.zoomooz.helpers = (function($, ns) {
     "use strict";
-
-    var ns = {};
 
     //**********************************//
     //***  Variables                 ***//
@@ -50,4 +48,4 @@ if(!$.zoomooz) {
     
     return ns;
     
-})(jQuery);
+})(jQuery, {});

@@ -47,6 +47,8 @@
            
         nativeanimation: false
     };
+    
+    var endCallbackTimeout;
 
     //**********************************//
     //***  Setup css hook for IE     ***//
@@ -68,7 +70,7 @@
     //***  jQuery functions          ***//
     //**********************************//
       
-    $.fn.animateTransformation = function(transformation, settings) {
+    $.fn.animateTransformation = function(transformation, settings, animateEndCallback) {
         settings = jQuery.extend({}, default_settings, settings);
         
         this.each(function() {
@@ -77,26 +79,39 @@
             if(!transformation) transformation = new PureCSSMatrix();
             
             var current_affine = constructAffineFixingRotation($target);
-            var final_affine = affineTransformDecompose(transformation);
-            final_affine = fixRotationToSameLap(current_affine, final_affine);
+            var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
             
             if($.browser.webkit && settings.nativeanimation) {
                 $target.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
+            
+                if(animateEndCallback) {
+                    endCallbackTimeout = setTimeout(animateEndCallback, settings.duration);
+                }
             } else {
-                animateTransition($target, current_affine, final_affine, settings);
+                animateTransition($target, current_affine, final_affine, settings, animateEndCallback);
+            }
+            
+            if(endCallbackTimeout) {
+                clearTimeout(endCallbackTimeout);
+                endCallbackTimeout = null;
             }
         });
-        
+    }
+    
+    $.fn.setTransformation = function(transformation) {
+        this.each(function() {
+            var $target = $(this);
+            var current_affine = constructAffineFixingRotation($target);
+            var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
+            $target.css(constructZoomRootCssTransform(matrixCompose(final_affine)));
+        });
     }
     
     //**********************************//
     //***  Element positioning       ***//
     //**********************************//
     
-    function constructZoomRootCssTransform(trans, duration, easing, rootElement) {
-        var transdur = roundNumber(duration/1000,6)+"s";
-        var transtiming = constructEasingCss(easing);
-        
+    function constructZoomRootCssTransform(trans, duration, easing) {
         var propMap = {};
         
         helpers.forEachPrefix(function(prefix) {
@@ -104,11 +119,13 @@
         },true);
         
         if(duration) { 
+            var transdur = roundNumber(duration/1000,6)+"s";
             propMap["-webkit-transition-duration"] = transdur;
             propMap["-o-transition-duration"] = transdur;
         }
         
         if(easing) {
+            var transtiming = constructEasingCss(easing);
             propMap["-webkit-transition-timing-function"] = transtiming;
             propMap["-o-transition-timing-function"] = transtiming;
         }
@@ -120,7 +137,7 @@
     //***  Non-native animation      ***//
     //**********************************//
     
-    function animateTransition($target, st, et, settings) {
+    function animateTransition($target, st, et, settings, animateEndCallback) {
         
         if(!st) {
             st = affineTransformDecompose(new PureCSSMatrix());
@@ -133,10 +150,10 @@
         if(settings.easing) {
             settings.easingfunction = constructEasingFunction(settings.easing, settings.duration);
         }
-        animation_interval_timer = setInterval(function() { animationStep($target, st, et, settings); }, 1);    
+        animation_interval_timer = setInterval(function() { animationStep($target, st, et, settings, animateEndCallback); }, 1);    
     }
     
-    function animationStep($target, affine_start, affine_end, settings) {
+    function animationStep($target, affine_start, affine_end, settings, animateEndCallback) {
         var current_time = (new Date()).getTime() - animation_start_time;
         var time_value;
         if(settings.easingfunction) {
@@ -145,13 +162,17 @@
             time_value = current_time/settings.duration;
         }
         
+        $target.css(constructZoomRootCssTransform(matrixCompose(interpolateArrays(affine_start, affine_end, time_value))));
+    
         if(current_time>settings.duration) {
             clearInterval(animation_interval_timer);
             animation_interval_timer = null;
             time_value=1.0;
+            if(animateEndCallback) {
+                animateEndCallback();
+            }
         }
         
-        $target.css(constructZoomRootCssTransform(matrixCompose(interpolateArrays(affine_start, affine_end, time_value))));
     }
     
     /* Based on pseudo-code in:
@@ -298,7 +319,6 @@
         while((items = regexp_trans_splitter.exec(transString)) !== null) {
             var action = items[1].toLowerCase();
             var val = items[2].split(",");
-            console.log(items[1],items[2]);
             if(action=="matrix") {
                 var recomposedTransItem = action+"("+items[2]+")";
                 totalRot += affineTransformDecompose(new PureCSSMatrix(recomposedTransItem)).r;

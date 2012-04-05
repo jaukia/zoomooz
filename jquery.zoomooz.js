@@ -179,10 +179,8 @@ if(!$.zoomooz) {
     $.zoomooz = {};
 }
 
- $.zoomooz.helpers = (function($) {
+ $.zoomooz.helpers = (function($, ns) {
     "use strict";
-
-    var ns = {};
 
     //**********************************//
     //***  Variables                 ***//
@@ -213,7 +211,7 @@ if(!$.zoomooz) {
     
     return ns;
     
-})(jQuery);
+})(jQuery, {});
 /*
  * jquery.zoomooz-anim.js, part of:
  * http://janne.aukia.com/zoomooz
@@ -263,6 +261,8 @@ if(!$.zoomooz) {
            
         nativeanimation: false
     };
+    
+    var endCallbackTimeout;
 
     //**********************************//
     //***  Setup css hook for IE     ***//
@@ -284,7 +284,7 @@ if(!$.zoomooz) {
     //***  jQuery functions          ***//
     //**********************************//
       
-    $.fn.animateTransformation = function(transformation, settings) {
+    $.fn.animateTransformation = function(transformation, settings, animateEndCallback) {
         settings = jQuery.extend({}, default_settings, settings);
         
         this.each(function() {
@@ -293,26 +293,39 @@ if(!$.zoomooz) {
             if(!transformation) transformation = new PureCSSMatrix();
             
             var current_affine = constructAffineFixingRotation($target);
-            var final_affine = affineTransformDecompose(transformation);
-            final_affine = fixRotationToSameLap(current_affine, final_affine);
+            var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
             
             if($.browser.webkit && settings.nativeanimation) {
                 $target.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
+            
+                if(animateEndCallback) {
+                    endCallbackTimeout = setTimeout(animateEndCallback, settings.duration);
+                }
             } else {
-                animateTransition($target, current_affine, final_affine, settings);
+                animateTransition($target, current_affine, final_affine, settings, animateEndCallback);
+            }
+            
+            if(endCallbackTimeout) {
+                clearTimeout(endCallbackTimeout);
+                endCallbackTimeout = null;
             }
         });
-        
+    }
+    
+    $.fn.setTransformation = function(transformation) {
+        this.each(function() {
+            var $target = $(this);
+            var current_affine = constructAffineFixingRotation($target);
+            var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
+            $target.css(constructZoomRootCssTransform(matrixCompose(final_affine)));
+        });
     }
     
     //**********************************//
     //***  Element positioning       ***//
     //**********************************//
     
-    function constructZoomRootCssTransform(trans, duration, easing, rootElement) {
-        var transdur = roundNumber(duration/1000,6)+"s";
-        var transtiming = constructEasingCss(easing);
-        
+    function constructZoomRootCssTransform(trans, duration, easing) {
         var propMap = {};
         
         helpers.forEachPrefix(function(prefix) {
@@ -320,11 +333,13 @@ if(!$.zoomooz) {
         },true);
         
         if(duration) { 
+            var transdur = roundNumber(duration/1000,6)+"s";
             propMap["-webkit-transition-duration"] = transdur;
             propMap["-o-transition-duration"] = transdur;
         }
         
         if(easing) {
+            var transtiming = constructEasingCss(easing);
             propMap["-webkit-transition-timing-function"] = transtiming;
             propMap["-o-transition-timing-function"] = transtiming;
         }
@@ -336,7 +351,7 @@ if(!$.zoomooz) {
     //***  Non-native animation      ***//
     //**********************************//
     
-    function animateTransition($target, st, et, settings) {
+    function animateTransition($target, st, et, settings, animateEndCallback) {
         
         if(!st) {
             st = affineTransformDecompose(new PureCSSMatrix());
@@ -349,10 +364,10 @@ if(!$.zoomooz) {
         if(settings.easing) {
             settings.easingfunction = constructEasingFunction(settings.easing, settings.duration);
         }
-        animation_interval_timer = setInterval(function() { animationStep($target, st, et, settings); }, 1);    
+        animation_interval_timer = setInterval(function() { animationStep($target, st, et, settings, animateEndCallback); }, 1);    
     }
     
-    function animationStep($target, affine_start, affine_end, settings) {
+    function animationStep($target, affine_start, affine_end, settings, animateEndCallback) {
         var current_time = (new Date()).getTime() - animation_start_time;
         var time_value;
         if(settings.easingfunction) {
@@ -361,13 +376,17 @@ if(!$.zoomooz) {
             time_value = current_time/settings.duration;
         }
         
+        $target.css(constructZoomRootCssTransform(matrixCompose(interpolateArrays(affine_start, affine_end, time_value))));
+    
         if(current_time>settings.duration) {
             clearInterval(animation_interval_timer);
             animation_interval_timer = null;
             time_value=1.0;
+            if(animateEndCallback) {
+                animateEndCallback();
+            }
         }
         
-        $target.css(constructZoomRootCssTransform(matrixCompose(interpolateArrays(affine_start, affine_end, time_value))));
     }
     
     /* Based on pseudo-code in:
@@ -514,7 +533,6 @@ if(!$.zoomooz) {
         while((items = regexp_trans_splitter.exec(transString)) !== null) {
             var action = items[1].toLowerCase();
             var val = items[2].split(",");
-            console.log(items[1],items[2]);
             if(action=="matrix") {
                 var recomposedTransItem = action+"("+items[2]+")";
                 totalRot += affineTransformDecompose(new PureCSSMatrix(recomposedTransItem)).r;
@@ -713,19 +731,30 @@ if(!$.zoomooz) {
     //**********************************//
     
     function zoomTo(elem, settings) {
-        handleScrolling(elem, settings);
+        var scrollData = handleScrolling(elem, settings);
         
-        var rootTransformation = null;
+        var rootTransformation;
+        var animateEndCallback = null;
         
         // computeTotalTransformation does not work correctly if the
         // element and the root are the same
         if(elem[0] !== settings.root[0]) {
-        	var transform = computeTotalTransformation(elem, settings.root);
-        	var inverse = (transform) ? transform.inverse(): null;
-        	rootTransformation = computeViewportTransformation(elem, inverse, settings);
+        	rootTransformation = computeViewportTransformation(elem, 
+        	    computeTotalTransformation(elem, settings.root).inverse(), 
+        	    settings);
+        } else {
+            rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
+            animateEndCallback = function() {
+                $(settings.root).setTransformation(new PureCSSMatrix());
+                var $scroll = scrollData.elem;
+                console.log("resetting to",scrollData);
+                $scroll.removeClass("noScroll");
+                $scroll.scrollLeft(scrollData.x);
+                $scroll.scrollTop(scrollData.y);
+            };
         }
-    		
-        $(settings.root).animateTransformation(rootTransformation, settings);
+    	
+        $(settings.root).animateTransformation(rootTransformation, settings, animateEndCallback);
         
     }
     
@@ -740,22 +769,13 @@ if(!$.zoomooz) {
     	
     	if(elem[0] === $root[0]) {
         
-            var scrollData = $scroll.data("original-scroll");
-            
+            var scrollData = $root.data("original-scroll");
             if(scrollData) {
-                var elem = scrollData[0];
-                var scrollX = scrollData[1];
-                var scrollY = scrollData[2];
-                
-                /* does not work correctly unless the final scroll is set
-                   first when the zooming out is done */
-                elem.animate({scrollLeft:scrollX},settings.duration);
-                elem.animate({scrollTop:scrollY},settings.duration);
-                $scroll.data("original-scroll",null);
+                $root.data("original-scroll",null);
+                return scrollData;
+            } else {
+                return {"elem": $scroll, "x":0,"y:":0};
             }
-            
-            // release scroll lock
-            $scroll.removeClass("noScroll");
             
         } else if(!$scroll.hasClass("noScroll")) {
         
@@ -771,23 +791,19 @@ if(!$.zoomooz) {
                 elem = $scroll;
             }
             
-            $scroll.addClass("noScroll");
+            var scrollData = {"elem":elem,"x":scrollX,"y":scrollY};
+            $root.data("original-scroll",scrollData);
             
-            $scroll.data("original-scroll",[elem,scrollX,scrollY]);
-            
-            // hack for kinda animating the scroll.
-            // the scroll animating should be incorporated into the
-            // default anim in some way.
-            //
-            // this is better than noting.
-            elem.animate({scrollTop:0},settings.duration);
-            elem.animate({scrollLeft:0},settings.duration);
+            elem.addClass("noScroll");
+            elem.scrollTop(0);
+            elem.scrollLeft(0);
             
             var transformStr = "translate(-"+scrollX+"px,-"+scrollY+"px)";
             helpers.forEachPrefix(function(prefix) {
                 $root.css(prefix+"transform", transformStr);
             });
             
+            return scrollData;
 	    }
 	}
 			
@@ -830,16 +846,15 @@ if(!$.zoomooz) {
              zoomParent.css(prefix+"transform-origin", offsetStr);
         });
         
-        var endpostrans = new PureCSSMatrix();
-        endpostrans = endpostrans.translate(-xrotorigin,-yrotorigin);
-        endpostrans = endpostrans.translate(xoffset,yoffset);
-        endpostrans = endpostrans.scale(scale,scale);
-        if(endtrans) {
-            endpostrans = endpostrans.multiply(endtrans);
-        }
-        endpostrans = endpostrans.translate(xrotorigin,yrotorigin);
+        var viewportTransformation = 
+            (new PureCSSMatrix())
+            .translate(-xrotorigin,-yrotorigin)
+            .translate(xoffset,yoffset)
+            .scale(scale,scale)
+            .multiply(endtrans)
+            .translate(xrotorigin,yrotorigin)
         
-        return endpostrans;
+        return viewportTransformation;
     }
     
     //**********************************//

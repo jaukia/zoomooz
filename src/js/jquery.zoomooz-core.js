@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 0.92 working scrolling
  * 0.91 simplifying code base and scrolling for non-body zoom roots
  * 0.90 fixing margin on first body child
  * 0.89 support for jquery 1.7
@@ -139,19 +140,30 @@
     //**********************************//
     
     function zoomTo(elem, settings) {
-        handleScrolling(elem, settings);
+        var scrollData = handleScrolling(elem, settings);
         
-        var rootTransformation = null;
+        var rootTransformation;
+        var animateEndCallback = null;
         
         // computeTotalTransformation does not work correctly if the
         // element and the root are the same
         if(elem[0] !== settings.root[0]) {
-        	var transform = computeTotalTransformation(elem, settings.root);
-        	var inverse = (transform) ? transform.inverse(): null;
-        	rootTransformation = computeViewportTransformation(elem, inverse, settings);
+        	rootTransformation = computeViewportTransformation(elem, 
+        	    computeTotalTransformation(elem, settings.root).inverse(), 
+        	    settings);
+        } else {
+            rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
+            animateEndCallback = function() {
+                $(settings.root).setTransformation(new PureCSSMatrix());
+                var $scroll = scrollData.elem;
+                console.log("resetting to",scrollData);
+                $scroll.removeClass("noScroll");
+                $scroll.scrollLeft(scrollData.x);
+                $scroll.scrollTop(scrollData.y);
+            };
         }
-    		
-        $(settings.root).animateTransformation(rootTransformation, settings);
+    	
+        $(settings.root).animateTransformation(rootTransformation, settings, animateEndCallback);
         
     }
     
@@ -166,22 +178,13 @@
     	
     	if(elem[0] === $root[0]) {
         
-            var scrollData = $scroll.data("original-scroll");
-            
+            var scrollData = $root.data("original-scroll");
             if(scrollData) {
-                var elem = scrollData[0];
-                var scrollX = scrollData[1];
-                var scrollY = scrollData[2];
-                
-                /* does not work correctly unless the final scroll is set
-                   first when the zooming out is done */
-                elem.animate({scrollLeft:scrollX},settings.duration);
-                elem.animate({scrollTop:scrollY},settings.duration);
-                $scroll.data("original-scroll",null);
+                $root.data("original-scroll",null);
+                return scrollData;
+            } else {
+                return {"elem": $scroll, "x":0,"y:":0};
             }
-            
-            // release scroll lock
-            $scroll.removeClass("noScroll");
             
         } else if(!$scroll.hasClass("noScroll")) {
         
@@ -197,23 +200,19 @@
                 elem = $scroll;
             }
             
-            $scroll.addClass("noScroll");
+            var scrollData = {"elem":elem,"x":scrollX,"y":scrollY};
+            $root.data("original-scroll",scrollData);
             
-            $scroll.data("original-scroll",[elem,scrollX,scrollY]);
-            
-            // hack for kinda animating the scroll.
-            // the scroll animating should be incorporated into the
-            // default anim in some way.
-            //
-            // this is better than noting.
-            elem.animate({scrollTop:0},settings.duration);
-            elem.animate({scrollLeft:0},settings.duration);
+            elem.addClass("noScroll");
+            elem.scrollTop(0);
+            elem.scrollLeft(0);
             
             var transformStr = "translate(-"+scrollX+"px,-"+scrollY+"px)";
             helpers.forEachPrefix(function(prefix) {
                 $root.css(prefix+"transform", transformStr);
             });
             
+            return scrollData;
 	    }
 	}
 			
@@ -256,16 +255,15 @@
              zoomParent.css(prefix+"transform-origin", offsetStr);
         });
         
-        var endpostrans = new PureCSSMatrix();
-        endpostrans = endpostrans.translate(-xrotorigin,-yrotorigin);
-        endpostrans = endpostrans.translate(xoffset,yoffset);
-        endpostrans = endpostrans.scale(scale,scale);
-        if(endtrans) {
-            endpostrans = endpostrans.multiply(endtrans);
-        }
-        endpostrans = endpostrans.translate(xrotorigin,yrotorigin);
+        var viewportTransformation = 
+            (new PureCSSMatrix())
+            .translate(-xrotorigin,-yrotorigin)
+            .translate(xoffset,yoffset)
+            .scale(scale,scale)
+            .multiply(endtrans)
+            .translate(xrotorigin,yrotorigin)
         
-        return endpostrans;
+        return viewportTransformation;
     }
     
     //**********************************//
