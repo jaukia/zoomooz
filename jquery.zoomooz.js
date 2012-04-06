@@ -894,6 +894,11 @@ if(!$.zoomooz) {
         var xrotorigin = dw/2.0;
         var yrotorigin = dh/2.0;
         
+        /* fix for body margins, hope that this does not break anything .. */
+        /* see also the part of the fix that is in computeTotalTransformation! */
+        var xmarginfix = -parseFloat(zoomParent.css("margin-left")) || 0;
+        var ymarginfix = -parseFloat(zoomParent.css("margin-top")) || 0;
+        
         var offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
         
         helpers.forEachPrefix(function(prefix) {
@@ -902,11 +907,12 @@ if(!$.zoomooz) {
         
         var viewportTransformation = 
             (new PureCSSMatrix())
+            .translate(xmarginfix,ymarginfix)
             .translate(-xrotorigin,-yrotorigin)
             .translate(xoffset,yoffset)
             .scale(scale,scale)
             .multiply(endtrans)
-            .translate(xrotorigin,yrotorigin)
+            .translate(xrotorigin,yrotorigin);
         
         return viewportTransformation;
     }
@@ -993,7 +999,7 @@ if(!$.zoomooz) {
         transformation = transformation.multiply(constructTransformation(elem));
         totalTransformation = transformation.multiply((totalTransformation));
         // loop from node down to root
-        while ( (elem = elem.parentNode) && elem !== body && elem !== docElem && elem !== root) {
+        while ( (elem = elem.parentNode) && elem !== root) {
             top = 0; left = 0;
             if ( support.fixedPosition && prevComputedStyle.position === "fixed" ) {
                 break;
@@ -1031,6 +1037,10 @@ if(!$.zoomooz) {
             top  += Math.max( docElem.scrollTop, body.scrollTop );
             left += Math.max( docElem.scrollLeft, body.scrollLeft );
         }
+        
+        /* fix for body margins, hope that this does not break anything .. */
+        top -= parseFloat(transformationRootElement.css("margin-top")) || 0;
+        left -= parseFloat(transformationRootElement.css("margin-left")) || 0;
         
         var itertrans = (new PureCSSMatrix()).translate(left,top);
         totalTransformation = totalTransformation.multiply(itertrans);
