@@ -1,4 +1,13 @@
-/* these are not necessary */
+/* buggy if this is missing:
+html, body {
+    margin:0;padding:0;
+}
+*/
+
+body {
+    margin:100px;
+    border:1px solid red;
+}
 
 body {
     overflow:hidden;
