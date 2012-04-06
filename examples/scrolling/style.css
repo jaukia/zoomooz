@@ -14,7 +14,10 @@ html {
     height:600px;
 	
     /* this needs to have some kind of positioning, absolute
-       or relative */
+       or relative, to have the pos of elements inside it calculated correctly,
+       since otherwise the computeTotalTransformation does not work correctly
+       (offsetParent for items would be outside the #content, and offset
+       would be calculated relative to the parent..) */
 	position:relative;
 	
 	margin:35px auto 0px auto;

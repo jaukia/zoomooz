@@ -138,27 +138,22 @@
         var style = document.createElement('style');
         style.type = 'text/css';
         
-        var setPrefix = function(val) {
-            var retVal = "";
-            helpers.forEachPrefix(function(prefix) {
-                retVal += prefix+"transform-origin: "+val+" "+val+";";
-            });
-            return retVal;
-        }
-        
+        var transformOrigin = "";
         var textSelectionDisabling = "-webkit-touch-callout: none;";
+        
         helpers.forEachPrefix(function(prefix) {
+            transformOrigin += prefix+"transform-origin: 0 0;";
             textSelectionDisabling += prefix+"user-select:none;";
         },true);
-            
-        // FIXME: could we remove the body origin assignment?
-        // FIXME: do we need the html and body assignments always?
-        style.innerHTML = "html {width:100%; height:100%;}" +
+           
+        // FIXME: how to remove the html height requirement?
+        // FIXME: how to remove the transform origin?
+        style.innerHTML = "html {height:100%;}" +
                           ".noScroll{overflow:hidden !important;}" +
                           ".zoomTarget{"+textSelectionDisabling+"}"+
                           ".zoomTarget:hover{cursor:pointer!important;}"+
                           ".selectedZoomTarget:hover{cursor:auto!important;}"+
-                          "* {"+setPrefix("0")+"} body {"+setPrefix("50%")+"}";
+                          "* {"+transformOrigin+"}";
         
         document.getElementsByTagName('head')[0].appendChild(style);
     }
@@ -186,17 +181,14 @@
         // computeTotalTransformation does not work correctly if the
         // element and the root are the same
         if(elem[0] !== settings.root[0]) {
-            console.log("zooming to non-root");
             var inv = computeTotalTransformation(elem, settings.root).inverse();
             rootTransformation = computeViewportTransformation(elem, inv, settings);
         	    
         	animateEndCallback = function() {
-        	    console.log("non-root callback");
         	    $(".selectedZoomTarget").removeClass("selectedZoomTarget");
         	    elem.addClass("selectedZoomTarget");
         	};
         } else {
-            console.log("zooming to root");
             rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
             animateEndCallback = function() {
                 var $root = $(settings.root);
@@ -278,8 +270,6 @@
         
         var dw = zoomViewport.width();
         var dh = zoomViewport.height();
-        console.log("view port size:",zoomViewport.width(),zoomViewport.height());
-        console.log("zoom root size:",zoomParent.width(),zoomParent.height());
         
         var relw = dw/elem.outerWidth();
         var relh = dh/elem.outerHeight();
@@ -306,7 +296,6 @@
         /* see also the part of the fix that is in computeTotalTransformation! */
         var xmarginfix = -parseFloat(zoomParent.css("margin-left")) || 0;
         var ymarginfix = -parseFloat(zoomParent.css("margin-top")) || 0;
-        
         var offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
         
         helpers.forEachPrefix(function(prefix) {
@@ -400,6 +389,17 @@
             prevComputedStyle = elem.currentStyle;
         }
         
+        function offsetParentInsideRoot($elem, $root) {
+            // FIXME:
+            // wondering, should this be $root.closest()
+            // or $root.parent().closest...
+            var $viewport = $root.parent();
+            var $offsetParent = $elem.offsetParent();
+            return ($viewport[0]==$offsetParent[0]) || $viewport.closest($offsetParent).length==0;
+        }
+        
+        console.log("inside root",offsetParentInsideRoot(input, transformationRootElement));
+        
         var top = elem.offsetTop;
         var left = elem.offsetLeft;
         
@@ -430,13 +430,21 @@
             }
             prevComputedStyle = computedStyle;
             
+            if(elem.offsetParent==root) {
+                top -= parseFloat($(elem.offsetParent).css("margin-top")) || 0;
+                left -= parseFloat($(elem.offsetParent).css("margin-left")) || 0;
+            }
+            
             transformation = constructTransformation().translate(left,top);
             transformation = transformation.multiply(constructTransformation(elem));
             totalTransformation = transformation.multiply(totalTransformation);
         
         }
         
-        top = 0; left = 0;
+        top = 0;
+        left = 0;
+        
+        // fixme: should disable these for non-body roots?
         if ( prevComputedStyle.position === "relative" || prevComputedStyle.position === "static" ) {
             top  += body.offsetTop;
             left += body.offsetLeft;
@@ -445,10 +453,6 @@
             top  += Math.max( docElem.scrollTop, body.scrollTop );
             left += Math.max( docElem.scrollLeft, body.scrollLeft );
         }
-        
-        /* fix for body margins, hope that this does not break anything .. */
-        top -= parseFloat(transformationRootElement.css("margin-top")) || 0;
-        left -= parseFloat(transformationRootElement.css("margin-left")) || 0;
         
         var itertrans = (new PureCSSMatrix()).translate(left,top);
         totalTransformation = totalTransformation.multiply(itertrans);
