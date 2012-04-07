@@ -9,6 +9,7 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
 }
 
 html:hover, .section:hover, .highlight:hover, body:hover, .innerContent:hover {
