@@ -47,7 +47,6 @@
     //***  Variables                 ***//
     //**********************************//
     
-    var default_settings;
     var helpers = $.zoomooz.helpers;
 
     //**********************************//
@@ -65,17 +64,17 @@
     }
     
     $.zoomooz.setup = function(settings) {
-        default_settings = jQuery.extend(constructDefaultSettings(), settings);
+        $.zoomooz.defaultSettings = jQuery.extend(constructDefaultSettings(), settings);
     };
     
     $.fn.zoomTo = function(settings) {
-        if(!default_settings) {
+        if(!$.zoomooz.defaultSettings) {
             $.zoomooz.setup();
         }
         
         // first argument empty object to ensure that the default settings
         // are not modified
-        settings = jQuery.extend({}, default_settings, settings);
+        settings = jQuery.extend({}, $.zoomooz.defaultSettings, settings);
         
         // um, does it make any sense to zoom to each of the matches?
         this.each(function() {
@@ -99,35 +98,6 @@
         return this;
     };
     
-    $.fn.makeZooming = function(settings) {
-        if(!default_settings) {
-            $.zoomooz.setup();
-        }
-        
-        // first argument empty object to ensure that 
-        // the default settings are not modified
-        settings = jQuery.extend({}, default_settings, settings);
-        
-        var setupClickHandler = function(clickTarget,zoomTarget) {
-            clickTarget.click(function(evt) {
-                zoomTarget.zoomTo(settings);
-                evt.stopPropagation();
-            });
-            clickTarget.addClass("zoomTarget");
-        }
-        
-        this.each(function() {
-            setupClickHandler($(this),$(this));
-        });
-        
-        if(!settings.root.hasClass("zoomTarget")) {
-            setupClickHandler(settings.root,settings.root);
-            setupClickHandler(settings.root.parent(),settings.root);
-            
-            settings.root.click();
-        }
-    }
-    
     //**********************************//
     //***  Setup functions           ***//
     //**********************************//
@@ -139,20 +109,14 @@
         style.type = 'text/css';
         
         var transformOrigin = "";
-        var textSelectionDisabling = "-webkit-touch-callout: none;";
-        
         helpers.forEachPrefix(function(prefix) {
             transformOrigin += prefix+"transform-origin: 0 0;";
-            textSelectionDisabling += prefix+"user-select:none;";
         },true);
            
         // FIXME: how to remove the html height requirement?
         // FIXME: how to remove the transform origin?
         style.innerHTML = "html {height:100%;}" +
-                          ".noScroll{overflow:hidden !important;}" +
-                          ".zoomTarget{"+textSelectionDisabling+"}"+
-                          ".zoomTarget:hover{cursor:pointer!important;}"+
-                          ".selectedZoomTarget:hover{cursor:auto!important;}"+
+                          ".noScroll{overflow:hidden !important;margin-right:15px}" +
                           "* {"+transformOrigin+"}";
         
         document.getElementsByTagName('head')[0].appendChild(style);
@@ -164,7 +128,8 @@
             scalemode: "both",
             duration: 1000,
             root: $(document.body),
-            debug: false
+            debug: false,
+            animationendcallback: null
         };
     }
     
@@ -176,21 +141,24 @@
         var scrollData = handleScrolling(elem, settings);
         
         var rootTransformation;
-        var animateEndCallback = null;
+        var animationEndCallback = null;
         
         // computeTotalTransformation does not work correctly if the
         // element and the root are the same
         if(elem[0] !== settings.root[0]) {
             var inv = computeTotalTransformation(elem, settings.root).inverse();
             rootTransformation = computeViewportTransformation(elem, inv, settings);
-        	    
-        	animateEndCallback = function() {
-        	    $(".selectedZoomTarget").removeClass("selectedZoomTarget");
-        	    elem.addClass("selectedZoomTarget");
-        	};
+        	
+        	if(settings.animationEndCallback) {
+                animationEndCallback = function() {
+                    settings.animationEndCallback.call(elem[0]);
+                };
+            }
+        	
+        	
         } else {
             rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
-            animateEndCallback = function() {
+            animationEndCallback = function() {
                 var $root = $(settings.root);
                 var $scroll = scrollData.elem;
                 
@@ -200,13 +168,13 @@
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
                 
-                $(".selectedZoomTarget").removeClass("selectedZoomTarget");
-        	    elem.addClass("selectedZoomTarget");
-        	    elem.parent().addClass("selectedZoomTarget");
+                if(settings.animationEndCallback) {
+                    settings.animationEndCallback.call(elem[0]);
+                }
             };
         }
     	
-        $(settings.root).animateTransformation(rootTransformation, settings, animateEndCallback);
+        $(settings.root).animateTransformation(rootTransformation, settings, animationEndCallback);
         
     }
     
@@ -389,6 +357,7 @@
             prevComputedStyle = elem.currentStyle;
         }
         
+        /*
         function offsetParentInsideRoot($elem, $root) {
             // FIXME:
             // wondering, should this be $root.closest()
@@ -399,6 +368,7 @@
         }
         
         console.log("inside root",offsetParentInsideRoot(input, transformationRootElement));
+        */
         
         var top = elem.offsetTop;
         var left = elem.offsetLeft;

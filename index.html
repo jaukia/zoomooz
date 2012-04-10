@@ -12,293 +12,262 @@
 		<script type="text/javascript" src="src/js/jquery.zoomooz-helpers.js"></script>
 		<script type="text/javascript" src="src/js/jquery.zoomooz-anim.js"></script>
 		<script type="text/javascript" src="src/js/jquery.zoomooz-core.js"></script>
+		<script type="text/javascript" src="src/js/jquery.zoomooz-zoomtarget.js"></script>
 		<script type="text/javascript" src="src/js/purecssmatrix.js"></script>
 		<script type="text/javascript" src="src/js/sylvester.src.stripped.js"></script>
 		
 		<link rel="stylesheet" href="website-assets/website.css" type="text/css" media="screen">
-		<link rel="stylesheet" href="website-assets/prettyPhoto.css" type="text/css" media="screen">
-		<script type="text/javascript" src="website-assets/lib/jquery.masonry.min.js"></script>
-		<script type="text/javascript" src="website-assets/lib/jquery.prettyPhoto.js"></script>
 		
-		<script type="text/javascript">
-			$(document).ready(function() {
-			   $(".section, .highlight").click(function(evt) {
-					$(this).zoomTo({targetsize:0.75, duration:600});
-					evt.stopPropagation();
-				});
-				$(window).click(function(evt) {
-					$("body").zoomTo({targetsize:1.0, duration:600});
-					evt.stopPropagation();
-				});
-				$("body").zoomTo({targetsize:1.0, duration:600});
-				
-				$(".innerContent").masonry({columnWidth:210,animate:false});
-				
-				$(document).ready(function(){
-				    var videoLink = $("a[rel^='prettyPhoto']");
-		            videoLink.prettyPhoto();
-		            videoLink.click(function() {
-		                $("body").zoomTo({targetsize:1.0, duration: 0.0});
-				    });
-	            });
-			});
-		</script>
-	</head>
-	<body>
-	
-	    <div id="title">
-	        <h2 id="topsubtitle">jQuery</h2>
-		    <h1>Zoomooz.js</h1>
-		    <div class="topdescription">
-		        Zoomooz is an easy-to-use jQuery plugin for making any web page element zoom.
-		    </div>
-		    
-		</div>
-		
-	    <div class="innerContent">
-	
-		<!--************************
-		**  TITLE                 **
-		*************************-->
-	
-	     <div class="section" id="video">
-            <a href="http://www.youtube.com/watch?v=faSRI1iAang" rel="prettyPhoto">
-                <img src="website-assets/images/video.jpg" width="350" height="259" />
-            </a>
-            <a class="linkText" href="http://www.youtube.com/watch?v=faSRI1iAang" rel="prettyPhoto">
-            	Zoomooz on iPad video
-            </a>
-            
-            </div>
-	
-	    <div class="section" id="description">
-		    <p>
-		        <a class="downloadlink" href="http://github.com/jaukia/zoomooz/zipball/master">Download Zoomooz.js (zip)</a>
-		    </p>
-		    <div id="version">Version 0.92 (April 5, 2012, working scrolling)</div>
-            <p>
-            <a class="downloadlink" href="http://github.com/jaukia/zoomooz/" rel="me">Fork me on GitHub!</a>
-		    </p>
-        </div>
-			
-		<div class="section" id="praise">
-		        <h2>Praise</h2>
-		        <p>
-		        "The fantastic Javascript zooming library has been updated to work with Firefox 4."<br />
-		        — @azaaza
-		        </p>
-		        
-		        <p>
-		        "Really awesome example of a zoomable interface with JavaScript"<br />
-		        — @tdhooper
-		        </p>
-		        
-		        <p>
-		        "Amazing little js library for zooming and rotating that works with JQuery"<br />
-		        — @mike_j_edwards
-		        </p>
-		        
-		        <p>
-		        "#prezi like styles for your own website. damn cool and pretty easy"<br />
-		        — @wollepb
-		        </p>
-		        
-		</div>
-		
-   	
-		<div class="section" id="inuse">
-		        <h2>Zoomooz in use</h2>
-		 
-		        <p>
-		        <a href="http://www.azarask.in/blog/post/how-to-prototype-and-influence-people/">Aza Raskin prototyping with Zoomooz</a>
-		        </p>
-		        
-		        <p>
-		        <a href="http://www.freshwidows.com/STAR/Legs.html">A photo gallery using Zoomooz</a>
-		        </p>
-		
-		        <p>
-		        <a href="http://richard.milewski.org/archives/788">A zooming comic experiment</a>
-		        </p>
-		        
-		        <p>
-		        <a href="http://richard.milewski.org/archives/804">Simple HTML Slides uses Zoomooz</a>
-		        </p>
-		</div>
-		
-		
-		<!--************************
-		**  EXAMPLES              **
-		*************************-->
-
-		    <div class="section" style="height:130px;">
-		            <a class="linkblock" href="examples/imagestack/index.html"><img src="website-assets/images/thumbnails/imagestack-clipped.png" width="140" height="105" /></a>
-		            <a class="linkText" href="examples/imagestack/index.html">Flickr image stack</a>
-		    </div>
-		    <div class="section" style="height:130px;">
-		            <a class="linkblock" href="examples/isometric/index.html"><img src="website-assets/images/thumbnails/isometric-clipped.png" width="140" height="105" /></a>
-		            <a class="linkText" href="examples/isometric/index.html">Isometric cube</a>
-		    </div>
-		    <div class="section" style="height:130px;">
-		        	<a class="linkblock" href="examples/svgtree/index.html"><img src="website-assets/images/thumbnails/svgtree-clipped.png" width="140" height="105" /></a>
-		        	<a class="linkText" href="examples/svgtree/index.html">SVG Tree demo</a>
-			</div>
-		    <div class="section" style="height:130px;">
-		    		<a class="linkblock" href="examples/rootchange/index.html"><img src="website-assets/images/thumbnails/rootchange-clipped.png" width="140" height="105" /></a>
-		    		<a class="linkText" href="examples/rootchange/index.html">Zooming container demo</a>
-		    </div>
-		    
-		<!--************************
-		**  ENABLING THE LIBRARY  **
-		*************************-->
-	
-		    <div class="section" id="gettingstarted">
-		        <h2>Enabling the library</h2>
-		        
-		        <p>Put the following in the head-section of your page:</p>
-		        
-		        <div class="highlight">
-		        	<pre>
-<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;https://ajax.googleapis.com/ajax/libs/<br />jquery/1.7.1/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;jquery.zoomooz.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-					</pre>
-				</div>
-			</div>
-
-		<!--************************
-		**  ADDING ZOOM EFFECT    **
-		*************************-->
-	
-			<div class="section" id="samplecode">
-				<h2>Adding zoom effect</h2>
-
-				<p>This adds a simple zoom on clicking to elements with class "zoomTarget". The zoom can be reset by clicking the body.</p>
-<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">language=</span><span class="s">&quot;javascript&quot;</span><span class="nt">&gt;</span>
-  <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> 
-    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;.zoomTarget&quot;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">zoomTo</span><span class="p">();</span>
-      <span class="nx">evt</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span>
-    <span class="p">});</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">zoomTo</span><span class="p">({</span><span class="nx">targetsize</span><span class="o">:</span><span class="mf">1.0</span><span class="p">});</span>
-      <span class="nx">evt</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span>
-    <span class="p">});</span>
-  <span class="p">});</span>
-<span class="nt">&lt;/script&gt;</span>
-</pre></div>
-			</div>
-
-		<!--************************
-		**  BROWSER SUPPORT       **
-		*************************-->
-
-			<div class="section">
-		    	<h2>Browser support</h2>
-		    	<p>All major browser platforms supported now:</p>
-		    	<div class="browsers">
-		    		<img src="website-assets/images/safari.png" width="32" height="32" alt="Safari">
-		    		<img src="website-assets/images/chrome.png" width="32" height="32" alt="Chrome">
-		    		<img src="website-assets/images/ff.png" width="32" height="32" alt="Firefox"><br />
-		    		<img src="website-assets/images/opera.png" width="32" height="32" alt="Opera">
-		    		<img src="website-assets/images/ie.png" width="32" height="32" alt="IE">
-		    	</div>
-		    	<p>Supported versions</p>
-		    	<ul>
-		    		<li>Internet Explorer 9</li>
-		    		<li>Safari 3 and newer</li>
-		    		<li>Firefox 3.6 and newer</li>
-		    		<li>Recent versions of Opera and Chrome</li>
-		    	</ul>
-		    	</ul>
-		    </div>
-
-		<!--************************
-		**  DETAILED SETTINGS     **
-		*************************-->
-
-			<div class="section" id="detailedsettings">
-				<h2>Detailed settings</h2>
-				<div class="highlight"><pre><span class="nx">settings</span> <span class="o">=</span> <span class="p">{</span>
-	<span class="c1">// zoomed size relative to screen</span>
-	<span class="c1">// 0.0-1.0</span>
-	<span class="nx">targetsize</span><span class="o">:</span> <span class="mf">0.9</span><span class="p">,</span>
-	<span class="c1">// scale content to screen based on their size</span>
-	<span class="c1">// &quot;width&quot;|&quot;height&quot;|&quot;both&quot;</span>
-	<span class="nx">scalemode</span><span class="o">:</span> <span class="s2">&quot;both&quot;</span><span class="p">,</span>
-	<span class="c1">// animation duration</span>
-	<span class="nx">duration</span><span class="o">:</span> <span class="mi">1000</span><span class="p">,</span>
-	<span class="c1">// easing of animation, similar to css transition params</span>
-	<span class="c1">// &quot;linear&quot;|&quot;ease&quot;|&quot;ease-in&quot;|&quot;ease-out&quot;|
-	// &quot;ease-in-out&quot;|[p1,p2,p3,p4]</span>
-	<span class="c1">// [p1, p2, p3, p4] refer to cubic-bezier curve params</span>
-	<span class="nx">easing</span><span class="o">:</span> <span class="s2">&quot;ease&quot;</span><span class="p">,</span>
-	<span class="c1">// use browser native animation in webkit</span>
-	<span class="c1">// true|false</span>
-	<span class="nx">nativeanimation</span><span class="o">:</span> <span class="kc">true</span>
-<span class="p">}</span>
-<span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">zoomTo</span><span class="p">(</span><span class="nx">settings</span><span class="p">);</span>
-</pre></div>
-			</div>
-		    
-		<!--************************
-		**  BUGS                  **
-		*************************-->
-
-		    <div class="section">
-		    	<h2>Bugs and issues</h2>
-		    	<div>
-		    	<ul>
-		    		<li>Does not work with full-page zooming in Webkit</li>
-					<li>Requires a separate css file.</li>
-					<li>Native animation problem in Webkit: animation not working in Webkit with very long pages when zooming with rotation.</li>
-					<li>Css box-shadows make animations crawl.</li>
-				    <li>Transforming elements with text content in Opera is buggy.</li>
-				    <li>Rotation goes sometimes via the wrong direction.</li>
-				</ul>
-				</div>
-			</div>
-		
-		<!--************************
-		**  FEATURES              **
-		*************************-->
-
-			<div class="section">
-		    	<h2>Some feature ideas</h2>
-		    	<div>
-		    	<ul>
-		    		<li>Make it work in older IE versions.</li>
-		    		<li>Have zooming out return to the same scroll position</li>
-		    		<li>Support for 3d transformations.</li>
-		    		<li>Hide elements that are not shown while transforming.</li>
-		    		<li>Kinetic scrolling.</li>
-		    	</ul>
-				</div>
-			</div>
+		<link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
         
-
-        <!--************************
-		**  GOOGLE ANALYTICS      **
-		*************************-->
-			
-			<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-16288001-1");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-
-        </div>
+        <link href='http://fonts.googleapis.com/css?family=Lato:300,400' rel='stylesheet' type='text/css'>
+        
+	    <script>
+	        window.hijs = "code.js";
+	        
+	        $(document).ready(function() {
+	            $("#size-box").zoomTarget({targetsize:0.45, duration:400});
+	            $(".shape").zoomTarget({targetsize:0.45,duration:600});
+	        });
+	    </script>
+	</head>
+    <body>
+        <div id="content">
+            
+            <h1>Zoomooz.js</h1>
+            
+            <p id="size-box">Zoomooz is: <span class="huge">5KB gzipped</span> and 14KB minified. This includes everything but jQuery.</p>
+            
+            <p class="ingress">Zoomooz is a jQuery plugin for making any web page zoom.</p>
+            
+            <ul class="github-block">
+              <li><a href="http://github.com/jaukia/zoomooz/zipball/master">Download <strong>ZIP File</strong></a></li>
+              <li><a href="http://github.com/jaukia/zoomooz/tarball/master">Download <strong>TAR Ball</strong></a></li>
+              <li><a href="http://github.com/jaukia/zoomooz">Fork On <strong>GitHub</strong></a></li>
+            </ul>
+            
+            <div id="version">Latest version: 0.92 (April 5, 2012, working scrolling)</div>
+            
+            <p>Zoomooz can be used for making Prezi like slideshows and for zooming to images or other details. With Zoomooz you can make a part of the web page zoom or even the whole web page.</p>
+            
+            <div class="social-buttons">
+            
+            <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=jaukia&repo=zoomooz&type=watch&count=true"
+  allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
+            
+            <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=jaukia&repo=zoomooz&type=fork&count=true"
+  allowtransparency="true" frameborder="0" scrolling="0" width="85px" height="20px"></iframe>
+  
+            <iframe allowtransparency="true" frameborder="0" scrolling="no"
+        src="http://platform.twitter.com/widgets/tweet_button.html?related=jaukia&count=horizontal&counturl=http://janne.aukia.com/zoomooz&url=http://janne.aukia.com/zoomooz&text=Zoomooz%20is%20a%20jQuery%20plugin%20for%20making%20any%20web%20page%20zoom%20by%20@jaukia"
+        style="width:200px; height:20px;"></iframe>
+        
+            </div>
+            
+            <h2>Quirky transformations</h2>
+            
+            <p>You can zoom to elements that have been translated, scaled and skewed, and they will morph correctly.</p>
+            
+            <p>Try by clicking on these:</p>
+            
+            <div class="shape shape-skew">Skew</div>
+            
+            <div class="shape shape-scale">Scale</div>
+            
+            <div class="shape shape-rotation">Rotate</div>
+            
+            <div class="clearer"></div>
+            
+            <p>There is some interesting stuff happening in the background to make the morphings work. To learn about them, read the <a href="https://github.com/jaukia/zoomooz/wiki/Animating-between-complex-transforms">Animate between complex transforms</a> wiki page.</p>
+            
+            <h2>Browsers and platforms</h2>
+            
+            
+           <p>Zoomooz works quite reliably on Firefox 3.6 or newer, on Safari 3 or newer and on recent versions of Chrome.</p>
+            
+            <div class="browsers">
+                <img src="website-assets/images/safari.png" width="24" height="24" alt="Safari">
+                <img src="website-assets/images/chrome.png" width="24" height="24" alt="Chrome">
+                <img src="website-assets/images/ff.png" width="24" height="24" alt="Firefox">
+           </div>
+           
+           <p>Zoomooz works even on iPad and iPhone. <a href="http://www.youtube.com/watch?v=faSRI1iAang">Watch a video of Zoomooz on a first generation iPad</a>.</p>
+            
+            
+            Some versions of Zoomooz have been working on Opera and IE9 as well, but I haven't tested them recently, so there are probably major bugs. Feel free to contribute patches :).</p>
+            
+            <div class="browsers">
+                <img src="website-assets/images/opera.png" width="24" height="24" alt="Opera">
+                <img src="website-assets/images/ie.png" width="24" height="24" alt="IE">
+            </div>
+            
+            <p>Zoomooz requires 1.4. or newer and has been tested with jQuery 1.7.</p>
+            
+            <h2>Demos</h2>
+            
+            <p>Have a look at these:</p>
+            
+            <div class="link-section">
+                    <a class="linkblock" href="examples/imagestack/index.html"><img src="website-assets/images/thumbnails/imagestack-clipped.png" width="140" height="105" /></a>
+                    <a class="linkText" href="examples/imagestack/index.html">Flickr image stack</a>
+            </div>
+            <div class="link-section">
+                    <a class="linkblock" href="examples/isometric/index.html"><img src="website-assets/images/thumbnails/isometric-clipped.png" width="140" height="105" /></a>
+                    <a class="linkText" href="examples/isometric/index.html">Isometric cube</a>
+            </div>
+            <div class="link-section">
+                    <a class="linkblock" href="examples/svgtree/index.html"><img src="website-assets/images/thumbnails/svgtree-clipped.png" width="140" height="105" /></a>
+                    <a class="linkText" href="examples/svgtree/index.html">SVG Tree demo</a>
+            </div>
+            
+            <div class="clearer"></div>
+            
+            <h2>Adding Zoomooz to your web page</h2>
+            
+            <p>Just add this to your web page head and you should be up and running with Zoomooz:</p>
+            
+            <code>
+            &lt;script src=<span class="string">"//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"</span>&gt;&lt;/script&gt;<br />
+            &lt;script src=<span class="string">"jquery.zoomooz.min.js"</span>&gt;&lt;/script&gt;
+            
+            </code>
+            
+            <h2>Making an element Zoom</h2>
+            
+            <p>Adding Zoomooz to your existing web site without doing any markup changes will probably not work, since calculating exact positions and transformations in browsers is a bit of tricky.</p>
+            
+            <p>Probably easiest way to get Zoomooz to work well is to start with one of the Zoomooz examples and then modify them to suit your needs.</p>
+            
+            <p>To make an element zoom, the easiest way is to use <i>zoomTarget(...)</i>:</p>
+            
+<pre><code class="js">$(document).ready(function() {
+    $("#element").zoomTarget();
+});</code></pre>
+            
+            <p>This automatically makes also the parent element clickable for the user to be able to zoom back.</p>
+            
+            <p>Another alternative is to handle the zooming yourself, with something like:</p>
+            
+<pre><code class="js">$(document).ready(function() {
+    $("#element").click(function(evt) {
+        $(this).zoomTo({targetsize:0.75, duration:600});
+        evt.stopPropagation();
+    });
+});</code></pre>
+            
+            <p>This is more flexible, but won't give you all the automagical niceties, such as a nice pointer cursor when hovering over the element.</p>
+            
+            <h2>Settings</h2>
+            
+            <p>There are a number of settings you can pass to the "zoomTarget" and "zoomTo" functions in form of a map. The settings configure how the zooming behaves.</p>
+            
+<pre><code class="js">settings = {
+    // zoomed size relative to the container element
+    // 0.0-1.0
+    targetsize: 0.9,
+    // scale content to screen based on their size
+    // "width"|"height"|"both"
+    scalemode: "both",
+    // animation duration
+    duration: 1000,
+    // easing of animation, similar to css transition params
+    // "linear"|"ease"|"ease-in"|"ease-out"|"ease-in-out"|[p1,p2,p3,p4]
+    // [p1,p2,p3,p4] refer to cubic-bezier curve params
+    easing: "ease",
+    // user browser natve animation in webkit
+    nativeanimation: true,
+    // root element to zoom relative to 
+    // (this element needs to be positioned)
+    root: $(document.body),
+    // show debug points in element corners. helps
+    // at debugging when zoomooz positioning fails
+    debug: false,
+    // this function is called with the element that is zoomed to in this
+    // when animation ends
+    animationendcallback: null
+}
+// settings can be set for both the zoomTo and zoomTarget calls:
+$("#element").zoomTo(settings);</code></pre>
+            
+            <h2>Praise for Zoomooz</h2>
+            
+            <p>Here are some positive comments tweeted about Zoomooz:</p>
+            
+            <p>
+            <q>The fantastic Javascript zooming library has been updated to work with Firefox 4.</q><br />
+            — @azaaza
+            </p>
+            
+            <p>
+            <q>Really awesome example of a zoomable interface with JavaScript</q><br />
+            — @tdhooper
+            </p>
+            
+            <p>
+            <q>Amazing little js library for zooming and rotating that works with JQuery</q><br />
+            — @mike_j_edwards
+            </p>
+            
+            <p>
+            <q>#prezi like styles for your own website. damn cool and pretty easy</q><br />
+            — @wollepb
+            </p>
+            
+            <h2>Zoomooz in use</h2>
+             
+            <p>Some people have been brave enough to try out zoomooz themselves. Have a look at the links below and let me know if you have used it!</p>
+            
+            <p>
+            <a href="http://www.azarask.in/blog/post/how-to-prototype-and-influence-people/">Aza Raskin prototyping with Zoomooz</a>
+            </p>
+            
+            <p>
+            <a href="http://www.freshwidows.com/STAR/Legs.html">A photo gallery using Zoomooz</a>
+            </p>
+    
+            <p>
+            <a href="http://richard.milewski.org/archives/788">A zooming comic experiment</a>
+            </p>
+            
+            <p>
+            <a href="http://richard.milewski.org/archives/804">Simple HTML Slides uses Zoomooz</a>
+            </p>
  
-         <!--************************
-		**  FOOTER                **
-		*************************-->
-
-    <div id="footer">
-    Made by Janne Aukia. Uses jQuery Masonry.
-    </div>
-
-	</body>
+            <p><a href="http://designshack.net/articles/javascript/create-an-awesome-zooming-web-page-with-jquery/">A (slightly outdated) Zoomooz tutorial on Design Shack</a> has a nice thumbnail gallery example.</p>
+            
+            <h2>Known issues &amp; troubleshooting</h2>
+            
+            <p>Some known issues:</p>
+            
+            <ul>
+                <li>Margins on zoomable elements can cause problems</li>
+                <li>Having a main container inside the body tag sometimes helps with full page zooming</li>
+            </ul>
+            
+            <h2>Building</h2>
+            
+            <p>Easiest way to use Zoomooz is to use the pre-generated "jquery.zoomooz.min.js" file. However, you may also combine and minify the javascript files by yourself.</p>
+            
+            <p>For build instructions, have a look at the <a href="https://github.com/jaukia/zoomooz">Zoomooz github page</a>.</p>
+            
+            <h2>Related stuff</h2>
+            
+            <p>
+            <a href="http://bartaz.github.com/impress.js/#/bored">Impress.js</a> is an interesting take on making Prezi like slides on the web.
+            </p>
+           
+            <p>
+            <a href="http://willemmulder.github.com/Presenteer.js/">Presenteer.js</a> is also a bit similar to Impress.js and Zoomooz.
+            </p>
+            
+            <p>Zoomooz uses a smart easing that works the same way as css animation easings. If you'd like to use it with other jQuery animations, check out <a href="http://janne.aukia.com/easie/">jquery.easie.js</a>.</p>
+            
+            <p>The whole idea of zooming to content comes from a long line of user interface research related to zooming ui:s (ZUI:s). One starting point for these is the <a href="http://en.wikipedia.org/wiki/Zooming_user_interface">Zooming user interface Wikipedia page</a>.
+            
+            <script type="text/javascript" src="website-assets/lib/hijs.js"></script>
+       
+        
+       </div>
+        
+    <body>
 </html>
