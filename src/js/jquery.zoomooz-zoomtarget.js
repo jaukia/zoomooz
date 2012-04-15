@@ -1,5 +1,5 @@
 /*
- * jquery.zoomooz-extras.js, part of:
+ * jquery.zoomooz-zoomtarget.js, part of:
  * http://janne.aukia.com/zoomooz
  *
  * LICENCE INFORMATION:
@@ -31,6 +31,11 @@
     
     setupCssStyles();
     
+    // make all elements with the zoomTarget class zooming
+    $(document).ready(function() {
+        $(".zoomTarget").zoomTarget();
+    });
+    
     //**********************************//
     //***  jQuery functions          ***//
     //**********************************//
@@ -40,39 +45,57 @@
             $.zoomooz.setup();
         }
         
-        var elemSettings = jQuery.extend({}, $.zoomooz.defaultSettings, settings);
-        elemSettings.animationEndCallback = function() {
+        if(!settings) {
+            settings = {};
+        }
+        
+        settings.animationendcallback = function() {
             $(".selectedZoomTarget").removeClass("selectedZoomTarget");
         	$(this).addClass("selectedZoomTarget");
         };
         
         var setupClickHandler = function(clickTarget,zoomTarget, settings) {
+            clickTarget.addClass("zoomTarget");
+        
+            var zoomContainer = zoomTarget.closest(".zoomContainer");
+            if(zoomContainer.length!=0) {
+                settings.root = zoomContainer;
+            }
+            
+            if(!settings.root) {
+                settings.root = $.zoomooz.defaultSettings.root;
+            }
+            
+             if(!settings.root.hasClass("zoomTarget")) {
+            
+                // fixme, if element has data fields for setting duration etc,
+                // these will not be inherited by the root. which might or might not
+                // make sense
+                
+                var rootSettings = {};
+                
+                rootSettings.animationendcallback = function() {
+                    var $elem = $(this);
+                    $(".selectedZoomTarget").removeClass("selectedZoomTarget");
+                    $elem.addClass("selectedZoomTarget");
+                    $elem.parent().addClass("selectedZoomTarget");
+                };
+                
+                setupClickHandler(settings.root,settings.root,rootSettings);
+                setupClickHandler(settings.root.parent(),settings.root,rootSettings);
+                
+                settings.root.click();
+            }
+            
             clickTarget.click(function(evt) {
                 zoomTarget.zoomTo(settings);
                 evt.stopPropagation();
             });
-            clickTarget.addClass("zoomTarget");
         }
         
         this.each(function() {
-            setupClickHandler($(this),$(this),elemSettings);
+            setupClickHandler($(this),$(this),jQuery.extend({}, settings));
         });
-        
-        if(!elemSettings.root.hasClass("zoomTarget")) {
-        
-            var rootSettings = jQuery.extend({}, $.zoomooz.defaultSettings, settings);
-            rootSettings.animationEndCallback = function() {
-                var $elem = $(this);
-                $(".selectedZoomTarget").removeClass("selectedZoomTarget");
-                $elem.addClass("selectedZoomTarget");
-                $elem.parent().addClass("selectedZoomTarget");
-            };
-            
-            setupClickHandler(rootSettings.root,rootSettings.root,rootSettings);
-            setupClickHandler(rootSettings.root.parent(),rootSettings.root,rootSettings);
-            
-            rootSettings.root.click();
-        }
     }
     
     
@@ -96,6 +119,8 @@
         style.innerHTML = ".zoomTarget{"+textSelectionDisabling+"}"+
                           ".zoomTarget:hover{cursor:pointer!important;}"+
                           ".selectedZoomTarget:hover{cursor:auto!important;}"+
+                          /* padding to fix margin collapse issues */
+                          ".zoomContainer{position:relative;padding:1px;margin:-1px;}";
                           
         document.getElementsByTagName('head')[0].appendChild(style);
     }

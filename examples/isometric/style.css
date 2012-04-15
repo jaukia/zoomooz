@@ -4,6 +4,7 @@ html {
     background-color:white;
     font-family: Helvetica, Arial;
     font-size:16px;
+    overflow:hidden;
 }
 
 /* i thought this wasn't needed anymore? */

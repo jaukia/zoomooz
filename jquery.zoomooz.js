@@ -252,7 +252,7 @@ if(!$.zoomooz) {
     var helpers = $.zoomooz.helpers;
 
     var default_settings = {
-        duration: 1000,
+        duration: 450,
         easing: "ease",
         
         /* FIXME: i believe there are issues with native anim at least on chrome for mac
@@ -639,9 +639,10 @@ if(!$.zoomooz) {
     //***  Variables                 ***//
     //**********************************//
     
-    var default_settings;
     var helpers = $.zoomooz.helpers;
-
+    
+    var animationSettings = ["duration", "easing", "nativeanimation"];
+    
     //**********************************//
     //***  Static setup              ***//
     //**********************************//
@@ -657,30 +658,22 @@ if(!$.zoomooz) {
     }
     
     $.zoomooz.setup = function(settings) {
-        default_settings = jQuery.extend(constructDefaultSettings(), settings);
+        $.zoomooz.defaultSettings = jQuery.extend(constructDefaultSettings(), settings);
     };
     
     $.fn.zoomTo = function(settings) {
-        if(!default_settings) {
-            $.zoomooz.setup();
-        }
-        
-        // first argument empty object to ensure that the default settings
-        // are not modified
-        settings = jQuery.extend({}, default_settings, settings);
-        
-        // um, does it make any sense to zoom to each of the matches?
         this.each(function() {
-        
-            zoomTo($(this), settings);
+            var $this = $(this);
+            var elemSettings = setupElementSettings($this, settings);
+            zoomTo($this, elemSettings);
             
-            if(settings.debug) {
+            if(elemSettings.debug) {
             	if($("#debug").length===0) {
-					$(settings.root).append('<div id="debug"><div>');
+					$(elemSettings.root).append('<div id="debug"><div>');
 				} else {
 					$("#debug").html("");
 				}
-				showDebug($(this),settings);
+				showDebug($this,elemSettings);
             } else {
             	if($("#debug").length!==0) {
 					$("#debug").html("");
@@ -691,38 +684,32 @@ if(!$.zoomooz) {
         return this;
     };
     
-    $.fn.makeZooming = function(settings) {
-        if(!default_settings) {
-            $.zoomooz.setup();
-        }
-        
-        // first argument empty object to ensure that 
-        // the default settings are not modified
-        settings = jQuery.extend({}, default_settings, settings);
-        
-        var setupClickHandler = function(clickTarget,zoomTarget) {
-            clickTarget.click(function(evt) {
-                zoomTarget.zoomTo(settings);
-                evt.stopPropagation();
-            });
-            clickTarget.addClass("zoomTarget");
-        }
-        
-        this.each(function() {
-            setupClickHandler($(this),$(this));
-        });
-        
-        if(!settings.root.hasClass("zoomTarget")) {
-            setupClickHandler(settings.root,settings.root);
-            setupClickHandler(settings.root.parent(),settings.root);
-            
-            settings.root.click();
-        }
-    }
-    
     //**********************************//
     //***  Setup functions           ***//
     //**********************************//
+    
+    function setupElementSettings($elem, settings) {
+        if(!$.zoomooz.defaultSettings) {
+            $.zoomooz.setup();
+        }
+        
+        var defaultSettings = $.zoomooz.defaultSettings;
+        var elementSettings = jQuery.extend({},settings);
+        
+        for(var key in defaultSettings) {
+            if (defaultSettings.hasOwnProperty(key) && !elementSettings[key]) {
+                elementSettings[key] = $elem.data(key);
+            }
+        }
+        for(var i=0;i<animationSettings.length;i++) {
+            var key = animationSettings[i];
+            if(!elementSettings[key]) {
+                elementSettings[key] = $elem.data(key);
+            }
+        }
+        
+        return jQuery.extend({}, defaultSettings, elementSettings);
+    }
     
     /* setup css styles in javascript to not need an extra zoomooz.css file for the user to load.
        having the styles here helps also at keeping the css requirements minimal. */
@@ -731,20 +718,15 @@ if(!$.zoomooz) {
         style.type = 'text/css';
         
         var transformOrigin = "";
-        var textSelectionDisabling = "-webkit-touch-callout: none;";
-        
         helpers.forEachPrefix(function(prefix) {
             transformOrigin += prefix+"transform-origin: 0 0;";
-            textSelectionDisabling += prefix+"user-select:none;";
         },true);
            
         // FIXME: how to remove the html height requirement?
         // FIXME: how to remove the transform origin?
         style.innerHTML = "html {height:100%;}" +
                           ".noScroll{overflow:hidden !important;}" +
-                          ".zoomTarget{"+textSelectionDisabling+"}"+
-                          ".zoomTarget:hover{cursor:pointer!important;}"+
-                          ".selectedZoomTarget:hover{cursor:auto!important;}"+
+                          "body.noScroll,html.noScroll body{margin-right:15px;}" +
                           "* {"+transformOrigin+"}";
         
         document.getElementsByTagName('head')[0].appendChild(style);
@@ -754,9 +736,9 @@ if(!$.zoomooz) {
         return {
             targetsize: 0.9,
             scalemode: "both",
-            duration: 1000,
             root: $(document.body),
-            debug: false
+            debug: false,
+            animationendcallback: null
         };
     }
     
@@ -768,21 +750,23 @@ if(!$.zoomooz) {
         var scrollData = handleScrolling(elem, settings);
         
         var rootTransformation;
-        var animateEndCallback = null;
+        var animationendcallback = null;
         
         // computeTotalTransformation does not work correctly if the
         // element and the root are the same
         if(elem[0] !== settings.root[0]) {
             var inv = computeTotalTransformation(elem, settings.root).inverse();
             rootTransformation = computeViewportTransformation(elem, inv, settings);
-        	    
-        	animateEndCallback = function() {
-        	    $(".selectedZoomTarget").removeClass("selectedZoomTarget");
-        	    elem.addClass("selectedZoomTarget");
-        	};
+        	
+        	if(settings.animationendcallback) {
+                animationendcallback = function() {
+                    settings.animationendcallback.call(elem[0]);
+                };
+            }
+        	
         } else {
             rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
-            animateEndCallback = function() {
+            animationendcallback = function() {
                 var $root = $(settings.root);
                 var $scroll = scrollData.elem;
                 
@@ -792,13 +776,13 @@ if(!$.zoomooz) {
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
                 
-                $(".selectedZoomTarget").removeClass("selectedZoomTarget");
-        	    elem.addClass("selectedZoomTarget");
-        	    elem.parent().addClass("selectedZoomTarget");
+                if(settings.animationendcallback) {
+                    settings.animationendcallback.call(elem[0]);
+                }
             };
         }
     	
-        $(settings.root).animateTransformation(rootTransformation, settings, animateEndCallback);
+        $(settings.root).animateTransformation(rootTransformation, settings, animationendcallback);
         
     }
     
@@ -981,6 +965,7 @@ if(!$.zoomooz) {
             prevComputedStyle = elem.currentStyle;
         }
         
+        /*
         function offsetParentInsideRoot($elem, $root) {
             // FIXME:
             // wondering, should this be $root.closest()
@@ -991,6 +976,7 @@ if(!$.zoomooz) {
         }
         
         console.log("inside root",offsetParentInsideRoot(input, transformationRootElement));
+        */
         
         var top = elem.offsetTop;
         var left = elem.offsetLeft;
@@ -1069,6 +1055,185 @@ if(!$.zoomooz) {
             return new PureCSSMatrix(rawTrans);
         }
     }  
+    
+})(jQuery);
+/*
+ * jquery.zoomooz-zoomtarget.js, part of:
+ * http://janne.aukia.com/zoomooz
+ *
+ * LICENCE INFORMATION:
+ *
+ * Copyright (c) 2010 Janne Aukia (janne.aukia.com)
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL Version 2 (GPL-LICENSE.txt) licenses.
+ *
+ */
+
+/*jslint sub: true */
+
+(function($) {
+    "use strict";
+
+    if(!$.zoomooz) {
+        $.zoomooz = {};
+    }
+    
+    //**********************************//
+    //***  Variables                 ***//
+    //**********************************//
+    
+    var helpers = $.zoomooz.helpers;
+
+    //**********************************//
+    //***  Static setup              ***//
+    //**********************************//
+    
+    setupCssStyles();
+    
+    // make all elements with the zoomTarget class zooming
+    $(document).ready(function() {
+        $(".zoomTarget").zoomTarget();
+    });
+    
+    //**********************************//
+    //***  jQuery functions          ***//
+    //**********************************//
+    
+    $.fn.zoomTarget = function(settings) {
+        if(!$.zoomooz.defaultSettings) {
+            $.zoomooz.setup();
+        }
+        
+        if(!settings) {
+            settings = {};
+        }
+        
+        settings.animationendcallback = function() {
+            $(".selectedZoomTarget").removeClass("selectedZoomTarget");
+        	$(this).addClass("selectedZoomTarget");
+        };
+        
+        var setupClickHandler = function(clickTarget,zoomTarget, settings) {
+            clickTarget.addClass("zoomTarget");
+        
+            var zoomContainer = zoomTarget.closest(".zoomContainer");
+            if(zoomContainer.length!=0) {
+                settings.root = zoomContainer;
+            }
+            
+            if(!settings.root) {
+                settings.root = $.zoomooz.defaultSettings.root;
+            }
+            
+             if(!settings.root.hasClass("zoomTarget")) {
+            
+                // fixme, if element has data fields for setting duration etc,
+                // these will not be inherited by the root. which might or might not
+                // make sense
+                
+                var rootSettings = {};
+                
+                rootSettings.animationendcallback = function() {
+                    var $elem = $(this);
+                    $(".selectedZoomTarget").removeClass("selectedZoomTarget");
+                    $elem.addClass("selectedZoomTarget");
+                    $elem.parent().addClass("selectedZoomTarget");
+                };
+                
+                setupClickHandler(settings.root,settings.root,rootSettings);
+                setupClickHandler(settings.root.parent(),settings.root,rootSettings);
+                
+                settings.root.click();
+            }
+            
+            clickTarget.click(function(evt) {
+                zoomTarget.zoomTo(settings);
+                evt.stopPropagation();
+            });
+        }
+        
+        this.each(function() {
+            setupClickHandler($(this),$(this),jQuery.extend({}, settings));
+        });
+    }
+    
+    
+    //**********************************//
+    //***  Setup functions           ***//
+    //**********************************//
+    
+    /* setup css styles in javascript to not need an extra zoomooz.css file for the user to load.
+       having the styles here helps also at keeping the css requirements minimal. */
+    function setupCssStyles() {
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        
+        var textSelectionDisabling = "-webkit-touch-callout: none;";
+        helpers.forEachPrefix(function(prefix) {
+            textSelectionDisabling += prefix+"user-select:none;";
+        },true);
+           
+        // FIXME: how to remove the html height requirement?
+        // FIXME: how to remove the transform origin?
+        style.innerHTML = ".zoomTarget{"+textSelectionDisabling+"}"+
+                          ".zoomTarget:hover{cursor:pointer!important;}"+
+                          ".selectedZoomTarget:hover{cursor:auto!important;}"+
+                          /* padding to fix margin collapse issues */
+                          ".zoomContainer{position:relative;padding:1px;margin:-1px;}";
+                          
+        document.getElementsByTagName('head')[0].appendChild(style);
+    }
+    
+})(jQuery);
+/*
+ * jquery.zoomooz-container.js, part of:
+ * http://janne.aukia.com/zoomooz
+ *
+ * LICENCE INFORMATION:
+ *
+ * Copyright (c) 2010 Janne Aukia (janne.aukia.com)
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL Version 2 (GPL-LICENSE.txt) licenses.
+ *
+ */
+
+/*jslint sub: true */
+
+(function($) {
+    "use strict";
+
+    if(!$.zoomooz) {
+        $.zoomooz = {};
+    }
+    
+    //**********************************//
+    //***  Variables                 ***//
+    //**********************************//
+    
+    //var helpers = $.zoomooz.helpers;
+
+    //**********************************//
+    //***  Static setup              ***//
+    //**********************************//
+    
+    // FIXME: move zoomContainer styling here?
+    //setupCssStyles();
+    
+    // make all elements with the zoomContainer class zooming containers
+    $(document).ready(function() {
+        $(".zoomContainer").zoomContainer();
+    });
+    
+    //**********************************//
+    //***  jQuery functions          ***//
+    //**********************************//
+    
+    $.fn.zoomContainer = function(settings) {
+    
+        // add next and previous calls to the canvas
+        // (auto detect next and previous buttons)
+    
+    }
     
 })(jQuery);
 // Everything but the relevant parts stripped out by Janne Aukia

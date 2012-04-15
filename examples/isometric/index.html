@@ -8,17 +8,20 @@
 		<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>
 		
 		<script type="text/javascript">
+		
 			$(document).ready(function() {
+		        $.zoomooz.setup({nativeanimation:true, debug:false});
+		
 			    $(".cover").click(function(evt) {
 					evt.stopPropagation();
-					$(this).zoomTo({debug:true,targetsize:0.3});
+					$(this).zoomTo();
 					$(".cover").not(this).show();
 					$(this).hide();
 				});
 				
 				$(".box").click(function(evt) {
 					evt.stopPropagation();
-					$(this).zoomTo({debug:true,targetsize:0.7});
+					$(this).zoomTo({targetsize:0.7});
 				});
 				
 				$(".face").click(function(evt) {
@@ -28,18 +31,18 @@
 				
 				$(window).click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({debug:true,targetsize:1.0});
+					$("body").zoomTo({targetsize:1.0});
 					$(".cover").show();
 				});
 				
 				// for iPhone
 				$("#container").click(function(evt) {
 					evt.stopPropagation();
-					$("body").zoomTo({debug:true,targetsize:1.0});
+					$("body").zoomTo({targetsize:1.0});
 					$(".cover").show();
 				});
 				
-				$("body").zoomTo({debug:true,targetsize:1.0});
+				$("body").zoomTo({targetsize:1.0});
 				$(".cover").show();
 				
 				$("input").change(function(evt) {

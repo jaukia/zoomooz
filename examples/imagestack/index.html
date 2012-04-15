@@ -9,6 +9,8 @@
 		
 		<script type="text/javascript">
 		$(document).ready(function(){
+		    $.zoomooz.setup({duration:1000, nativeanimation:true});
+		
 		    $(document).keypress(function(evt){if(evt.keyCode==13) loadImages(true);});
 		    $("#searchtext").blur(function(evt){loadImages(false);});
 		    

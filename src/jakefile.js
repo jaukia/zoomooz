@@ -5,10 +5,8 @@ if (typeof global.system !== 'undefined') {
     return;
 }
 
-var sys = require('sys');
 var path = require('path');
 var fs = require('fs');
-
 var util = require('util');
 
 var uglify = require("uglify-js");
@@ -22,25 +20,25 @@ var withLibsMinifiedFileName = "../jquery.zoomooz.min.js";
 
 desc('Concatenates javascript files');
 task('concat', [], function() {
-  sys.puts('### [jake concat]');
+  util.puts('### [jake concat]');
   
   path.exists("build",function(exists) {
      if(!exists) {
- 	 	sys.puts('setting up build dir');
+ 	 	util.puts('setting up build dir');
   	    fs.mkdirSync("build",0744);
   	 }
   
-	 var ownfiles = ['js/purecssmatrix.js','js/jquery.zoomooz-helpers.js','js/jquery.zoomooz-anim.js','js/jquery.zoomooz-core.js'],
+	 var ownfiles = ['js/purecssmatrix.js','js/jquery.zoomooz-helpers.js','js/jquery.zoomooz-anim.js','js/jquery.zoomooz-core.js', 'js/jquery.zoomooz-zoomTarget.js','js/jquery.zoomooz-zoomContainer.js'],
 		 extrafiles = ['js/sylvester.src.stripped.js'],
 		 pathName = '.';
 	 
 	 var concatFiles = function(files, outFileName) {
-		sys.puts('Creating \"'+outFileName+'\" from:');
+		util.puts('Creating \"'+outFileName+'\" from:');
 		outFile = fs.openSync(outFileName, 'w+');
 		files.forEach(function(fileName) {
 		   var contents = fs.readFileSync(fileName);
 		   var writeStatus = fs.writeSync(outFile, contents.toString()+'\n');
-		   sys.puts('  '+fileName);
+		   util.puts('  '+fileName);
 		});
 		fs.closeSync(outFile); 
 	 }

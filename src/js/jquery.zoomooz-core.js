@@ -48,7 +48,9 @@
     //**********************************//
     
     var helpers = $.zoomooz.helpers;
-
+    
+    var animationSettings = ["duration", "easing", "nativeanimation"];
+    
     //**********************************//
     //***  Static setup              ***//
     //**********************************//
@@ -68,26 +70,18 @@
     };
     
     $.fn.zoomTo = function(settings) {
-        if(!$.zoomooz.defaultSettings) {
-            $.zoomooz.setup();
-        }
-        
-        // first argument empty object to ensure that the default settings
-        // are not modified
-        settings = jQuery.extend({}, $.zoomooz.defaultSettings, settings);
-        
-        // um, does it make any sense to zoom to each of the matches?
         this.each(function() {
-        
-            zoomTo($(this), settings);
+            var $this = $(this);
+            var elemSettings = setupElementSettings($this, settings);
+            zoomTo($this, elemSettings);
             
-            if(settings.debug) {
+            if(elemSettings.debug) {
             	if($("#debug").length===0) {
-					$(settings.root).append('<div id="debug"><div>');
+					$(elemSettings.root).append('<div id="debug"><div>');
 				} else {
 					$("#debug").html("");
 				}
-				showDebug($(this),settings);
+				showDebug($this,elemSettings);
             } else {
             	if($("#debug").length!==0) {
 					$("#debug").html("");
@@ -101,6 +95,29 @@
     //**********************************//
     //***  Setup functions           ***//
     //**********************************//
+    
+    function setupElementSettings($elem, settings) {
+        if(!$.zoomooz.defaultSettings) {
+            $.zoomooz.setup();
+        }
+        
+        var defaultSettings = $.zoomooz.defaultSettings;
+        var elementSettings = jQuery.extend({},settings);
+        
+        for(var key in defaultSettings) {
+            if (defaultSettings.hasOwnProperty(key) && !elementSettings[key]) {
+                elementSettings[key] = $elem.data(key);
+            }
+        }
+        for(var i=0;i<animationSettings.length;i++) {
+            var key = animationSettings[i];
+            if(!elementSettings[key]) {
+                elementSettings[key] = $elem.data(key);
+            }
+        }
+        
+        return jQuery.extend({}, defaultSettings, elementSettings);
+    }
     
     /* setup css styles in javascript to not need an extra zoomooz.css file for the user to load.
        having the styles here helps also at keeping the css requirements minimal. */
@@ -116,7 +133,8 @@
         // FIXME: how to remove the html height requirement?
         // FIXME: how to remove the transform origin?
         style.innerHTML = "html {height:100%;}" +
-                          ".noScroll{overflow:hidden !important;margin-right:15px}" +
+                          ".noScroll{overflow:hidden !important;}" +
+                          "body.noScroll,html.noScroll body{margin-right:15px;}" +
                           "* {"+transformOrigin+"}";
         
         document.getElementsByTagName('head')[0].appendChild(style);
@@ -126,7 +144,6 @@
         return {
             targetsize: 0.9,
             scalemode: "both",
-            duration: 1000,
             root: $(document.body),
             debug: false,
             animationendcallback: null
@@ -141,7 +158,7 @@
         var scrollData = handleScrolling(elem, settings);
         
         var rootTransformation;
-        var animationEndCallback = null;
+        var animationendcallback = null;
         
         // computeTotalTransformation does not work correctly if the
         // element and the root are the same
@@ -149,16 +166,15 @@
             var inv = computeTotalTransformation(elem, settings.root).inverse();
             rootTransformation = computeViewportTransformation(elem, inv, settings);
         	
-        	if(settings.animationEndCallback) {
-                animationEndCallback = function() {
-                    settings.animationEndCallback.call(elem[0]);
+        	if(settings.animationendcallback) {
+                animationendcallback = function() {
+                    settings.animationendcallback.call(elem[0]);
                 };
             }
         	
-        	
         } else {
             rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
-            animationEndCallback = function() {
+            animationendcallback = function() {
                 var $root = $(settings.root);
                 var $scroll = scrollData.elem;
                 
@@ -168,13 +184,13 @@
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
                 
-                if(settings.animationEndCallback) {
-                    settings.animationEndCallback.call(elem[0]);
+                if(settings.animationendcallback) {
+                    settings.animationendcallback.call(elem[0]);
                 }
             };
         }
     	
-        $(settings.root).animateTransformation(rootTransformation, settings, animationEndCallback);
+        $(settings.root).animateTransformation(rootTransformation, settings, animationendcallback);
         
     }
     

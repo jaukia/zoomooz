@@ -38,7 +38,7 @@
     var helpers = $.zoomooz.helpers;
 
     var default_settings = {
-        duration: 1000,
+        duration: 450,
         easing: "ease",
         
         /* FIXME: i believe there are issues with native anim at least on chrome for mac
