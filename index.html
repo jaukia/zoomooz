@@ -214,7 +214,9 @@
     // "linear"|"ease"|"ease-in"|"ease-out"|"ease-in-out"|[p1,p2,p3,p4]
     // [p1,p2,p3,p4] refer to cubic-bezier curve params
     easing: "ease",
-    // user browser natve animation in webkit
+    // use browser native animation in webkit, provides faster and nicer
+    // animations but on some older machines, the content that is zoomed 
+    // may show up as pixelated.
     nativeanimation: true,
     // root element to zoom relative to 
     // (this element needs to be positioned)
