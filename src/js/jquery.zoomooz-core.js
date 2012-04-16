@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.01 declarative syntax and fixes
  * 0.92 working scrolling
  * 0.91 simplifying code base and scrolling for non-body zoom roots
  * 0.90 fixing margin on first body child

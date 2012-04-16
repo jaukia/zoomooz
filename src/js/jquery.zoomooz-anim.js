@@ -122,12 +122,14 @@
             var transdur = roundNumber(duration/1000,6)+"s";
             propMap["-webkit-transition-duration"] = transdur;
             propMap["-o-transition-duration"] = transdur;
+            propMap["-moz-transition-duration"] = transdur;
         }
         
         if(easing) {
             var transtiming = constructEasingCss(easing);
             propMap["-webkit-transition-timing-function"] = transtiming;
             propMap["-o-transition-timing-function"] = transtiming;
+            propMap["-moz-transition-timing-function"] = transdur;
         }
         
         return propMap;

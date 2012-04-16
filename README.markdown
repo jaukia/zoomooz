@@ -2,10 +2,6 @@
 
 Zoomooz is an easy-to-use jQuery plugin for making any web page element zoom.
 
-Size of Zoomooz is 5KB gzipped, 14KB minified and 43KB originally (as of April 4 2012). This includes everything but jQuery.
-
-## Installation and usage
-
 Basically, just have a look at the examples and start hacking away.
 
 For more information and usage, see: http://janne.aukia.com/zoomooz
