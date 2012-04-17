@@ -6,7 +6,6 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-		
 		<script type="text/javascript" src="jquery.zoomooz.min.js"></script>
 		
 		<!--<script type="text/javascript" src="src/js/jquery.zoomooz-helpers.js"></script>
@@ -18,9 +17,7 @@
 		<script type="text/javascript" src="src/js/sylvester.src.stripped.js"></script>-->
 		
 		<link rel="stylesheet" href="website-assets/website.css" type="text/css" media="screen">
-		
 		<link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
-        
         <link href='http://fonts.googleapis.com/css?family=Lato:300,400' rel='stylesheet' type='text/css'>
         
 	    <script>
@@ -177,7 +174,7 @@
             
             <h2>Zooming jQuery way</h2>
             
-            <p>To make an element zoom when clicked on, you can use <i>zoomTarget(...)</i>:</p>
+            <p>To make an element zoom when clicked on, you can use "zoomTarget(...)":</p>
             
 <pre><code class="js">$(document).ready(function() {
     $("#element").zoomTarget();
@@ -199,7 +196,15 @@
             <a name="settings"></a>
             <h2>Settings</h2>
             
-            <p>There are a number of settings you can pass to the "zoomTarget" and "zoomTo" functions in form of a map. The settings configure how the zooming behaves.</p>
+            <p>There are a number of settings you can add to the "zoomTarget" elements and pass to "zoomTo" functions in a map. The settings configure how the zooming behaves.</p>
+            
+            <p>For elements with the "zoomTarget" class, you can set the settings by adding a "data-settingname" attribute to the element, for example:</p>
+            
+            <code>
+            &lt;div class=<span class="string">"zoomTarget"</span> data-scalemode=<span class="string">"width"</span> data-nativeanimation=<span class="string">"true"</span>&gt;Click me&lt;/div&gt;
+            </code>
+            
+            <p>List of all settings:</p>
             
 <pre><code class="js">settings = {
     // zoomed size relative to the container element
@@ -245,7 +250,7 @@ $("#element").zoomTo(settings);</code></pre>
            <p>Zoomooz works even on iPad and iPhone. <a href="http://www.youtube.com/watch?v=faSRI1iAang">Watch a video of Zoomooz on a first generation iPad</a>.</p>
             
             
-            Some versions of Zoomooz have been working on Opera and IE9 as well, but I haven't tested them recently, so there are probably major bugs. Feel free to contribute patches :).</p>
+            <p>Some versions of Zoomooz have been working on Opera and IE9 as well, but I haven't tested them recently, so there are probably major bugs. Feel free to contribute patches :).</p>
             
             <div class="browsers">
                 <img src="website-assets/images/opera.png" width="24" height="24" alt="Opera">
@@ -331,11 +336,12 @@ $("#element").zoomTo(settings);</code></pre>
             <p>Some known issues:</p>
             
             <ul>
-                <li>Margins on zoomable elements can cause problems</li>
-                <li>Having a main container inside the body tag sometimes helps with full page zooming</li>
+                <li>On iOs devices, full page animation is a bit jumpy. Zooming inside a container works ok. This is probably related to how scrolling is handled in Zoomooz.</li>
+                <li>Margins on zoomable elements can cause problems.</li>
+                <li>Having a main container inside the body tag sometimes helps with full page zooming.</li>
                 <li>Small rendering problems here and there.</li>
                 <li>Small text renders ugly. See <a href="examples/text/index.html">this example</a> for a hack to work around this.</li>
-                <li>Rotation goes sometimes via the wrong direction</li>
+                <li>Rotation goes sometimes via the wrong direction.</li>
             </ul>
             
             <h2>Building</h2>
