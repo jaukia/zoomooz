@@ -126,6 +126,7 @@
                 <div class="clearer"></div>
             </div>
             
+            <a name="zoomcontainer"></a>
             <h2>Zooming inside a container</h2>
             
             <p>You can make only part of the page zoom by adding two blocks outside the zooming elements, a "zoomContainer" and outside it a "zoomViewport":</p>
@@ -246,9 +247,6 @@ $("#element").zoomTo(settings);</code></pre>
                 <img src="website-assets/images/chrome.png" width="24" height="24" alt="Chrome">
                 <img src="website-assets/images/ff.png" width="24" height="24" alt="Firefox">
            </div>
-           
-           <p>Zoomooz works even on iPad and iPhone. <a href="http://www.youtube.com/watch?v=faSRI1iAang">Watch a video of Zoomooz on a first generation iPad</a>.</p>
-            
             
             <p>Some versions of Zoomooz have been working on Opera and IE9 as well, but I haven't tested them recently, so there are probably major bugs. Feel free to contribute patches :).</p>
             
@@ -258,6 +256,12 @@ $("#element").zoomTo(settings);</code></pre>
             </div>
             
             <p>Zoomooz requires 1.4. or newer and has been tested with jQuery 1.7.</p>
+            
+            <h2>iPhone and iPad</h2>
+            
+           <p>Zoomooz works even on iPad and iPhone. <a href="http://www.youtube.com/watch?v=faSRI1iAang">Watch a video of Zoomooz on a first generation iPad</a>.</p>
+           
+           <p>Currently the <a href="#zoomcontainer">zooming inside a container</a> works much better on them than zooming the whole page. Whole page zooming can be made to work if "overflow:hidden" is set for the "html" and "body" elements, but then the page scrolling is lost.</p>
             
             <h2>Demos</h2>
             
@@ -350,19 +354,24 @@ $("#element").zoomTo(settings);</code></pre>
             
             <p>For build instructions, have a look at the <a href="https://github.com/jaukia/zoomooz">Zoomooz github page</a>.</p>
             
-            <h2>Related stuff</h2>
+            <h2>Related Zooming projects</h2>
             
             <p>
-            <a href="http://bartaz.github.com/impress.js/#/bored">Impress.js</a> is an interesting take on making Prezi like slides on the web.
+            <a href="http://bartaz.github.com/impress.js/#/bored">Impress.js</a> by Bartosz Szopka is an interesting take on making Prezi like slides on the web. Harish Sivaramakrishnan has started to make an editor called <a href="https://github.com/hsivaramx/Impressionist">Impressionist</a> for Impress.js.
             </p>
            
             <p>
-            <a href="http://willemmulder.github.com/Presenteer.js/">Presenteer.js</a> is also a bit similar to Impress.js and Zoomooz.
+            <a href="http://willemmulder.github.com/Presenteer.js/">Presenteer.js</a> by Willem Mulder is also a bit similar to Impress.js and Zoomooz.
             </p>
             
-            <p>Zoomooz uses a smart easing that works the same way as css animation easings. If you'd like to use it with other jQuery animations, check out <a href="http://janne.aukia.com/easie/">jquery.easie.js</a>.</p>
+            <p>
+            Another similar project is <a href="http://lab.hakim.se/zoom-js/">zoom.js</a> by Hakim Elhattab, although it would seem to be currently mostly a proof of concept</p>
             
-            <p>The whole idea of zooming to content comes from a long line of user interface research related to zooming ui:s (ZUI:s). One starting point for these is the <a href="http://en.wikipedia.org/wiki/Zooming_user_interface">Zooming user interface Wikipedia page</a>.
+            <p>The whole idea of zooming to content comes from a long line of user interface research related to zooming ui:s (ZUI:s). One starting point for these is the <a href="http://en.wikipedia.org/wiki/Zooming_user_interface">Zooming user interface Wikipedia page</a>.</p>
+            
+            <h2>Other links</h2>
+            
+            <p>Zoomooz uses a smart easing that works the same way as css animation easings. If you'd like to use it with other jQuery animations, check out <a href="http://janne.aukia.com/easie/">jquery.easie.js</a>.</p>
             
 			<script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
