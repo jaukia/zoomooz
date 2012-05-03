@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.02 bug fix on endcallback resetting for native animation
  * 1.01 declarative syntax and fixes
  * 0.92 working scrolling
  * 0.91 simplifying code base and scrolling for non-body zoom roots

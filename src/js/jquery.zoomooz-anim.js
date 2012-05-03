@@ -40,11 +40,9 @@
     var default_settings = {
         duration: 450,
         easing: "ease",
-        
-        /* FIXME: i believe there are issues with native anim at least on chrome for mac
-           so i disabled the default native animation for now. should have a better look
-           at this at some point. */
-           
+        /* Native animation may cause issues with pixelated content while zooming,
+           and there might be other issues with browser compatibility etc. so use
+           it with care and test on your target devices/browsers :). */
         nativeanimation: false
     };
     
@@ -73,6 +71,18 @@
     $.fn.animateTransformation = function(transformation, settings, animateEndCallback) {
         settings = jQuery.extend({}, default_settings, settings);
         
+        var useNativeAnim = ($.browser.webkit && settings.nativeanimation);
+        
+        // FIXME: what would be the best way to handle leftover animations?
+        if(endCallbackTimeout) {
+            clearTimeout(endCallbackTimeout);
+            endCallbackTimeout = null;
+        }
+
+        if(useNativeAnim && animateEndCallback) {
+            endCallbackTimeout = setTimeout(animateEndCallback, settings.duration);
+        }
+        
         this.each(function() {
             var $target = $(this);
             
@@ -81,19 +91,10 @@
             var current_affine = constructAffineFixingRotation($target);
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
             
-            if($.browser.webkit && settings.nativeanimation) {
+            if(useNativeAnim) {
                 $target.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
-            
-                if(animateEndCallback) {
-                    endCallbackTimeout = setTimeout(animateEndCallback, settings.duration);
-                }
             } else {
                 animateTransition($target, current_affine, final_affine, settings, animateEndCallback);
-            }
-            
-            if(endCallbackTimeout) {
-                clearTimeout(endCallbackTimeout);
-                endCallbackTimeout = null;
             }
         });
     }
