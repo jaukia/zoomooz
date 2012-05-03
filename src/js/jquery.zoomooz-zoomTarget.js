@@ -109,15 +109,19 @@
         var style = document.createElement('style');
         style.type = 'text/css';
         
-        var textSelectionDisabling = "-webkit-touch-callout: none;";
-        helpers.forEachPrefix(function(prefix) {
-            textSelectionDisabling += prefix+"user-select:none;";
-        },true);
-           
+        function setupSelectionCss(enabled) {
+            var selectionString = "-webkit-touch-callout: "+(enabled?"default":"none")+";";
+            helpers.forEachPrefix(function(prefix) {
+                selectionString += prefix+"user-select:"+(enabled?"text":"none")+";";
+            },true);
+            return selectionString;
+        }
+                   
         // FIXME: how to remove the html height requirement?
         // FIXME: how to remove the transform origin?
-        style.innerHTML = ".zoomTarget{"+textSelectionDisabling+"}"+
+        style.innerHTML = ".zoomTarget{"+setupSelectionCss(false)+"}"+
                           ".zoomTarget:hover{cursor:pointer!important;}"+
+                          ".selectedZoomTarget{"+setupSelectionCss(true)+"}"+
                           ".selectedZoomTarget:hover{cursor:auto!important;}"+
                           /* padding to fix margin collapse issues */
                           ".zoomContainer{position:relative;padding:1px;margin:-1px;}";
