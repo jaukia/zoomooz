@@ -216,6 +216,10 @@ ul.github-block a strong {
     background-color:#0b0;
 }
 
+.shape-skew.selectedZoomTarget:hover {
+    background-color:#090;
+}
+
 .shape-scale {
     -webkit-transform:scaleX(0.7) translateY(0px);
     -moz-transform:scaleX(0.7) translateY(0px);
@@ -227,6 +231,10 @@ ul.github-block a strong {
     background-color:#49e;
 }
 
+.shape-scale.selectedZoomTarget:hover {
+    background-color:#27c;
+}
+
 .shape-rotation {
     background-color:#c43;
     -webkit-transform: rotate(-50deg) translateX(-60px);
@@ -235,4 +243,8 @@ ul.github-block a strong {
 
 .shape-rotation:hover {
     background-color:#e64433;
+}
+
+.shape-rotation.selectedZoomTarget:hover {
+    background-color:#c43;
 }
