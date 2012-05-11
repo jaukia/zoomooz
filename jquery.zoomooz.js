@@ -862,6 +862,8 @@ if(!$.zoomooz) {
             scale = zoomAmount*relh;
         } else if(zoomMode=="both") {
             scale = zoomAmount*Math.min(relw,relh);
+        } else if(zoomMode=="scale") {
+        	scale = zoomAmount;
         } else {
             console.log("wrong zoommode");
             return;
