@@ -1153,7 +1153,7 @@ if(!$.zoomooz) {
                 settings.root.click();
             }
             
-            clickTarget.click(function(evt) {
+            clickTarget.on("click", function(evt) {
                 zoomTarget.zoomTo(settings);
                 evt.stopPropagation();
             });
