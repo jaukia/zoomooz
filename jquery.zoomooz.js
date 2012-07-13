@@ -1091,16 +1091,6 @@ if(!$.zoomooz) {
     
     var helpers = $.zoomooz.helpers;
 
-    //**********************************//
-    //***  Static setup              ***//
-    //**********************************//
-    
-    setupCssStyles();
-    
-    // make all elements with the zoomTarget class zooming
-    $(document).ready(function() {
-        $(".zoomTarget").zoomTarget();
-    });
     
     //**********************************//
     //***  jQuery functions          ***//
@@ -1195,7 +1185,19 @@ if(!$.zoomooz) {
         document.getElementsByTagName('head')[0].appendChild(style);
     }
     
+    //**********************************//
+    //***  Static setup              ***//
+    //**********************************//
+    
+    setupCssStyles();
+    
+    // make all elements with the zoomTarget class zooming
+    $(document).ready(function() {
+        $(".zoomTarget").zoomTarget();
+    });
+
 })(jQuery);
+
 /*
  * jquery.zoomooz-container.js, part of:
  * http://janne.aukia.com/zoomooz
@@ -1223,6 +1225,18 @@ if(!$.zoomooz) {
     
     //var helpers = $.zoomooz.helpers;
 
+    
+    //**********************************//
+    //***  jQuery functions          ***//
+    //**********************************//
+    
+    $.fn.zoomContainer = function(settings) {
+    
+        // add next and previous calls to the canvas
+        // (auto detect next and previous buttons)
+    
+    }
+
     //**********************************//
     //***  Static setup              ***//
     //**********************************//
@@ -1235,18 +1249,8 @@ if(!$.zoomooz) {
         $(".zoomContainer").zoomContainer();
     });
     
-    //**********************************//
-    //***  jQuery functions          ***//
-    //**********************************//
-    
-    $.fn.zoomContainer = function(settings) {
-    
-        // add next and previous calls to the canvas
-        // (auto detect next and previous buttons)
-    
-    }
-    
 })(jQuery);
+
 // Everything but the relevant parts stripped out by Janne Aukia
 // for Zoomooz on April 4 2012 by using jscoverage coverage analysis tool.
 
