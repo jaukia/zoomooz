@@ -25,16 +25,6 @@
     
     var helpers = $.zoomooz.helpers;
 
-    //**********************************//
-    //***  Static setup              ***//
-    //**********************************//
-    
-    setupCssStyles();
-    
-    // make all elements with the zoomTarget class zooming
-    $(document).ready(function() {
-        $(".zoomTarget").zoomTarget();
-    });
     
     //**********************************//
     //***  jQuery functions          ***//
@@ -129,4 +119,15 @@
         document.getElementsByTagName('head')[0].appendChild(style);
     }
     
+    //**********************************//
+    //***  Static setup              ***//
+    //**********************************//
+    
+    setupCssStyles();
+    
+    // make all elements with the zoomTarget class zooming
+    $(document).ready(function() {
+        $(".zoomTarget").zoomTarget();
+    });
+
 })(jQuery);
