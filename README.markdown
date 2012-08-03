@@ -18,7 +18,7 @@ There is an optional build process. Currently the only thing it does is that it 
     
 2. Install node-jake and uglify-js:
 
-        npm install jake
+        npm install -g jake
         npm install uglify-js
 
 ### Running the build
