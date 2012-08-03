@@ -46,6 +46,7 @@
     
     // make all elements with the zoomContainer class zooming containers
     $(document).ready(function() {
+        // this needs to be after the "$.fn.zoomContainer" has been initialized
         $(".zoomContainer").zoomContainer();
     });
     

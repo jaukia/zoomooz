@@ -127,6 +127,7 @@
     
     // make all elements with the zoomTarget class zooming
     $(document).ready(function() {
+        // this needs to be after the "$.fn.zoomTarget" has been initialized
         $(".zoomTarget").zoomTarget();
     });
 
