@@ -25,17 +25,6 @@
     
     //var helpers = $.zoomooz.helpers;
 
-    //**********************************//
-    //***  Static setup              ***//
-    //**********************************//
-    
-    // FIXME: move zoomContainer styling here?
-    //setupCssStyles();
-    
-    // make all elements with the zoomContainer class zooming containers
-    $(document).ready(function() {
-        $(".zoomContainer").zoomContainer();
-    });
     
     //**********************************//
     //***  jQuery functions          ***//
@@ -47,5 +36,17 @@
         // (auto detect next and previous buttons)
     
     }
+
+    //**********************************//
+    //***  Static setup              ***//
+    //**********************************//
+    
+    // FIXME: move zoomContainer styling here?
+    //setupCssStyles();
+    
+    // make all elements with the zoomContainer class zooming containers
+    $(document).ready(function() {
+        $(".zoomContainer").zoomContainer();
+    });
     
 })(jQuery);
