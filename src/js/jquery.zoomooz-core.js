@@ -151,10 +151,16 @@
            
         // FIXME: how to remove the html height requirement?
         // FIXME: how to remove the transform origin?
-        style.innerHTML = "html {height:100%;}" +
-                          ".noScroll{overflow:hidden !important;}" +
-                          "body.noScroll,html.noScroll body{margin-right:15px;}" +
-                          "* {"+transformOrigin+"}";
+        styleString = "html {height:100%;}" +
+                      "* {"+transformOrigin+"}" +
+                      ".noScroll{overflow:hidden !important;}";
+        
+        /*if(...) {
+            styleString += +
+                          "body.noScroll,html.noScroll body{margin-right:15px;}";
+        }*/
+        
+        style.innerHTML = styleString;
         
         document.getElementsByTagName('head')[0].appendChild(style);
     }
