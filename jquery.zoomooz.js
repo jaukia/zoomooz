@@ -792,16 +792,15 @@ if(!$.zoomooz) {
                 var $root = $(settings.root);
                 var $scroll = scrollData.elem;
                 
-                /* this causes less flickering on the iPhone than jQuery
-                   scrollLeft and scrollTop would */
-                $scroll[0].scrollTo(scrollData.x, scrollData.y);
+                $scroll.scrollLeft(scrollData.x);
+                $scroll.scrollTop(scrollData.y);
                 
                 $scroll.removeClass("noScroll");
                 
                 $root.setTransformation(new PureCSSMatrix());
                 $root.data("original-scroll",null);
                 
-                $(document).off("touchmove.zoomooz");
+                $(document).off("touchmove");
                 
                 if(settings.animationendcallback) {
                     settings.animationendcallback.call(elem[0]);
@@ -848,15 +847,14 @@ if(!$.zoomooz) {
             var scrollData = {"elem":elem,"x":scrollX,"y":scrollY};
             $root.data("original-scroll",scrollData);
             
-            $(document).on("touchmove.zoomooz", function(e) {
+            $(document).on("touchmove", function(e) {
                 e.preventDefault();
             });
             
             elem.addClass("noScroll");
-            /* this causes less flickering on the iPhone than jQuery
-               scrollLeft and scrollTop would */
-            elem[0].scrollTo(0,0);
-             
+            elem.scrollTop(0);
+            elem.scrollLeft(0);
+            
             var transformStr = "translate(-"+scrollX+"px,-"+scrollY+"px)";
             helpers.forEachPrefix(function(prefix) {
                 $root.css(prefix+"transform", transformStr);
