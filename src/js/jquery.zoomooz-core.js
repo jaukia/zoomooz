@@ -200,8 +200,10 @@
                 $root.setTransformation(new PureCSSMatrix());
                 $root.data("original-scroll",null);
                 
+                alert("yeah!");
+                
                 /* re-enable scrolling on iPhone */
-                document.body.removeEventListener('touchstart', eventPreventer);
+                //document.body.removeEventListener('touchstart', eventPreventer);
     
                 $scroll.removeClass("noScroll");
                 $scroll.scrollLeft(scrollData.x);
