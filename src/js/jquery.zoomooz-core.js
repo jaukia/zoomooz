@@ -59,7 +59,6 @@
     //**********************************//
     
     setupCssStyles();
-    document.body.addEventListener('touchmove', function(e){ e.preventDefault(); });
     
     //**********************************//
     //***  jQuery functions          ***//
@@ -151,16 +150,10 @@
            
         // FIXME: how to remove the html height requirement?
         // FIXME: how to remove the transform origin?
-        styleString = "html {height:100%;}" +
-                      "* {"+transformOrigin+"}" +
-                      ".noScroll{overflow:hidden !important;}";
-        
-        /*if(...) {
-            styleString += +
-                          "body.noScroll,html.noScroll body{margin-right:15px;}";
-        }*/
-        
-        style.innerHTML = styleString;
+        style.innerHTML = "html {height:100%;}" +
+                          ".noScroll{overflow:hidden !important;}" +
+                          "body.noScroll,html.noScroll body{margin-right:15px;}" +
+                          "* {"+transformOrigin+"}";
         
         document.getElementsByTagName('head')[0].appendChild(style);
     }
@@ -206,6 +199,10 @@
                 
                 $root.setTransformation(new PureCSSMatrix());
                 $root.data("original-scroll",null);
+                
+                /* re-enable scrolling on iPhone */
+                document.body.removeEventListener('touchstart', eventPreventer);
+    
                 $scroll.removeClass("noScroll");
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
@@ -223,6 +220,10 @@
     //**********************************//
     //***  Handle scrolling          ***//
     //**********************************//
+    
+    function eventPreventer(e) {
+        e.preventDefault();
+    }
     
     function handleScrolling(elem, settings) {
     	
@@ -255,6 +256,9 @@
             var scrollData = {"elem":elem,"x":scrollX,"y":scrollY};
             $root.data("original-scroll",scrollData);
             
+            /* prevent scrolling on iPhone */
+            document.body.addEventListener('touchstart', eventPreventer);
+    
             elem.addClass("noScroll");
             elem.scrollTop(0);
             elem.scrollLeft(0);
