@@ -59,6 +59,7 @@
     //**********************************//
     
     setupCssStyles();
+    document.body.addEventListener('touchmove', function(e){ e.preventDefault(); });
     
     //**********************************//
     //***  jQuery functions          ***//

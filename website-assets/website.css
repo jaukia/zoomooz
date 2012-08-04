@@ -32,7 +32,9 @@ h2 {
 }
 
 #content {
-    padding:100px;
+    /* ensure that on small devices, 
+       no extra padding */
+    padding:5%;
     max-width:600px;
     margin-left:auto;
     margin-right:auto;
