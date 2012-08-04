@@ -795,7 +795,7 @@ if(!$.zoomooz) {
                 $root.setTransformation(new PureCSSMatrix());
                 $root.data("original-scroll",null);
                 
-                document.ontouchmove = function(e){ return true; }
+                //document.ontouchmove = function(e){ return true; }
     
                 $scroll.removeClass("noScroll");
                 $scroll.scrollLeft(scrollData.x);
@@ -847,7 +847,7 @@ if(!$.zoomooz) {
             $root.data("original-scroll",scrollData);
             
             /* prevent scrolling on iPhone */
-            document.ontouchmove = function(e){ e.preventDefault(); }
+            //document.ontouchmove = function(e){ e.preventDefault(); }
             
             elem.addClass("noScroll");
             elem.scrollTop(0);
