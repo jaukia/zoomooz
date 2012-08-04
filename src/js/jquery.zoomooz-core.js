@@ -200,10 +200,7 @@
                 $root.setTransformation(new PureCSSMatrix());
                 $root.data("original-scroll",null);
                 
-                alert("yeah!");
-                
-                /* re-enable scrolling on iPhone */
-                //document.body.removeEventListener('touchstart', eventPreventer);
+                document.ontouchmove = function(e){ return true; }
     
                 $scroll.removeClass("noScroll");
                 $scroll.scrollLeft(scrollData.x);
@@ -222,10 +219,6 @@
     //**********************************//
     //***  Handle scrolling          ***//
     //**********************************//
-    
-    function eventPreventer(e) {
-        e.preventDefault();
-    }
     
     function handleScrolling(elem, settings) {
     	
@@ -259,8 +252,8 @@
             $root.data("original-scroll",scrollData);
             
             /* prevent scrolling on iPhone */
-            document.body.addEventListener('touchstart', eventPreventer);
-    
+            document.ontouchmove = function(e){ e.preventDefault(); }
+            
             elem.addClass("noScroll");
             elem.scrollTop(0);
             elem.scrollLeft(0);
