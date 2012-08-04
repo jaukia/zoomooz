@@ -794,6 +794,10 @@ if(!$.zoomooz) {
                 
                 $root.setTransformation(new PureCSSMatrix());
                 $root.data("original-scroll",null);
+                
+                /* re-enable scrolling on iPhone */
+                document.body.removeEventListener('touchstart', eventPreventer);
+    
                 $scroll.removeClass("noScroll");
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
@@ -811,6 +815,10 @@ if(!$.zoomooz) {
     //**********************************//
     //***  Handle scrolling          ***//
     //**********************************//
+    
+    function eventPreventer(e) {
+        e.preventDefault();
+    }
     
     function handleScrolling(elem, settings) {
     	
@@ -843,6 +851,9 @@ if(!$.zoomooz) {
             var scrollData = {"elem":elem,"x":scrollX,"y":scrollY};
             $root.data("original-scroll",scrollData);
             
+            /* prevent scrolling on iPhone */
+            document.body.addEventListener('touchstart', eventPreventer);
+    
             elem.addClass("noScroll");
             elem.scrollTop(0);
             elem.scrollLeft(0);
