@@ -45,15 +45,21 @@
             
             <div class="social-buttons">
             
+             <iframe allowtransparency="true" frameborder="0" scrolling="no"
+        src="http://platform.twitter.com/widgets/tweet_button.html?related=jaukia&count=horizontal&counturl=http://janne.aukia.com/zoomooz&url=http://janne.aukia.com/zoomooz&text=@zoomoozjs%20is%20a%20jQuery%20plugin%20for%20making%20any%20web%20page%20zoom%20by%20@jaukia"
+        style="width:100px; height:20px;"></iframe>
+        
+            <iframe allowtransparency="true" frameborder="0" scrolling="no"
+  src="http://platform.twitter.com/widgets/follow_button.html?screen_name=zoomoozjs&show_count=true&show_screen_name=true"
+  style="width:200px; height:20px;"></iframe>
+        
+                <br/>
+        
             <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=jaukia&repo=zoomooz&type=watch&count=true"
   allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
             
             <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=jaukia&repo=zoomooz&type=fork&count=true"
   allowtransparency="true" frameborder="0" scrolling="0" width="85px" height="20px"></iframe>
-        
-             <iframe allowtransparency="true" frameborder="0" scrolling="no"
-        src="http://platform.twitter.com/widgets/tweet_button.html?related=jaukia&count=horizontal&counturl=http://janne.aukia.com/zoomooz&url=http://janne.aukia.com/zoomooz&text=Zoomooz%20is%20a%20jQuery%20plugin%20for%20making%20any%20web%20page%20zoom%20by%20@jaukia"
-        style="width:140px; height:20px;"></iframe>
         
             </div>
             
@@ -123,6 +129,16 @@
                 <div class="zoomTarget" data-targetsize="0.6">Target 1</div>
                 <div class="zoomTarget" data-targetsize="0.6">Target 2</div>
                 <div class="zoomTarget" data-targetsize="0.6">Target 3</div>
+                <div class="clearer"></div>
+            </div>
+            
+            <p>By adding a "data-closeclick" value to a zoom target, you can make the
+            image zoom out when the element is clicked for second time, see here:</p>
+            
+            <div class="zoomingDemo">
+                <div class="zoomTarget" data-targetsize="0.6" data-closeclick="true">Target 1<br />(click twice)</div>
+                <div class="zoomTarget" data-targetsize="0.6" data-closeclick="true">Target 2<br />(click twice)</div>
+                <div class="zoomTarget" data-targetsize="0.6" data-closeclick="true">Target 3<br />(click twice)</div>
                 <div class="clearer"></div>
             </div>
             
@@ -232,7 +248,10 @@
     debug: false,
     // this function is called with the element that is zoomed to in this
     // when animation ends
-    animationendcallback: null
+    animationendcallback: null,
+    // this specifies, that clicking an element that is zoomed to zooms
+    // back out
+    closeclick: false
 }
 // settings can be set for both the zoomTo and zoomTarget calls:
 $("#element").zoomTo(settings);</code></pre>
@@ -311,7 +330,7 @@ $("#element").zoomTo(settings);</code></pre>
              
             <p>Some people have been brave enough to try out zoomooz themselves. Have a look at the links below and let me know if you have used it!</p>
             
-            <p>Very creative use of Zoomooz in <a href="http://www.parti-socialiste.fr/bilan-sarkozy/">this Frech presidential campaign web site</a>!</p>
+            <p>Very creative use of Zoomooz in <a href="http://www.parti-socialiste.fr/bilan-sarkozy/">this Frech presidential campaign web site</a></p>
             
             <p>
             <a href="http://www.azarask.in/blog/post/how-to-prototype-and-influence-people/">Aza Raskin prototyping with Zoomooz</a> and showing how to live code in front of seventy-five people.

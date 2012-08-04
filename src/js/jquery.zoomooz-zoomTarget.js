@@ -24,70 +24,76 @@
     //**********************************//
     
     var helpers = $.zoomooz.helpers;
-
     
     //**********************************//
     //***  jQuery functions          ***//
     //**********************************//
     
-    $.fn.zoomTarget = function(settings) {
-        if(!$.zoomooz.defaultSettings) {
-            $.zoomooz.setup();
-        }
-        
-        if(!settings) {
-            settings = {};
-        }
-        
-        settings.animationendcallback = function() {
-            $(".selectedZoomTarget").removeClass("selectedZoomTarget");
-        	$(this).addClass("selectedZoomTarget");
-        };
-        
-        var setupClickHandler = function(clickTarget,zoomTarget, settings) {
-            clickTarget.addClass("zoomTarget");
-        
-            var zoomContainer = zoomTarget.closest(".zoomContainer");
-            if(zoomContainer.length!=0) {
-                settings.root = zoomContainer;
-            }
-            
-            if(!settings.root) {
-                settings.root = $.zoomooz.defaultSettings.root;
-            }
-            
-             if(!settings.root.hasClass("zoomTarget")) {
-            
-                // fixme, if element has data fields for setting duration etc,
-                // these will not be inherited by the root. which might or might not
-                // make sense
-                
-                var rootSettings = {};
-                
-                rootSettings.animationendcallback = function() {
-                    var $elem = $(this);
-                    $(".selectedZoomTarget").removeClass("selectedZoomTarget");
-                    $elem.addClass("selectedZoomTarget");
-                    $elem.parent().addClass("selectedZoomTarget");
-                };
-                
-                setupClickHandler(settings.root,settings.root,rootSettings);
-                setupClickHandler(settings.root.parent(),settings.root,rootSettings);
-                
-                settings.root.click();
-            }
-            
-            clickTarget.on("click", function(evt) {
-                zoomTarget.zoomTo(settings);
-                evt.stopPropagation();
-            });
-        }
-        
+    $.fn.zoomTarget = function(baseSettings) {
         this.each(function() {
-            setupClickHandler($(this),$(this),jQuery.extend({}, settings));
+            var settings = $(this).zoomSettings(baseSettings);
+            setupClickHandler($(this),$(this),settings);
         });
     }
     
+    //**********************************//
+    //***  Helper functions          ***//
+    //**********************************//
+    
+    function setupClickHandler(clickTarget, zoomTarget, settings) {
+        clickTarget.addClass("zoomTarget");
+    
+        if(!settings.animationendcallback) {
+            if(!settings.closeclick) {
+                settings.animationendcallback = function() {
+                    $(".selectedZoomTarget").removeClass("selectedZoomTarget zoomNotClickable");
+                    clickTarget.addClass("selectedZoomTarget zoomNotClickable");
+                };
+            } else {
+                settings.animationendcallback = function() {
+                    $(".selectedZoomTarget").removeClass("selectedZoomTarget zoomNotClickable");
+                    clickTarget.addClass("selectedZoomTarget");
+                };
+            }
+        }
+        
+        var zoomContainer = zoomTarget.closest(".zoomContainer");
+        if(zoomContainer.length!=0) {
+            settings.root = zoomContainer;
+        }
+        
+        var $root = settings.root;
+            
+        if(!$root.hasClass("zoomTarget")) {
+        
+            var rootSettings = $root.zoomSettings({});
+            
+            rootSettings.animationendcallback = function() {
+                var $elem = $(this);
+                $(".selectedZoomTarget").removeClass("selectedZoomTarget zoomNotClickable");
+                $elem.addClass("selectedZoomTarget zoomNotClickable");
+                $elem.parent().addClass("selectedZoomTarget zoomNotClickable");
+            };
+            
+            setupClickHandler($root,$root,rootSettings);
+            setupClickHandler($root.parent(),$root,rootSettings);
+            
+            // FIXME: there could be many of these called simultaneously,
+            // don't know what would happen then
+            $root.click();
+        }
+        
+        clickTarget.on("click", function(evt) {
+            
+            // closeclick not available here...
+            if(settings.closeclick && zoomTarget.hasClass("selectedZoomTarget")) {
+                settings.root.click();
+            } else {
+                zoomTarget.zoomTo(settings);
+            }
+            evt.stopPropagation();
+        });
+    }
     
     //**********************************//
     //***  Setup functions           ***//
@@ -111,8 +117,8 @@
         // FIXME: how to remove the transform origin?
         style.innerHTML = ".zoomTarget{"+setupSelectionCss(false)+"}"+
                           ".zoomTarget:hover{cursor:pointer!important;}"+
-                          ".selectedZoomTarget{"+setupSelectionCss(true)+"}"+
-                          ".selectedZoomTarget:hover{cursor:auto!important;}"+
+                          ".zoomNotClickable{"+setupSelectionCss(true)+"}"+
+                          ".zoomNotClickable:hover{cursor:auto!important;}"+
                           /* padding to fix margin collapse issues */
                           ".zoomContainer{position:relative;padding:1px;margin:-1px;}";
                           

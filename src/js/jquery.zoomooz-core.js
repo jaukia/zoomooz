@@ -67,23 +67,32 @@
         $.zoomooz = {};
     }
     
-    $.zoomooz.setup = function(settings) {
-        $.zoomooz.defaultSettings = jQuery.extend(constructDefaultSettings(), settings);
-    };
+    $.fn.zoomSettings = function(settings) {
+        var retValue;
+        this.each(function() {
+            var $elem = $(this);
+            retValue = setupElementSettings($elem, settings);
+        });
+        return retValue;
+    }
     
-    $.fn.zoomTo = function(settings) {
+    $.fn.zoomTo = function(settings, skipElementSettings) {
         this.each(function() {
             var $this = $(this);
-            var elemSettings = setupElementSettings($this, settings);
-            zoomTo($this, elemSettings);
             
-            if(elemSettings.debug) {
+            if(!skipElementSettings) {
+                settings = $this.zoomSettings(settings);
+            }
+            
+            zoomTo($this, settings);
+            
+            if(settings.debug) {
             	if($("#debug").length===0) {
-					$(elemSettings.root).append('<div id="debug"><div>');
+					$(settings.root).append('<div id="debug"><div>');
 				} else {
 					$("#debug").html("");
 				}
-				showDebug($this,elemSettings);
+				showDebug($this,settings);
             } else {
             	if($("#debug").length!==0) {
 					$("#debug").html("");
@@ -98,9 +107,12 @@
     //***  Setup functions           ***//
     //**********************************//
     
-    function setupElementSettings($elem, settings) {
+    function setupElementSettings($elem, baseSettings) {
+    
+        var settings = jQuery.extend({}, baseSettings);
+        
         if(!$.zoomooz.defaultSettings) {
-            $.zoomooz.setup();
+            $.zoomooz.defaultSettings = constructDefaultSettings();
         }
         
         var defaultSettings = $.zoomooz.defaultSettings;
@@ -111,6 +123,9 @@
                 elementSettings[key] = $elem.data(key);
             }
         }
+        
+        // FIXME: it would be better, that the animationSettings
+        // would come from the jquery.zoomooz-anim file somehow
         for(var i=0;i<animationSettings.length;i++) {
             var key = animationSettings[i];
             if(!elementSettings[key]) {
@@ -148,7 +163,8 @@
             scalemode: "both",
             root: $(document.body),
             debug: false,
-            animationendcallback: null
+            animationendcallback: null,
+            closeclick: false
         };
     }
     
