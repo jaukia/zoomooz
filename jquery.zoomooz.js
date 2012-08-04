@@ -849,6 +849,10 @@ if(!$.zoomooz) {
             /* prevent scrolling on iPhone */
             //document.ontouchmove = function(e){ e.preventDefault(); }
             
+            $(document).on("touchmove", function(e) {
+                e.preventDefault();
+            });
+            
             elem.addClass("noScroll");
             elem.scrollTop(0);
             elem.scrollLeft(0);
