@@ -197,6 +197,12 @@
                 var $root = $(settings.root);
                 var $scroll = scrollData.elem;
                 
+                // FIXME: this causes issues with iPhone
+                
+                if($root.parent()[0]==window) {
+                    window.scrollTo(scrollData.x,scrollData.y);
+                }
+                
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
                 
