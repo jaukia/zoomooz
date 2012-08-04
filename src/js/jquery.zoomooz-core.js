@@ -197,9 +197,12 @@
                 var $root = $(settings.root);
                 var $scroll = scrollData.elem;
                 
+                //$scroll.scrollLeft(scrollData.x);
+                //$scroll.scrollTop(scrollData.y);
+                
+                $scroll[0].scrollTo(scrollData.x, scrollData.y);
+                
                 $scroll.removeClass("noScroll");
-                $scroll.scrollLeft(scrollData.x);
-                $scroll.scrollTop(scrollData.y);
                 
                 $root.setTransformation(new PureCSSMatrix());
                 $root.data("original-scroll",null);
