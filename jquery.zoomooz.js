@@ -598,6 +598,7 @@ if(!$.zoomooz) {
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.03 added closeclick, code structuring
  * 1.02 bug fix on endcallback resetting for native animation
  * 1.01 declarative syntax and fixes
  * 0.92 working scrolling
