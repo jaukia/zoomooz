@@ -197,14 +197,14 @@
                 var $root = $(settings.root);
                 var $scroll = scrollData.elem;
                 
-                $root.setTransformation(new PureCSSMatrix());
-                $root.data("original-scroll",null);
-                
-                //document.ontouchmove = function(e){ return true; }
-    
                 $scroll.removeClass("noScroll");
                 $scroll.scrollLeft(scrollData.x);
                 $scroll.scrollTop(scrollData.y);
+                
+                $root.setTransformation(new PureCSSMatrix());
+                $root.data("original-scroll",null);
+                
+                $(document).off("touchmove");
                 
                 if(settings.animationendcallback) {
                     settings.animationendcallback.call(elem[0]);
@@ -250,9 +250,6 @@
             
             var scrollData = {"elem":elem,"x":scrollX,"y":scrollY};
             $root.data("original-scroll",scrollData);
-            
-            /* prevent scrolling on iPhone */
-            //document.ontouchmove = function(e){ e.preventDefault(); }
             
             $(document).on("touchmove", function(e) {
                 e.preventDefault();
