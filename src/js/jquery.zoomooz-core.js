@@ -208,10 +208,6 @@
                 
                 $(document).off("touchmove.zoomooz");
                 
-                $(document).on("touchmove.zoomooz", function(e) {
-                    return true;
-                });
-
                 if(settings.animationendcallback) {
                     settings.animationendcallback.call(elem[0]);
                 }
