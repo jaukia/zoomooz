@@ -5,14 +5,18 @@ html {
 
 .clearer {
     clear:both;
+    height:20px;
+    display:block;
+}
+
+#viewport, #content {
+	width:800px;
 }
 
 #viewport {
 	background-color: white;
-
-	width:800px;
     height:600px;
-	
+    
     /* this needs to have some kind of positioning, absolute
        or relative, to have the pos of elements inside it calculated correctly,
        since otherwise the computeTotalTransformation does not work correctly
@@ -25,9 +29,10 @@ html {
 	-moz-box-shadow: 0 0px 10px rgba(0,0,0,0.2);
     
     overflow-y:scroll;
+    overflow-x:hidden;
 }
 
-.item {
+.zoomContainer div {
     float:left;
     background-color:#eeeedf;
 	width:250px;

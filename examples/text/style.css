@@ -1,18 +1,14 @@
 body {
-    margin:100px;
     border:1px solid red;
-}
-
-body {
     overflow:hidden;
     font-family: "Helvetica Neue";
-    -webkit-backface-visibility: hidden;
-    -webkit-perspective: 1000;
+    height:100%;
+    margin:0;
+    padding:0px;
 }
 
 #container {
-    padding:50px;
-    padding-bottom:0px;
+    margin:100px;
 }
 
 h1, p {

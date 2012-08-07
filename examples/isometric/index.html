@@ -44,14 +44,6 @@
 				
 				$("body").zoomTo({targetsize:1.0});
 				$(".cover").show();
-				
-				$("input").change(function(evt) {
-				    if(evt.target.name=="color") {
-				        $("cube").removeClass("red green blue").addClass(evt.target.value);
-				    } else if(evt.target.name=="size") {
-				        $("cube").removeClass("small medium large").addClass(evt.target.value);
-				    }
-				});
 			});
 		</script>
 	</head>

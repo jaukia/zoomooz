@@ -5,21 +5,28 @@
 		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-		<!--<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>-->
+		
+		<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>
+		
+		<!--
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-helpers.js"></script>
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-anim.js"></script>
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-core.js"></script>
 		<script type="text/javascript" src="../../src/js/purecssmatrix.js"></script>
 		<script type="text/javascript" src="../../src/js/sylvester.src.stripped.js"></script>
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-zoomTarget.js"></script>
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-zoomContainer.js"></script>
+		-->
 		
 		<script type="text/javascript">
 			
-			var zoomTargetElements = ["#container","#item1","#item2","#item2b","#item3","#item3b","#item4"];
-			var zoomTargetIndex = 0;
+			var zoomElemElements = ["#container","#item1","#item2","#item2b","#item3","#item3b","#item4"];
+			var zoomElemIndex = 0;
 			
 			$(document).ready(function() {
-				$.zoomMooz.setup({root:$("#container"),targetsize:0.8});
+				$.zoomooz.setup({root:$("#container"),targetsize:0.8});
 				
-			    $(".zoomTarget").click(function(evt) {
+			    $(".zoomElem").click(function(evt) {
 					evt.stopPropagation();
 					$(this).zoomTo({debug:true});
 				});
@@ -27,19 +34,19 @@
 				$("#container").zoomTo();
 				
 				$("#next").click(function(evt) {
-					zoomTargetIndex++;
-					if(zoomTargetIndex>=zoomTargetElements.length) {
-						zoomTargetIndex-=zoomTargetElements.length;
+					zoomElemIndex++;
+					if(zoomElemIndex>=zoomElemElements.length) {
+						zoomElemIndex-=zoomElemElements.length;
 					}
-					$(zoomTargetElements[zoomTargetIndex]).zoomTo({debug:true});
+					$(zoomElemElements[zoomElemIndex]).zoomTo({debug:true});
 				});
 				
 				$("#prev").click(function(evt) {
-					zoomTargetIndex--;
-					if(zoomTargetIndex<0) {
-						zoomTargetIndex+=zoomTargetElements.length;
+					zoomElemIndex--;
+					if(zoomElemIndex<0) {
+						zoomElemIndex+=zoomElemElements.length;
 					}
-					$(zoomTargetElements[zoomTargetIndex]).zoomTo({debug:true});
+					$(zoomElemElements[zoomElemIndex]).zoomTo({debug:true});
 				});
 			});
 		</script>
@@ -47,14 +54,14 @@
 	<body>
 		<h3>Zooming inside a container</h3>
 	    <div id="outerContainer">
-			<div id="container" class="zoomTarget">
-			<div id="item1" class="zoomTarget"></div>
-			<div id="item2" class="zoomTarget"></div>
-			<div id="item2b" class="zoomTarget"></div>
-			<div id="item3" class="zoomTarget">
-			<div id="item3b" class="zoomTarget"></div>
+			<div id="container" class="zoomElem">
+			<div id="item1" class="zoomElem"></div>
+			<div id="item2" class="zoomElem"></div>
+			<div id="item2b" class="zoomElem"></div>
+			<div id="item3" class="zoomElem">
+			<div id="item3b" class="zoomElem"></div>
 			</div>
-			<div id="item4" class="zoomTarget"></div>
+			<div id="item4" class="zoomElem"></div>
 			</div>
 	    </div>
 	    <div id="navigation">

@@ -12,10 +12,12 @@
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-core.js"></script>
 		<script type="text/javascript" src="../../src/js/purecssmatrix.js"></script>
 		<script type="text/javascript" src="../../src/js/sylvester.src.stripped.js"></script>
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-zoomTarget.js"></script>
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-zoomContainer.js"></script>
 		
 		<script type="text/javascript">
 			$(document).ready(function() {
-				$(".zoomTarget").click(function(evt) {
+				$(".zoomItem").click(function(evt) {
 					evt.stopPropagation();
 					evt.preventDefault();
 					$(this).zoomTo({debug:true, nativeanimation:true});
@@ -44,11 +46,11 @@
             
             <p>If the element is not then absolutely positioned or cropped with overflow:hidden, the flow of the content will behave a bit weirdly.</p>
 	    
-	        <div id="item" class="zoomTarget">
+	        <div id="item" class="zoomItem">
                 This is some tiny text 1
             </div>
             
-            <div id="item2" class="zoomTarget">
+            <div id="item2" class="zoomItem">
                 <span>This is some tiny text 2</span>
             </div>
             

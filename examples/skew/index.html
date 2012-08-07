@@ -7,32 +7,9 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 		<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>
 		
-		<script type="text/javascript">
-			$(document).ready(function() {
-			    $(".zoomTarget").click(function(evt) {
-					evt.stopPropagation();
-					$(this).zoomTo({debug:true});
-				});
-				
-				$(window).click(function(evt) {
-					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0,debug:true});
-				});
-				
-				// for iPhone
-				$("#container").click(function(evt) {
-					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0,debug:true});
-				});
-				
-				$("body").zoomTo({targetsize:1.0,debug:true});
-			});
-		</script>
 	</head>
-	<body>
-	    <div id="container">
-		<div id="item4" class="zoomTarget"></div>
-		</div>
+	<body class="zoomTarget">
+	    <div id="item4" class="zoomTarget"></div>
 	</body>
 	
 	<!--************************

@@ -282,7 +282,7 @@ if(!$.zoomooz) {
     //***  jQuery functions          ***//
     //**********************************//
       
-    $.fn.animateTransformation = function(transformation, settings, animateEndCallback) {
+    $.fn.animateTransformation = function(transformation, settings, animateEndCallback, animateStartedCallback) {
         settings = jQuery.extend({}, default_settings, settings);
         
         var useNativeAnim = ($.browser.webkit && settings.nativeanimation);
@@ -307,8 +307,11 @@ if(!$.zoomooz) {
             
             if(useNativeAnim) {
                 $target.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
+                if(animateStartedCallback) {
+                    animateStartedCallback();
+                }
             } else {
-                animateTransition($target, current_affine, final_affine, settings, animateEndCallback);
+                animateTransition($target, current_affine, final_affine, settings, animateEndCallback, animateStartedCallback);
             }
         });
     }
@@ -354,7 +357,7 @@ if(!$.zoomooz) {
     //***  Non-native animation      ***//
     //**********************************//
     
-    function animateTransition($target, st, et, settings, animateEndCallback) {
+    function animateTransition($target, st, et, settings, animateEndCallback, animateStartedCallback) {
         
         if(!st) {
             st = affineTransformDecompose(new PureCSSMatrix());
@@ -367,6 +370,13 @@ if(!$.zoomooz) {
         if(settings.easing) {
             settings.easingfunction = constructEasingFunction(settings.easing, settings.duration);
         }
+        
+        // first step
+        animationStep($target, st, et, settings, animateEndCallback);
+        if(animateStartedCallback) {
+            animateStartedCallback();
+        }
+        
         animation_interval_timer = setInterval(function() { animationStep($target, st, et, settings, animateEndCallback); }, 1);    
     }
     
@@ -598,6 +608,7 @@ if(!$.zoomooz) {
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.04 fixed examples, iphone tuneups, transform offset fix
  * 1.03 added closeclick, code structuring
  * 1.02 bug fix on endcallback resetting for native animation
  * 1.01 declarative syntax and fixes
@@ -663,6 +674,12 @@ if(!$.zoomooz) {
         $.zoomooz = {};
     }
     
+    /* this can be used for setting the default settings for zoomooz explicitly. */
+    $.zoomooz.setup = function(settings) {
+        $.zoomooz.defaultSettings = jQuery.extend(constructDefaultSettings(), settings);
+    };
+    
+    /* returns the zooming settings of a particular element. used by zoomTarget. */
     $.fn.zoomSettings = function(settings) {
         var retValue;
         this.each(function() {
@@ -672,6 +689,7 @@ if(!$.zoomooz) {
         return retValue;
     }
     
+    /* the main zooming method. */
     $.fn.zoomTo = function(settings, skipElementSettings) {
         this.each(function() {
             var $this = $(this);
@@ -708,7 +726,7 @@ if(!$.zoomooz) {
         var settings = jQuery.extend({}, baseSettings);
         
         if(!$.zoomooz.defaultSettings) {
-            $.zoomooz.defaultSettings = constructDefaultSettings();
+            $.zoomooz.setup();
         }
         
         var defaultSettings = $.zoomooz.defaultSettings;
@@ -769,10 +787,13 @@ if(!$.zoomooz) {
     //**********************************//
     
     function zoomTo(elem, settings) {
+    
         var scrollData = handleScrolling(elem, settings);
         
         var rootTransformation;
         var animationendcallback = null;
+        
+        setTransformOrigin(settings.root);
         
         // computeTotalTransformation does not work correctly if the
         // element and the root are the same
@@ -787,19 +808,12 @@ if(!$.zoomooz) {
             }
         	
         } else {
+        
+            
             rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
             animationendcallback = function() {
                 var $root = $(settings.root);
                 var $scroll = scrollData.elem;
-                
-                // FIXME: this causes issues with iPhone
-                
-                if($root.parent()[0]==window) {
-                    window.scrollTo(scrollData.x,scrollData.y);
-                }
-                
-                $scroll.scrollLeft(scrollData.x);
-                $scroll.scrollTop(scrollData.y);
                 
                 $scroll.removeClass("noScroll");
                 
@@ -808,13 +822,27 @@ if(!$.zoomooz) {
                 
                 $(document).off("touchmove");
                 
+                // this needs to be after the setTransformation and
+                // done with window.scrollTo to not have iPhone repaints
+                if($scroll[0]==document.body || $scroll[0]==window) {
+                    window.scrollTo(scrollData.x,scrollData.y);
+                } else {
+                    $scroll.scrollLeft(scrollData.x);
+                    $scroll.scrollTop(scrollData.y);
+                }
+                
                 if(settings.animationendcallback) {
                     settings.animationendcallback.call(elem[0]);
                 }
             };
         }
-    	
-        $(settings.root).animateTransformation(rootTransformation, settings, animationendcallback);
+        
+        var animationstartedcallback = null;
+        if(scrollData && scrollData.animationstartedcallback) {
+            animationstartedcallback = scrollData.animationstartedcallback;
+        }
+        
+        $(settings.root).animateTransformation(rootTransformation, settings, animationendcallback, animationstartedcallback);
         
     }
     
@@ -857,14 +885,25 @@ if(!$.zoomooz) {
                 e.preventDefault();
             });
             
-            elem.addClass("noScroll");
-            elem.scrollTop(0);
-            elem.scrollLeft(0);
-            
             var transformStr = "translate(-"+scrollX+"px,-"+scrollY+"px)";
             helpers.forEachPrefix(function(prefix) {
                 $root.css(prefix+"transform", transformStr);
             });
+            
+            elem.addClass("noScroll");
+            
+            scrollData.animationstartedcallback = function() {
+                
+                // this needs to be after the setTransformation and
+                // done with window.scrollTo to not have iPhone repaints
+                if(elem[0]==document.body || elem[0]==document) {
+                    window.scrollTo(0,0);
+                } else {
+                    elem.scrollLeft(0);
+                    elem.scrollTop(0);
+                }
+                
+            };
             
             return scrollData;
 	    }
@@ -873,6 +912,22 @@ if(!$.zoomooz) {
     //**********************************//
     //***  Element positioning       ***//
     //**********************************//
+    
+    function setTransformOrigin(zoomParent) {
+        var zoomViewport = $(zoomParent).parent();
+        
+        var dw = zoomViewport.width();
+        var dh = zoomViewport.height();
+        
+        var xrotorigin = dw/2.0;
+        var yrotorigin = dh/2.0;
+        
+        var offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
+        
+        helpers.forEachPrefix(function(prefix) {
+             zoomParent.css(prefix+"transform-origin", offsetStr);
+        });    
+    }
     
     function computeViewportTransformation(elem, endtrans, settings) {
         var zoomAmount = settings.targetsize;
@@ -910,11 +965,6 @@ if(!$.zoomooz) {
         /* see also the part of the fix that is in computeTotalTransformation! */
         var xmarginfix = -parseFloat(zoomParent.css("margin-left")) || 0;
         var ymarginfix = -parseFloat(zoomParent.css("margin-top")) || 0;
-        var offsetStr = printFixedNumber(xrotorigin)+"px "+printFixedNumber(yrotorigin)+"px";
-        
-        helpers.forEachPrefix(function(prefix) {
-             zoomParent.css(prefix+"transform-origin", offsetStr);
-        });
         
         var viewportTransformation = 
             (new PureCSSMatrix())

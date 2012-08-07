@@ -7,39 +7,15 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 		<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>
 		
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$(".zoomTarget").click(function(evt) {
-					evt.stopPropagation();
-					evt.preventDefault();
-					$(this).zoomTo({debug:true});
-				});
-				
-				$(window).click(function(evt) {
-					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0});
-				});
-				
-				// for iPhone
-				$("#container").click(function(evt) {
-					evt.stopPropagation();
-					$("body").zoomTo({targetsize:1.0});
-				});
-				
-				$("body").zoomTo({targetsize:1.0});
-			});
-		</script>
 	</head>
-	<body>
-	    <div id="container">
-		<div id="item1" class="zoomTarget"></div>
-		<div id="item2" class="zoomTarget"></div>
-		<div id="item3" class="zoomTarget">
-		<div id="item3b" class="zoomTarget"></div>
+	<body class="zoomTarget" data-debug="true">
+	    <div id="item1" class="zoomTarget" data-debug="true"></div>
+		<div id="item2" class="zoomTarget" data-debug="true"></div>
+		<div id="item3" class="zoomTarget" data-debug="true">
+		    <div id="item3b" class="zoomTarget" data-debug="true"></div>
 		</div>
-		<div id="item2b" class="zoomTarget"></div>
-		<div id="item4" class="zoomTarget"></div>
-		</div>
+		<div id="item2b" class="zoomTarget" data-debug="true"></div>
+		<div id="item4" class="zoomTarget" data-debug="true"></div>
 	</body>
 	
 	<!--************************

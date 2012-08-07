@@ -68,7 +68,7 @@
     //***  jQuery functions          ***//
     //**********************************//
       
-    $.fn.animateTransformation = function(transformation, settings, animateEndCallback) {
+    $.fn.animateTransformation = function(transformation, settings, animateEndCallback, animateStartedCallback) {
         settings = jQuery.extend({}, default_settings, settings);
         
         var useNativeAnim = ($.browser.webkit && settings.nativeanimation);
@@ -93,8 +93,11 @@
             
             if(useNativeAnim) {
                 $target.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
+                if(animateStartedCallback) {
+                    animateStartedCallback();
+                }
             } else {
-                animateTransition($target, current_affine, final_affine, settings, animateEndCallback);
+                animateTransition($target, current_affine, final_affine, settings, animateEndCallback, animateStartedCallback);
             }
         });
     }
@@ -140,7 +143,7 @@
     //***  Non-native animation      ***//
     //**********************************//
     
-    function animateTransition($target, st, et, settings, animateEndCallback) {
+    function animateTransition($target, st, et, settings, animateEndCallback, animateStartedCallback) {
         
         if(!st) {
             st = affineTransformDecompose(new PureCSSMatrix());
@@ -153,6 +156,13 @@
         if(settings.easing) {
             settings.easingfunction = constructEasingFunction(settings.easing, settings.duration);
         }
+        
+        // first step
+        animationStep($target, st, et, settings, animateEndCallback);
+        if(animateStartedCallback) {
+            animateStartedCallback();
+        }
+        
         animation_interval_timer = setInterval(function() { animationStep($target, st, et, settings, animateEndCallback); }, 1);    
     }
     
