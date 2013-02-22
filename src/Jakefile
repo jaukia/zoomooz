@@ -5,7 +5,6 @@ if (typeof global.system !== 'undefined') {
     return;
 }
 
-var path = require('path');
 var fs = require('fs');
 var util = require('util');
 
@@ -22,7 +21,7 @@ desc('Concatenates javascript files');
 task('concat', [], function() {
   util.puts('### [jake concat]');
   
-  path.exists("build",function(exists) {
+  fs.exists("build",function(exists) {
      if(!exists) {
  	 	util.puts('setting up build dir');
   	    fs.mkdirSync("build",0744);

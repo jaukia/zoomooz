@@ -4,17 +4,17 @@
 // === Sylvester ===
 // Vector and Matrix mathematics modules for JavaScript
 // Copyright (c) 2007 James Coglan
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
 // and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included
 // in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 // OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -35,7 +35,7 @@ Matrix.prototype = {
   dup: function() {
     return Matrix.create(this.elements);
   },
-  
+
   // Maps the matrix to another matrix (of the same dimensions) according to the given function
   /*map: function(fn) {
     var els = [], ni = this.elements.length, ki = ni, i, nj, kj = this.elements[0].length, j;
@@ -56,7 +56,7 @@ Matrix.prototype = {
     // this.columns should equal matrix.rows
     return (this.elements[0].length == M.length);
   },
-  
+
   // Returns the result of multiplying the matrix from the right by the argument.
   // If the argument is a scalar then just multiply all the elements. If the argument is
   // a vector, a vector is returned, which saves you having to remember calling
@@ -65,6 +65,7 @@ Matrix.prototype = {
     /*if (!matrix.elements) {
       return this.map(function(x) { return x * matrix; });
     }*/
+
     var returnVector = matrix.modulus ? true : false;
     var M = matrix.elements || matrix;
     if (typeof(M[0][0]) == 'undefined') { M = Matrix.create(M).elements; }
@@ -83,7 +84,8 @@ Matrix.prototype = {
         elements[i][j] = sum;
       } while (--nj);
     } while (--ni);
-    var M = Matrix.create(elements);
+
+    M = Matrix.create(elements);
     return returnVector ? M.col(1) : M;
   },
 
@@ -99,9 +101,9 @@ Matrix.prototype = {
     var M = this.dup(), els;
     var n = this.elements.length, k = n, i, np, kp = this.elements[0].length, p;
     do { i = k - n;
-      if (M.elements[i][i] == 0) {
+      if (M.elements[i][i] === 0) {
         for (j = i + 1; j < k; j++) {
-          if (M.elements[j][i] != 0) {
+          if (M.elements[j][i] !== 0) {
             els = []; np = kp;
             do { p = kp - np;
               els.push(M.elements[i][p] + M.elements[j][p]);
@@ -111,7 +113,7 @@ Matrix.prototype = {
           }
         }
       }
-      if (M.elements[i][i] != 0) {
+      if (M.elements[i][i] !== 0) {
         for (j = i + 1; j < k; j++) {
           var multiplier = M.elements[j][i] / M.elements[i][i];
           els = []; np = kp;
