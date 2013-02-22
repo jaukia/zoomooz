@@ -285,15 +285,13 @@ if(!$.zoomooz) {
     $.fn.animateTransformation = function(transformation, settings, animateEndCallback, animateStartedCallback) {
         settings = jQuery.extend({}, default_settings, settings);
         
-        var useNativeAnim = ($.browser.webkit && settings.nativeanimation);
-        
         // FIXME: what would be the best way to handle leftover animations?
         if(endCallbackTimeout) {
             clearTimeout(endCallbackTimeout);
             endCallbackTimeout = null;
         }
 
-        if(useNativeAnim && animateEndCallback) {
+        if(settings.nativeanimation && animateEndCallback) {
             endCallbackTimeout = setTimeout(animateEndCallback, settings.duration);
         }
         
@@ -305,7 +303,7 @@ if(!$.zoomooz) {
             var current_affine = constructAffineFixingRotation($target);
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
             
-            if(useNativeAnim) {
+            if(settings.nativeanimation) {
                 $target.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
                 if(animateStartedCallback) {
                     animateStartedCallback();
@@ -608,6 +606,7 @@ if(!$.zoomooz) {
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.05 support for jQuery 1.9
  * 1.04 fixed examples, iphone tuneups, transform offset fix
  * 1.03 added closeclick, code structuring
  * 1.02 bug fix on endcallback resetting for native animation
@@ -615,7 +614,7 @@ if(!$.zoomooz) {
  * 0.92 working scrolling
  * 0.91 simplifying code base and scrolling for non-body zoom roots
  * 0.90 fixing margin on first body child
- * 0.89 support for jquery 1.7
+ * 0.89 support for jQuery 1.7
  * 0.88 fixed a bug with 90 deg rotations
  * 0.87 fixed a bug with settings and a couple of demos
  * 0.86 fixed a bug with non-body zoom root
