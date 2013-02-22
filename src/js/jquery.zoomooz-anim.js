@@ -71,15 +71,13 @@
     $.fn.animateTransformation = function(transformation, settings, animateEndCallback, animateStartedCallback) {
         settings = jQuery.extend({}, default_settings, settings);
         
-        var useNativeAnim = ($.browser.webkit && settings.nativeanimation);
-        
         // FIXME: what would be the best way to handle leftover animations?
         if(endCallbackTimeout) {
             clearTimeout(endCallbackTimeout);
             endCallbackTimeout = null;
         }
 
-        if(useNativeAnim && animateEndCallback) {
+        if(settings.nativeanimation && animateEndCallback) {
             endCallbackTimeout = setTimeout(animateEndCallback, settings.duration);
         }
         
@@ -91,7 +89,7 @@
             var current_affine = constructAffineFixingRotation($target);
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
             
-            if(useNativeAnim) {
+            if(settings.nativeanimation) {
                 $target.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
                 if(animateStartedCallback) {
                     animateStartedCallback();
