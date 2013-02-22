@@ -43,7 +43,7 @@ task('concat', [], function() {
 		fs.closeSync(outFile); 
 	 }
 	 
-	 var withLibs = ownfiles.concat(extrafiles);
+	 var withLibs = extrafiles.concat(ownfiles);
 	 
 	 /*concatFiles(ownfiles, ownFilesMergedFileName);*/
 	 concatFiles(withLibs, withLibsMergedFileName);
