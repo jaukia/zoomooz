@@ -3,31 +3,31 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
- * 1.05 support for jQuery 1.9
- * 1.04 fixed examples, iphone tuneups, transform offset fix
- * 1.03 added closeclick, code structuring
- * 1.02 bug fix on endcallback resetting for native animation
- * 1.01 declarative syntax and fixes
- * 0.92 working scrolling
- * 0.91 simplifying code base and scrolling for non-body zoom roots
- * 0.90 fixing margin on first body child
- * 0.89 support for jQuery 1.7
- * 0.88 fixed a bug with 90 deg rotations
- * 0.87 fixed a bug with settings and a couple of demos
- * 0.86 fixed a bug with non-body zoom root
- * 0.85 basic IE9 support
- * 0.81 basic support for scrolling
- * 0.80 refactored position code to a separate file
- * 0.72 fixed a bug with skew in Webkit
- * 0.71 fixed bugs with FF4
- * 0.70 support for non-body zoom root
- * 0.69 better settings management
- * 0.68 root element tuning
- * 0.67 adjustable zoom origin (not fully working yet)
- * 0.65 zoom origin to center
- * 0.63 basic Opera support
- * 0.61 refactored to use CSSMatrix classes
- * 0.51 initial public version
+ * 1.0.6 support for jQuery 1.9
+ * 1.0.4 fixed examples, iphone tuneups, transform offset fix
+ * 1.0.3 added closeclick, code structuring
+ * 1.0.2 bug fix on endcallback resetting for native animation
+ * 1.0.1 declarative syntax and fixes
+ * 0.9.2 working scrolling
+ * 0.9.1 simplifying code base and scrolling for non-body zoom roots
+ * 0.9.0 fixing margin on first body child
+ * 0.8.9 support for jQuery 1.7
+ * 0.8.8 fixed a bug with 90 deg rotations
+ * 0.8.7 fixed a bug with settings and a couple of demos
+ * 0.8.6 fixed a bug with non-body zoom root
+ * 0.8.5 basic IE9 support
+ * 0.8.1 basic support for scrolling
+ * 0.8.0 refactored position code to a separate file
+ * 0.7.2 fixed a bug with skew in Webkit
+ * 0.7.1 fixed bugs with FF4
+ * 0.7.0 support for non-body zoom root
+ * 0.6.9 better settings management
+ * 0.6.8 root element tuning
+ * 0.6.7 adjustable zoom origin (not fully working yet)
+ * 0.6.5 zoom origin to center
+ * 0.6.3 basic Opera support
+ * 0.6.1 refactored to use CSSMatrix classes
+ * 0.5.1 initial public version
  *
  * LICENCE INFORMATION:
  *
