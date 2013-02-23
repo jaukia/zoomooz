@@ -61,7 +61,7 @@
     
     function constructDefaultSettings() {
         return {
-            direction: "next",
+            type: "next",
             root: $(document.body),
             wrap: "true"
         };
