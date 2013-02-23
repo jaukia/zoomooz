@@ -42,7 +42,7 @@ html {
 	right:0px;
 }
 
-#container {
+.zoomContainer {
 	margin:0;
     padding:0;
     width:800px;
@@ -50,7 +50,7 @@ html {
     position:relative;
 }
 
-#outerContainer {
+.zoomViewport {
 	margin:0;
     padding:0;
     width:800px;

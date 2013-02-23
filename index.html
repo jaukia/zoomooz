@@ -10,15 +10,14 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
 		<script type="text/javascript" src="jquery.zoomooz.min.js"></script>
 		
-		<!--
-		<script type="text/javascript" src="src/js/jquery.zoomooz-helpers.js"></script>
+		<!--<script type="text/javascript" src="src/js/jquery.zoomooz-helpers.js"></script>
 		<script type="text/javascript" src="src/js/jquery.zoomooz-anim.js"></script>
 		<script type="text/javascript" src="src/js/jquery.zoomooz-core.js"></script>
 		<script type="text/javascript" src="src/js/jquery.zoomooz-zoomTarget.js"></script>
+		<script type="text/javascript" src="src/js/jquery.zoomooz-zoomButton.js"></script>
 		<script type="text/javascript" src="src/js/jquery.zoomooz-zoomContainer.js"></script>
 		<script type="text/javascript" src="src/js/purecssmatrix.js"></script>
-		<script type="text/javascript" src="src/js/sylvester.src.stripped.js"></script>
-		-->
+		<script type="text/javascript" src="src/js/sylvester.src.stripped.js"></script>-->
 		
 		<link rel="stylesheet" href="website-assets/website.css" type="text/css" media="screen">
 		<link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
@@ -33,7 +32,7 @@
             
             <h1>Zoomooz.js</h1>
             
-            <p id="size-box" class="zoomTarget" data-targetsize="0.45">Zoomooz is: <span class="huge">6KB gzipped</span> and 16KB minified. This includes everything but jQuery.</p>
+            <p id="size-box" class="zoomTarget" data-targetsize="0.45">Zoomooz is: <span class="huge">6KB gzipped</span> and 18KB minified. This includes everything but jQuery.</p>
             
             <p class="ingress">Make any web page zoom.</p>
             
@@ -43,7 +42,7 @@
               <li><a href="http://github.com/jaukia/zoomooz">Fork On <strong>GitHub</strong></a></li>
             </ul>
             
-            <div id="version">Latest version: 1.0.6 (February 22, 2013, jQuery 1.9.1 support)</div>
+            <div id="version">Latest version: 1.1.0 (February 23, 2013, carousel prev/next navigation)</div>
             
             <p>Zoomooz is a jQuery plugin for making web page elements zoom. It can be used for making Prezi like slideshows and for zooming to images or other details.</p>
             
@@ -191,6 +190,76 @@
                     <div class="zoomTarget">Target 6</div>
                     <div class="clearer"></div>
                 </div>
+            </div>
+            
+            <a name="zoomnavi"></a>
+            <h2>Adding prev/next buttons</h2>
+            
+            <p>You can also add previous and next buttons for zooming to elements in a specific order. You can use this to make slide shows, for example.</p>
+            
+            <p>To do this, add "zoomButton" elements to control the animation:</p>
+            
+             <code><pre>
+&lt;div class=<span class="string">"zoomViewport demo"</span>&gt;
+    &lt;div class=<span class="string">"zoomContainer"</span>&gt;
+        &lt;div class=<span class="string">"zoomTarget"</span>&gt;Target 1&lt;/div&gt;
+        &lt;div class=<span class="string">"zoomTarget"</span>&gt;Target 2&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=<span class="string">"zoomButton"</span> data-type=<span class="string">"prev"</span> data-root=<span class="string">".demo"</span>&gt;&lt;/div&gt;
+&lt;div class=<span class="string">"zoomButton"</span> data-type=<span class="string">"next"</span> data-root=<span class="string">".demo"</span>&gt;&lt;/div&gt;</pre></code>
+
+            <style>
+            
+            .slideshowContainer {
+                background-color: #F8F8F8;
+                border: 1px solid #EAEAEA;
+                border-radius: 3px;
+            }
+            
+            .slideshowContainer .zoomContainer .zoomTarget {
+                background-color: white;
+                border: 1px solid #EAEAEA;
+                width:137px;
+                height:50px;
+                margin:10px;
+                padding:20px;
+                float:left;
+            }
+            
+            .slideshowNavigation .zoomButton {
+                font-size:32px;
+                border: 1px solid #EAEAEA;
+                padding: 20px;
+                line-height:20px;
+                float:left;
+                margin-top:5px;
+                margin-right:5px;
+            }
+            
+            .slideshowNavigation .zoomButton:hover {
+                background-color:#eee;
+            }
+            
+            </style>
+            
+            <p>Here is a demo, try clicking on the arrow buttons:</p>
+            
+            <div class="zoomViewport slideshowContainer">
+                <div class="zoomContainer">
+                    <div class="zoomTarget">Target 1</div>
+                    <div class="zoomTarget">Target 2</div>
+                    <div class="zoomTarget">Target 3</div>
+                    <div class="zoomTarget">Target 4</div>
+                    <div class="zoomTarget">Target 5</div>
+                    <div class="zoomTarget">Target 6</div>
+                    <div class="clearer"></div>
+                </div>
+            </div>
+            
+            <div class="slideshowNavigation clearfix">
+                <div class="zoomButton" data-type="prev" data-root=".slideshowContainer">&lt;</div>
+                <div class="zoomButton" data-type="next" data-root=".slideshowContainer">&gt;</div>
             </div>
             
             <h2>Zooming jQuery way</h2>

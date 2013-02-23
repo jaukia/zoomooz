@@ -27,7 +27,7 @@ task('concat', [], function() {
   	    fs.mkdirSync("build",0744);
   	 }
   
-	 var ownfiles = ['js/purecssmatrix.js','js/jquery.zoomooz-helpers.js','js/jquery.zoomooz-anim.js','js/jquery.zoomooz-core.js', 'js/jquery.zoomooz-zoomTarget.js','js/jquery.zoomooz-zoomContainer.js'];
+	 var ownfiles = ['js/purecssmatrix.js','js/jquery.zoomooz-helpers.js','js/jquery.zoomooz-anim.js','js/jquery.zoomooz-core.js', 'js/jquery.zoomooz-zoomTarget.js','js/jquery.zoomooz-zoomContainer.js','js/jquery.zoomooz-zoomButton.js'];
      var extrafiles = ['js/sylvester.src.stripped.js'];
      var pathName = '.';
 	 

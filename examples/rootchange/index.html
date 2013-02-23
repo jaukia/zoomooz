@@ -8,65 +8,32 @@
 		
 		<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>
 		
-		<!--
-		<script type="text/javascript" src="../../src/js/jquery.zoomooz-helpers.js"></script>
+		<!--<script type="text/javascript" src="../../src/js/jquery.zoomooz-helpers.js"></script>
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-anim.js"></script>
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-core.js"></script>
 		<script type="text/javascript" src="../../src/js/purecssmatrix.js"></script>
 		<script type="text/javascript" src="../../src/js/sylvester.src.stripped.js"></script>
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-zoomTarget.js"></script>
 		<script type="text/javascript" src="../../src/js/jquery.zoomooz-zoomContainer.js"></script>
-		-->
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-zoomButton.js"></script>-->
 		
-		<script type="text/javascript">
-			
-			var zoomElemElements = ["#container","#item1","#item2","#item2b","#item3","#item3b","#item4"];
-			var zoomElemIndex = 0;
-			
-			$(document).ready(function() {
-				$.zoomooz.setup({root:$("#container"),targetsize:0.8});
-				
-			    $(".zoomElem").click(function(evt) {
-					evt.stopPropagation();
-					$(this).zoomTo({debug:true});
-				});
-				
-				$("#container").zoomTo();
-				
-				$("#next").click(function(evt) {
-					zoomElemIndex++;
-					if(zoomElemIndex>=zoomElemElements.length) {
-						zoomElemIndex-=zoomElemElements.length;
-					}
-					$(zoomElemElements[zoomElemIndex]).zoomTo({debug:true});
-				});
-				
-				$("#prev").click(function(evt) {
-					zoomElemIndex--;
-					if(zoomElemIndex<0) {
-						zoomElemIndex+=zoomElemElements.length;
-					}
-					$(zoomElemElements[zoomElemIndex]).zoomTo({debug:true});
-				});
-			});
-		</script>
 	</head>
 	<body>
 		<h3>Zooming inside a container</h3>
-	    <div id="outerContainer">
-			<div id="container" class="zoomElem">
-			<div id="item1" class="zoomElem"></div>
-			<div id="item2" class="zoomElem"></div>
-			<div id="item2b" class="zoomElem"></div>
-			<div id="item3" class="zoomElem">
-			<div id="item3b" class="zoomElem"></div>
-			</div>
-			<div id="item4" class="zoomElem"></div>
+	    <div class="zoomViewport">
+			<div id="container" class="zoomContainer">
+                <div id="item1" class="zoomTarget"></div>
+                <div id="item2" class="zoomTarget"></div>
+                <div id="item2b" class="zoomTarget"></div>
+                <div id="item3" class="zoomTarget">
+                    <div id="item3b" class="zoomTarget"></div>
+                </div>
+                <div id="item4" class="zoomTarget"></div>
 			</div>
 	    </div>
 	    <div id="navigation">
-			<div id="prev">&lt;</div>
-			<div id="next">&gt;</div>
+			<div id="prev" class="zoomButton" data-type="prev" data-root=".zoomViewport">&lt;</div>
+			<div id="next" class="zoomButton" data-type="next" data-root=".zoomViewport">&gt;</div>
 		</div>
 	</body>
 	

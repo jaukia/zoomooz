@@ -1,5 +1,5 @@
 /*
- * jquery.zoomooz-container.js, part of:
+ * jquery.zoomooz-zoomContainer.js, part of:
  * http://janne.aukia.com/zoomooz
  *
  * LICENCE INFORMATION:

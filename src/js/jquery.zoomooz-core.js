@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.1.0 carousel prev/next navigation
  * 1.0.6 support for jQuery 1.9
  * 1.0.4 fixed examples, iphone tuneups, transform offset fix
  * 1.0.3 added closeclick, code structuring

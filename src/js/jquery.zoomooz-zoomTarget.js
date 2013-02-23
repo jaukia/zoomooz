@@ -1,5 +1,5 @@
 /*
- * jquery.zoomooz-zoomtarget.js, part of:
+ * jquery.zoomooz-zoomTarget.js, part of:
  * http://janne.aukia.com/zoomooz
  *
  * LICENCE INFORMATION:
