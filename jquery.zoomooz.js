@@ -524,7 +524,7 @@ if(!$.zoomooz) {
     //***  jQuery functions          ***//
     //**********************************//
       
-    $.fn.animateTransformation = function(transformation, settings, animateEndCallback, animateStartedCallback) {
+    $.fn.animateTransformation = function(transformation, settings, posOffset, animateEndCallback, animateStartedCallback) {
         settings = jQuery.extend({}, default_settings, settings);
         
         // FIXME: what would be the best way to handle leftover animations?
@@ -542,7 +542,7 @@ if(!$.zoomooz) {
             
             if(!transformation) transformation = new PureCSSMatrix();
             
-            var current_affine = constructAffineFixingRotation($target);
+            var current_affine = constructAffineFixingRotation($target, posOffset);
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
             
             if(settings.nativeanimation) {
@@ -613,6 +613,7 @@ if(!$.zoomooz) {
         
         // first step
         animationStep($target, st, et, settings, animateEndCallback);
+
         if(animateStartedCallback) {
             animateStartedCallback();
         }
@@ -767,7 +768,7 @@ if(!$.zoomooz) {
     //***  CSS Matrix helpers        ***//
     //**********************************//
     
-    function constructAffineFixingRotation(elem) {
+    function constructAffineFixingRotation(elem, posOffset) {
         var rawTrans = helpers.getElementTransform(elem);
         var matr;
         if(!rawTrans) {
@@ -775,6 +776,11 @@ if(!$.zoomooz) {
         } else {
             matr = new PureCSSMatrix(rawTrans);
         }
+
+        if(posOffset) {
+            matr = matr.translate(posOffset.x,posOffset.y);
+        }
+
         var current_affine = affineTransformDecompose(matr);
         current_affine.r = getTotalRotation(rawTrans);
         return current_affine;
@@ -848,6 +854,7 @@ if(!$.zoomooz) {
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.1.5 zoom for scrolled pages without flickering
  * 1.1.0 carousel prev/next navigation
  * 1.0.6 support for jQuery 1.9
  * 1.0.4 fixed examples, iphone tuneups, transform offset fix
@@ -1007,7 +1014,8 @@ if(!$.zoomooz) {
         // FIXME: how to remove the transform origin?
         style.innerHTML = "html {height:100%;}" +
                           ".noScroll{overflow:hidden !important;}" +
-                          "body.noScroll,html.noScroll body{margin-right:15px;}" +
+                          /* maybe should disable this since causes jumping on os x */
+                          //"body.noScroll,html.noScroll body{margin-right:15px;}" +
                           "* {"+transformOrigin+"}";
         
         document.getElementsByTagName('head')[0].appendChild(style);
@@ -1030,29 +1038,31 @@ if(!$.zoomooz) {
     
     function zoomTo(elem, settings) {
     
-        var scrollData = handleScrolling(elem, settings);
+        var scrollData = setupScrollForZoom(elem, settings);
         
         var rootTransformation;
         var animationendcallback = null;
         
         setTransformOrigin(settings.root);
         
+        var animScrollData = null;
+
         // computeTotalTransformation does not work correctly if the
         // element and the root are the same
         if(elem[0] !== settings.root[0]) {
             var inv = computeTotalTransformation(elem, settings.root).inverse();
-            rootTransformation = computeViewportTransformation(elem, inv, settings);
+            rootTransformation = computeViewportTransformation(elem, inv, scrollData, settings);
         	
         	if(settings.animationendcallback) {
                 animationendcallback = function() {
                     settings.animationendcallback.call(elem[0]);
                 };
             }
+
+            animScrollData = scrollData;
         	
         } else {
         
-            
-            rootTransformation = (new PureCSSMatrix()).translate(-scrollData.x,-scrollData.y);
             animationendcallback = function() {
                 var $root = $(settings.root);
                 var $scroll = scrollData.elem;
@@ -1064,27 +1074,13 @@ if(!$.zoomooz) {
                 
                 $(document).off("touchmove");
                 
-                // this needs to be after the setTransformation and
-                // done with window.scrollTo to not have iPhone repaints
-                if($scroll[0]==document.body || $scroll[0]==window) {
-                    window.scrollTo(scrollData.x,scrollData.y);
-                } else {
-                    $scroll.scrollLeft(scrollData.x);
-                    $scroll.scrollTop(scrollData.y);
-                }
-                
                 if(settings.animationendcallback) {
                     settings.animationendcallback.call(elem[0]);
                 }
             };
         }
         
-        var animationstartedcallback = null;
-        if(scrollData && scrollData.animationstartedcallback) {
-            animationstartedcallback = scrollData.animationstartedcallback;
-        }
-        
-        $(settings.root).animateTransformation(rootTransformation, settings, animationendcallback, animationstartedcallback);
+        $(settings.root).animateTransformation(rootTransformation, settings, animScrollData, animationendcallback);
         
     }
     
@@ -1092,7 +1088,8 @@ if(!$.zoomooz) {
     //***  Handle scrolling          ***//
     //**********************************//
     
-    function handleScrolling(elem, settings) {
+    /* returns object representing the state of scrolling */
+    function setupScrollForZoom(elem, settings) {
     	
     	var $root = settings.root;
     	var $scroll = $root.parent();
@@ -1105,7 +1102,7 @@ if(!$.zoomooz) {
             } else {
                 return {"elem": $scroll, "x":0,"y:":0};
             }
-            
+
         } else if(!$root.data("original-scroll")) {
         
             // safari
@@ -1134,19 +1131,6 @@ if(!$.zoomooz) {
             
             elem.addClass("noScroll");
             
-            scrollData.animationstartedcallback = function() {
-                
-                // this needs to be after the setTransformation and
-                // done with window.scrollTo to not have iPhone repaints
-                if(elem[0]==document.body || elem[0]==document) {
-                    window.scrollTo(0,0);
-                } else {
-                    elem.scrollLeft(0);
-                    elem.scrollTop(0);
-                }
-                
-            };
-            
             return scrollData;
 	    }
 	}
@@ -1171,7 +1155,7 @@ if(!$.zoomooz) {
         });    
     }
     
-    function computeViewportTransformation(elem, endtrans, settings) {
+    function computeViewportTransformation(elem, endtrans, scrollData, settings) {
         var zoomAmount = settings.targetsize;
         var zoomMode = settings.scalemode;
         var zoomParent = settings.root;
@@ -1208,8 +1192,13 @@ if(!$.zoomooz) {
         var xmarginfix = -parseFloat(zoomParent.css("margin-left")) || 0;
         var ymarginfix = -parseFloat(zoomParent.css("margin-top")) || 0;
         
+        var initTransformation = (new PureCSSMatrix());
+        if(scrollData) {
+            initTransformation = initTransformation.translate(scrollData.x,scrollData.y);
+        }
+
         var viewportTransformation = 
-            (new PureCSSMatrix())
+            initTransformation
             .translate(xmarginfix,ymarginfix)
             .translate(-xrotorigin,-yrotorigin)
             .translate(xoffset,yoffset)

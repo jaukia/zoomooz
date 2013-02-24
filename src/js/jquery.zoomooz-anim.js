@@ -68,7 +68,7 @@
     //***  jQuery functions          ***//
     //**********************************//
       
-    $.fn.animateTransformation = function(transformation, settings, animateEndCallback, animateStartedCallback) {
+    $.fn.animateTransformation = function(transformation, settings, posOffset, animateEndCallback, animateStartedCallback) {
         settings = jQuery.extend({}, default_settings, settings);
         
         // FIXME: what would be the best way to handle leftover animations?
@@ -86,7 +86,7 @@
             
             if(!transformation) transformation = new PureCSSMatrix();
             
-            var current_affine = constructAffineFixingRotation($target);
+            var current_affine = constructAffineFixingRotation($target, posOffset);
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
             
             if(settings.nativeanimation) {
@@ -157,6 +157,7 @@
         
         // first step
         animationStep($target, st, et, settings, animateEndCallback);
+
         if(animateStartedCallback) {
             animateStartedCallback();
         }
@@ -311,7 +312,7 @@
     //***  CSS Matrix helpers        ***//
     //**********************************//
     
-    function constructAffineFixingRotation(elem) {
+    function constructAffineFixingRotation(elem, posOffset) {
         var rawTrans = helpers.getElementTransform(elem);
         var matr;
         if(!rawTrans) {
@@ -319,6 +320,11 @@
         } else {
             matr = new PureCSSMatrix(rawTrans);
         }
+
+        if(posOffset) {
+            matr = matr.translate(posOffset.x,posOffset.y);
+        }
+
         var current_affine = affineTransformDecompose(matr);
         current_affine.r = getTotalRotation(rawTrans);
         return current_affine;
