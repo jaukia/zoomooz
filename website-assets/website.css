@@ -114,6 +114,8 @@ code .comment              { color: grey }
     left:390px;
     -webkit-transform:rotate(20deg) scale(0.5);
     -moz-transform:rotate(20deg) scale(0.5);
+    -ms-transform:rotate(20deg) scale(0.5);
+    -o-transform:rotate(20deg) scale(0.5);
     border-radius:6px;
 }
 
@@ -219,6 +221,8 @@ ul.github-block a strong {
     background-color:#090;
     -webkit-transform:skewX(15deg) skewY(10deg);
     -moz-transform:skewX(15deg) skewY(10deg);
+    -ms-transform:skewX(15deg) skewY(10deg);
+    -o-transform:skewX(15deg) skewY(10deg);
     margin-right:55px;
 }
 
@@ -233,6 +237,8 @@ ul.github-block a strong {
 .shape-scale {
     -webkit-transform:scaleX(0.7) translateY(0px);
     -moz-transform:scaleX(0.7) translateY(0px);
+    -ms-transform:scaleX(0.7) translateY(0px);
+    -o-transform:scaleX(0.7) translateY(0px);
     background-color:#27c;
     margin-right:50px;
 }
@@ -249,6 +255,8 @@ ul.github-block a strong {
     background-color:#c43;
     -webkit-transform: rotate(-50deg) translateX(-60px);
     -moz-transform:rotate(-50deg) translateX(-60px);
+    -ms-transform:rotate(-50deg) translateX(-60px);
+    -o-transform:rotate(-50deg) translateX(-60px);
 }
 
 .shape-rotation:hover {
