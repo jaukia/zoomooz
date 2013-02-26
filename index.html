@@ -426,10 +426,9 @@ $("#element").zoomTo(settings);</code></pre>
             <p>Some known issues:</p>
             
             <ul>
-                <li>On iOs devices, full page animation is a bit jumpy. Zooming inside a container works ok. This is probably related to how scrolling is handled in Zoomooz.</li>
+                <li>On iOs devices, zooming inside container sometimes freezes the scrolling. Haven't investigated what is causing this.</li>
                 <li>Margins on zoomable elements can cause problems.</li>
                 <li>Having a main container inside the body tag sometimes helps with full page zooming.</li>
-                <li>Small rendering problems here and there.</li>
                 <li>Small text renders ugly. See <a href="examples/text/index.html">this example</a> for a hack to work around this.</li>
                 <li>Rotation goes sometimes via the wrong direction.</li>
             </ul>
