@@ -64,9 +64,7 @@
 
     // document.ready needed for scroll bar width
     // calculation
-    $(document).ready(function() {
-        setupCssStyles();
-    });
+    setupCssStyles();
 
     //**********************************//
     //***  jQuery functions          ***//
@@ -163,20 +161,23 @@
             transformOrigin += prefix+"transform-origin: 0 0;";
         },true);
 
-        var scrollBarWidth = window.innerWidth - $("body").width();
-
         // FIXME: how to remove the html height requirement?
         // FIXME: how to remove the transform origin?
         style.innerHTML = "html {height:100%;}" +
                           ".noScroll{overflow:hidden !important;}" +
-                          "body.noScroll,html.noScroll body{margin-right:"+scrollBarWidth+"px;}" +
                           "* {"+transformOrigin+"}";
 
         document.getElementsByTagName('head')[0].appendChild(style);
+
+        $(document).ready(function() {
+            var scrollBarWidth = window.innerWidth - $("body").width();
+            style.innerHTML += "body.noScroll,html.noScroll body{margin-right:"+scrollBarWidth+"px;}";
+        });
+
     }
 
     function constructDefaultSettings() {
-        return {
+        var retObject = {
             targetsize: 0.9,
             scalemode: "both",
             root: $(document.body),
@@ -184,6 +185,12 @@
             animationendcallback: null,
             closeclick: false
         };
+
+        // FIXME: feat detection would be better
+        var isFF = !(window.mozInnerScreenX == null);
+        retObject.scrollresetbeforezoom = isFF;
+
+        return retObject;
     }
 
     //**********************************//
@@ -192,26 +199,26 @@
 
     function zoomTo(elem, settings) {
 
-        // FIXME: feat detection would be better
-        var isFF = !(window.mozInnerScreenX == null);
-        var useScrollResetBeforeZoom = isFF;
-
         // scrolling:
 
-        var $root = settings.root;
-        var $scroll = $root.parent();
+        var useScrollResetBeforeZoom = settings.scrollresetbeforezoom;
 
         var scrollData = null;
         var startedZoomFromScroll;
 
-        if(elem[0] === $root[0]) {
-            scrollData = getExistingScrollData($root, $scroll);
-        } else if(!$root.data("original-scroll")) {
-            startedZoomFromScroll = true;
-            scrollData = storeNewScrollData($root, $scroll, useScrollResetBeforeZoom);
-        } else if(!useScrollResetBeforeZoom) {
-            scrollData = getExistingScrollData($root, $scroll);
-        }
+        (function() {
+            var $root = settings.root;
+            var $scroll = $root.parent();
+
+            if(elem[0] === $root[0]) {
+                scrollData = getExistingScrollData($root, $scroll);
+            } else if(!$root.data("original-scroll")) {
+                startedZoomFromScroll = true;
+                scrollData = storeNewScrollData($root, $scroll, useScrollResetBeforeZoom);
+            } else if(!useScrollResetBeforeZoom) {
+                scrollData = getExistingScrollData($root, $scroll);
+            }
+        }());
 
         var rootTransformation;
         var animationendcallback = null;
