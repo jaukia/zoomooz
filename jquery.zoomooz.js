@@ -359,7 +359,7 @@ Matrix.I = function(n) {
     
     cssMatrix.prototype.scale = function(sx,sy) {
         var trans = Matrix.create([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
-        return new cssMatrix(this.m.multiply(trans));    
+        return new cssMatrix(this.m.multiply(trans));
     };
     
     cssMatrix.prototype.rotate = function(rot) {
@@ -387,7 +387,7 @@ Matrix.I = function(n) {
         var mv = this.m.elements;
         return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
                 "d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
-    }
+    };
     
     //**********************************//
     //***  Helpers                   ***//
@@ -441,7 +441,7 @@ if(!$.zoomooz) {
         if(includeNoPrefix) {
             func("");
         }
-    }
+    };
     
     ns.getElementTransform = function(elem) {
         var retVal;
@@ -449,7 +449,7 @@ if(!$.zoomooz) {
             retVal = retVal || $(elem).css(prefix+"transform");
         },true);
         return retVal;
-    }
+    };
     
     return ns;
     
@@ -618,7 +618,7 @@ if(!$.zoomooz) {
             animateStartedCallback();
         }
         
-        animation_interval_timer = setInterval(function() { animationStep($target, st, et, settings, animateEndCallback); }, 1);    
+        animation_interval_timer = setInterval(function() { animationStep($target, st, et, settings, animateEndCallback); }, 1);
     }
     
     function animationStep($target, affine_start, affine_end, settings, animateEndCallback) {
@@ -938,7 +938,7 @@ if(!$.zoomooz) {
             retValue = setupElementSettings($elem, settings);
         });
         return retValue;
-    }
+    };
 
     /* the main zooming method. */
     $.fn.zoomTo = function(settings, skipElementSettings) {
@@ -1329,7 +1329,7 @@ if(!$.zoomooz) {
                 doesNotAddBorder:jQuery.offset.doesNotAddBorder,
                 doesAddBorderForTableAndCells:jQuery.support.doesAddBorderForTableAndCells,
                 subtractsBorderForOverflowNotVisible:jQuery.offset.subtractsBorderForOverflowNotVisible
-            }
+            };
         } else {
             support = jQuery.support;
         }
@@ -1476,7 +1476,7 @@ if(!$.zoomooz) {
             var settings = $(this).zoomSettings(baseSettings);
             setupClickHandler($(this),$(this),settings);
         });
-    }
+    };
     
     //**********************************//
     //***  Helper functions          ***//
@@ -1803,7 +1803,7 @@ if(!$.zoomooz) {
                 // (would be great if the button was disabled)
             }
             
-            evt.stopPropagation();
+            evt.preventDefault();
         });
     }
     
