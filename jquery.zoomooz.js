@@ -1533,7 +1533,7 @@ if(!$.zoomooz) {
             } else {
                 zoomTarget.zoomTo(settings);
             }
-            evt.stopPropagation();
+            evt.preventDefault();
         });
     }
     
