@@ -428,6 +428,7 @@ $("#element").zoomTo(settings);</code></pre>
             <p>Some known issues:</p>
             
             <ul>
+                <li>Weird things happen when browser scrolls after zooming has happened. Should catch these and prevent.</li>
                 <li>On iOs devices, zooming inside container sometimes freezes the scrolling. Haven't investigated what is causing this.</li>
                 <li>Margins on zoomable elements can cause problems.</li>
                 <li>Having a main container inside the body tag sometimes helps with full page zooming.</li>

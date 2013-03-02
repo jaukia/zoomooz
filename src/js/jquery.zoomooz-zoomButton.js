@@ -166,7 +166,6 @@
                 // (would be great if the button was disabled)
             }
 
-            evt.stopPropagation();
         });
     }
 

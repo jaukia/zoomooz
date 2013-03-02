@@ -1524,13 +1524,19 @@ if(!$.zoomooz) {
 
         clickTarget.on("click", function(evt) {
 
+            var $target = $(evt.target);
+
+            // avoiding stopPropagation to allow extra click handlers as well
+            if($target.hasClass("zoomTarget") && !$target.is(clickTarget) ) {
+                return;
+            }
+
             // closeclick not available here...
             if(settings.closeclick && zoomTarget.hasClass("selectedZoomTarget")) {
                 settings.root.click();
             } else {
                 zoomTarget.zoomTo(settings);
             }
-            evt.stopPropagation();
         });
     }
 
@@ -1798,7 +1804,6 @@ if(!$.zoomooz) {
                 // (would be great if the button was disabled)
             }
 
-            evt.stopPropagation();
         });
     }
 
