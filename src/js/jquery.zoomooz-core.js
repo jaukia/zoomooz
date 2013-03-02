@@ -87,7 +87,7 @@
             retValue = setupElementSettings($elem, settings);
         });
         return retValue;
-    }
+    };
 
     /* the main zooming method. */
     $.fn.zoomTo = function(settings, skipElementSettings) {
@@ -132,7 +132,9 @@
         var defaultSettings = $.zoomooz.defaultSettings;
         var elementSettings = jQuery.extend({},settings);
 
-        for(var key in defaultSettings) {
+        var key;
+
+        for(key in defaultSettings) {
             if (defaultSettings.hasOwnProperty(key) && !elementSettings[key]) {
                 elementSettings[key] = $elem.data(key);
             }
@@ -141,7 +143,7 @@
         // FIXME: it would be better, that the animationSettings
         // would come from the jquery.zoomooz-anim file somehow
         for(var i=0;i<animationSettings.length;i++) {
-            var key = animationSettings[i];
+            key = animationSettings[i];
             if(!elementSettings[key]) {
                 elementSettings[key] = $elem.data(key);
             }
@@ -187,7 +189,7 @@
         };
 
         // FIXME: feat detection would be better
-        var isFF = !(window.mozInnerScreenX == null);
+        var isFF = (window.mozInnerScreenX !== null);
         retObject.scrollresetbeforezoom = isFF;
 
         return retObject;
@@ -478,7 +480,7 @@
                 doesNotAddBorder:jQuery.offset.doesNotAddBorder,
                 doesAddBorderForTableAndCells:jQuery.support.doesAddBorderForTableAndCells,
                 subtractsBorderForOverflowNotVisible:jQuery.offset.subtractsBorderForOverflowNotVisible
-            }
+            };
         } else {
             support = jQuery.support;
         }

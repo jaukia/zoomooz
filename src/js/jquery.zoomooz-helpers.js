@@ -36,7 +36,7 @@ if(!$.zoomooz) {
         if(includeNoPrefix) {
             func("");
         }
-    }
+    };
     
     ns.getElementTransform = function(elem) {
         var retVal;
@@ -44,7 +44,7 @@ if(!$.zoomooz) {
             retVal = retVal || $(elem).css(prefix+"transform");
         },true);
         return retVal;
-    }
+    };
     
     return ns;
     

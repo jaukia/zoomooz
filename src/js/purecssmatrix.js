@@ -11,24 +11,24 @@
  * and GPL Version 2 (GPL-LICENSE.txt) licenses.
  *
  */
- 
+
  PureCSSMatrix = (function() {
     "use strict";
 
     //**********************************//
     //***  Variables                 ***//
     //**********************************//
-    
+
     var regexp_is_deg = /deg$/;
     var regexp_filter_number = /([0-9.\-e]+)/g;
     var regexp_trans_splitter = /([a-zA-Z]+)\(([^\)]+)\)/g;
-    
+
     //**********************************//
     //***  WebKitCSSMatrix in        ***//
     //***  pure Javascript           ***//
     //**********************************//
-    
-    function cssMatrix(trans) {
+
+    function CssMatrix(trans) {
         if(trans && trans !== null && trans!="none") {
             if(trans instanceof Matrix) {
                 this.setMatrix(trans);
@@ -39,11 +39,11 @@
             this.m = Matrix.I(3);
         }
     }
-    
-    cssMatrix.prototype.setMatrix = function(matr) {
+
+    CssMatrix.prototype.setMatrix = function(matr) {
         this.m = matr;
     };
-    
+
     function rawRotationToRadians(raw) {
         var rot = parseFloat(filterNumber(raw));
         if(raw.match(regexp_is_deg)) {
@@ -51,8 +51,8 @@
         }
         return rot;
     }
-    
-    cssMatrix.prototype.setMatrixValue = function(transString) {
+
+    CssMatrix.prototype.setMatrixValue = function(transString) {
         var mtr = Matrix.I(3);
         var items;
         while((items = regexp_trans_splitter.exec(transString)) !== null) {
@@ -89,43 +89,43 @@
             } else {
                 console.log("Problem with setMatrixValue", action, val);
             }
-            
+
             mtr = mtr.multiply(trans);
         }
-        
+
         this.m = mtr;
     };
-    
-    cssMatrix.prototype.multiply = function(m2) {
-        return new cssMatrix(this.m.multiply(m2.m));
+
+    CssMatrix.prototype.multiply = function(m2) {
+        return new CssMatrix(this.m.multiply(m2.m));
     };
-    
-    cssMatrix.prototype.inverse = function() {
+
+    CssMatrix.prototype.inverse = function() {
         if(Math.abs(this.m.elements[0][0])<0.000001) {
             /* fixes a weird displacement problem with 90 deg rotations */
             this.m.elements[0][0] = 0;
         }
-        return new cssMatrix(this.m.inverse());
+        return new CssMatrix(this.m.inverse());
     };
-    
-    cssMatrix.prototype.translate = function(x,y) {
+
+    CssMatrix.prototype.translate = function(x,y) {
         var trans = Matrix.I(3);
         trans.elements[0][2] = x;
         trans.elements[1][2] = y;
-        return new cssMatrix(this.m.multiply(trans));
+        return new CssMatrix(this.m.multiply(trans));
     };
-    
-    cssMatrix.prototype.scale = function(sx,sy) {
+
+    CssMatrix.prototype.scale = function(sx,sy) {
         var trans = Matrix.create([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
-        return new cssMatrix(this.m.multiply(trans));    
+        return new CssMatrix(this.m.multiply(trans));
     };
-    
-    cssMatrix.prototype.rotate = function(rot) {
+
+    CssMatrix.prototype.rotate = function(rot) {
         var trans = Matrix.RotationZ(rot);
-        return new cssMatrix(this.m.multiply(trans));
+        return new CssMatrix(this.m.multiply(trans));
     };
-    
-    cssMatrix.prototype.toString = function() {
+
+    CssMatrix.prototype.toString = function() {
         var e = this.m.elements;
         var pxstr = "";
         if($.browser.mozilla || $.browser.opera) {
@@ -135,29 +135,29 @@
                          printFixedNumber(e[0][1])+", "+printFixedNumber(e[1][1])+", "+
                          printFixedNumber(e[0][2])+pxstr+", "+printFixedNumber(e[1][2])+pxstr+")";
     };
-    
+
     //****************************************//
     //***  Not part of the WebkitCSSMatrix ***//
     //***  interface (but used in Zoomooz) ***//
     //****************************************//
-    
-    cssMatrix.prototype.elements = function() {
+
+    CssMatrix.prototype.elements = function() {
         var mv = this.m.elements;
         return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
                 "d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
-    }
-    
+    };
+
     //**********************************//
     //***  Helpers                   ***//
     //**********************************//
-    
+
     function filterNumber(x) {
         return x.match(regexp_filter_number);
     }
-    
+
     function printFixedNumber(x) {
         return Number(x).toFixed(6);
     }
 
-    return cssMatrix;
+    return CssMatrix;
 })();

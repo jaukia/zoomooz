@@ -239,8 +239,7 @@ Matrix.I = function(n) {
     } while (--nj);
   } while (--n);
   return Matrix.create(els);
-};
-/*
+};;/*
  * purecssmatrix.js, version 0.10, part of:
  * http://janne.aukia.com/zoomooz
  *
@@ -253,24 +252,24 @@ Matrix.I = function(n) {
  * and GPL Version 2 (GPL-LICENSE.txt) licenses.
  *
  */
- 
+
  PureCSSMatrix = (function() {
     "use strict";
 
     //**********************************//
     //***  Variables                 ***//
     //**********************************//
-    
+
     var regexp_is_deg = /deg$/;
     var regexp_filter_number = /([0-9.\-e]+)/g;
     var regexp_trans_splitter = /([a-zA-Z]+)\(([^\)]+)\)/g;
-    
+
     //**********************************//
     //***  WebKitCSSMatrix in        ***//
     //***  pure Javascript           ***//
     //**********************************//
-    
-    function cssMatrix(trans) {
+
+    function CssMatrix(trans) {
         if(trans && trans !== null && trans!="none") {
             if(trans instanceof Matrix) {
                 this.setMatrix(trans);
@@ -281,11 +280,11 @@ Matrix.I = function(n) {
             this.m = Matrix.I(3);
         }
     }
-    
-    cssMatrix.prototype.setMatrix = function(matr) {
+
+    CssMatrix.prototype.setMatrix = function(matr) {
         this.m = matr;
     };
-    
+
     function rawRotationToRadians(raw) {
         var rot = parseFloat(filterNumber(raw));
         if(raw.match(regexp_is_deg)) {
@@ -293,8 +292,8 @@ Matrix.I = function(n) {
         }
         return rot;
     }
-    
-    cssMatrix.prototype.setMatrixValue = function(transString) {
+
+    CssMatrix.prototype.setMatrixValue = function(transString) {
         var mtr = Matrix.I(3);
         var items;
         while((items = regexp_trans_splitter.exec(transString)) !== null) {
@@ -331,43 +330,43 @@ Matrix.I = function(n) {
             } else {
                 console.log("Problem with setMatrixValue", action, val);
             }
-            
+
             mtr = mtr.multiply(trans);
         }
-        
+
         this.m = mtr;
     };
-    
-    cssMatrix.prototype.multiply = function(m2) {
-        return new cssMatrix(this.m.multiply(m2.m));
+
+    CssMatrix.prototype.multiply = function(m2) {
+        return new CssMatrix(this.m.multiply(m2.m));
     };
-    
-    cssMatrix.prototype.inverse = function() {
+
+    CssMatrix.prototype.inverse = function() {
         if(Math.abs(this.m.elements[0][0])<0.000001) {
             /* fixes a weird displacement problem with 90 deg rotations */
             this.m.elements[0][0] = 0;
         }
-        return new cssMatrix(this.m.inverse());
+        return new CssMatrix(this.m.inverse());
     };
-    
-    cssMatrix.prototype.translate = function(x,y) {
+
+    CssMatrix.prototype.translate = function(x,y) {
         var trans = Matrix.I(3);
         trans.elements[0][2] = x;
         trans.elements[1][2] = y;
-        return new cssMatrix(this.m.multiply(trans));
+        return new CssMatrix(this.m.multiply(trans));
     };
-    
-    cssMatrix.prototype.scale = function(sx,sy) {
+
+    CssMatrix.prototype.scale = function(sx,sy) {
         var trans = Matrix.create([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
-        return new cssMatrix(this.m.multiply(trans));    
+        return new CssMatrix(this.m.multiply(trans));
     };
-    
-    cssMatrix.prototype.rotate = function(rot) {
+
+    CssMatrix.prototype.rotate = function(rot) {
         var trans = Matrix.RotationZ(rot);
-        return new cssMatrix(this.m.multiply(trans));
+        return new CssMatrix(this.m.multiply(trans));
     };
-    
-    cssMatrix.prototype.toString = function() {
+
+    CssMatrix.prototype.toString = function() {
         var e = this.m.elements;
         var pxstr = "";
         if($.browser.mozilla || $.browser.opera) {
@@ -377,33 +376,32 @@ Matrix.I = function(n) {
                          printFixedNumber(e[0][1])+", "+printFixedNumber(e[1][1])+", "+
                          printFixedNumber(e[0][2])+pxstr+", "+printFixedNumber(e[1][2])+pxstr+")";
     };
-    
+
     //****************************************//
     //***  Not part of the WebkitCSSMatrix ***//
     //***  interface (but used in Zoomooz) ***//
     //****************************************//
-    
-    cssMatrix.prototype.elements = function() {
+
+    CssMatrix.prototype.elements = function() {
         var mv = this.m.elements;
         return {"a":mv[0][0],"b":mv[1][0],"c":mv[0][1],
                 "d":mv[1][1],"e":mv[0][2],"f":mv[1][2]};
-    }
-    
+    };
+
     //**********************************//
     //***  Helpers                   ***//
     //**********************************//
-    
+
     function filterNumber(x) {
         return x.match(regexp_filter_number);
     }
-    
+
     function printFixedNumber(x) {
         return Number(x).toFixed(6);
     }
 
-    return cssMatrix;
-})();
-/*
+    return CssMatrix;
+})();;/*
  * jquery.zoomooz-helpers.js, part of:
  * http://janne.aukia.com/zoomooz
  *
@@ -441,7 +439,7 @@ if(!$.zoomooz) {
         if(includeNoPrefix) {
             func("");
         }
-    }
+    };
     
     ns.getElementTransform = function(elem) {
         var retVal;
@@ -449,12 +447,11 @@ if(!$.zoomooz) {
             retVal = retVal || $(elem).css(prefix+"transform");
         },true);
         return retVal;
-    }
+    };
     
     return ns;
     
-})(jQuery, {});
-/*
+})(jQuery, {});;/*
  * jquery.zoomooz-anim.js, part of:
  * http://janne.aukia.com/zoomooz
  *
@@ -554,7 +551,7 @@ if(!$.zoomooz) {
                 animateTransition($target, current_affine, final_affine, settings, animateEndCallback, animateStartedCallback);
             }
         });
-    }
+    };
     
     $.fn.setTransformation = function(transformation) {
         this.each(function() {
@@ -563,7 +560,7 @@ if(!$.zoomooz) {
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
             $target.css(constructZoomRootCssTransform(matrixCompose(final_affine)));
         });
-    }
+    };
     
     //**********************************//
     //***  Element positioning       ***//
@@ -587,7 +584,7 @@ if(!$.zoomooz) {
             var transtiming = constructEasingCss(easing);
             propMap["-webkit-transition-timing-function"] = transtiming;
             propMap["-o-transition-timing-function"] = transtiming;
-            propMap["-moz-transition-timing-function"] = transdur;
+            propMap["-moz-transition-timing-function"] = transtiming;
         }
         
         return propMap;
@@ -721,14 +718,14 @@ if(!$.zoomooz) {
         }
         
         var easingFunc = function(t) {
-            return CubicBezierAtTime(t, params[0], params[1], params[2], params[3], dur);
+            return cubicBezierAtTime(t, params[0], params[1], params[2], params[3], dur);
         };
         
         return easingFunc;
     }
     
     // From: http://www.netzgesta.de/dev/cubic-bezier-timing-function.html
-    function CubicBezierAtPosition(t,P1x,P1y,P2x,P2y) {
+    function cubicBezierAtPosition(t,P1x,P1y,P2x,P2y) {
         var x,y,k=((1-t)*(1-t)*(1-t));
         x=P1x*(3*t*t*(1-t))+P2x*(3*t*(1-t)*(1-t))+k;
         y=P1y*(3*t*t*(1-t))+P2y*(3*t*(1-t)*(1-t))+k;
@@ -738,7 +735,7 @@ if(!$.zoomooz) {
     // From: http://www.netzgesta.de/dev/cubic-bezier-timing-function.html
     // 1:1 conversion to js from webkit source files
     // UnitBezier.h, WebCore_animation_AnimationBase.cpp
-    function CubicBezierAtTime(t,p1x,p1y,p2x,p2y,duration) {
+    function cubicBezierAtTime(t,p1x,p1y,p2x,p2y,duration) {
         var ax=0,bx=0,cx=0,ay=0,by=0,cy=0;
         // `ax t^3 + bx t^2 + cx t' expanded using Horner's rule.
         function sampleCurveX(t) {return ((ax*t+bx)*t+cx)*t;}
@@ -848,8 +845,7 @@ if(!$.zoomooz) {
         return x.match(regexp_filter_number);
     }
     
-})(jQuery);
-/*
+})(jQuery);;/*
  * jquery.zoomooz-core.js, part of:
  * http://janne.aukia.com/zoomooz
  *
@@ -938,7 +934,7 @@ if(!$.zoomooz) {
             retValue = setupElementSettings($elem, settings);
         });
         return retValue;
-    }
+    };
 
     /* the main zooming method. */
     $.fn.zoomTo = function(settings, skipElementSettings) {
@@ -983,7 +979,9 @@ if(!$.zoomooz) {
         var defaultSettings = $.zoomooz.defaultSettings;
         var elementSettings = jQuery.extend({},settings);
 
-        for(var key in defaultSettings) {
+        var key;
+
+        for(key in defaultSettings) {
             if (defaultSettings.hasOwnProperty(key) && !elementSettings[key]) {
                 elementSettings[key] = $elem.data(key);
             }
@@ -992,7 +990,7 @@ if(!$.zoomooz) {
         // FIXME: it would be better, that the animationSettings
         // would come from the jquery.zoomooz-anim file somehow
         for(var i=0;i<animationSettings.length;i++) {
-            var key = animationSettings[i];
+            key = animationSettings[i];
             if(!elementSettings[key]) {
                 elementSettings[key] = $elem.data(key);
             }
@@ -1038,7 +1036,7 @@ if(!$.zoomooz) {
         };
 
         // FIXME: feat detection would be better
-        var isFF = !(window.mozInnerScreenX == null);
+        var isFF = (window.mozInnerScreenX !== null);
         retObject.scrollresetbeforezoom = isFF;
 
         return retObject;
@@ -1329,7 +1327,7 @@ if(!$.zoomooz) {
                 doesNotAddBorder:jQuery.offset.doesNotAddBorder,
                 doesAddBorderForTableAndCells:jQuery.support.doesAddBorderForTableAndCells,
                 subtractsBorderForOverflowNotVisible:jQuery.offset.subtractsBorderForOverflowNotVisible
-            }
+            };
         } else {
             support = jQuery.support;
         }
@@ -1439,8 +1437,7 @@ if(!$.zoomooz) {
         }
     }
 
-})(jQuery);
-/*
+})(jQuery);;/*
  * jquery.zoomooz-zoomTarget.js, part of:
  * http://janne.aukia.com/zoomooz
  *
@@ -1460,31 +1457,31 @@ if(!$.zoomooz) {
     if(!$.zoomooz) {
         $.zoomooz = {};
     }
-    
+
     //**********************************//
     //***  Variables                 ***//
     //**********************************//
-    
+
     var helpers = $.zoomooz.helpers;
-    
+
     //**********************************//
     //***  jQuery functions          ***//
     //**********************************//
-    
+
     $.fn.zoomTarget = function(baseSettings) {
         this.each(function() {
             var settings = $(this).zoomSettings(baseSettings);
             setupClickHandler($(this),$(this),settings);
         });
-    }
-    
+    };
+
     //**********************************//
     //***  Helper functions          ***//
     //**********************************//
-    
+
     function setupClickHandler(clickTarget, zoomTarget, settings) {
         clickTarget.addClass("zoomTarget");
-    
+
         if(!settings.animationendcallback) {
             if(!settings.closeclick) {
                 settings.animationendcallback = function() {
@@ -1498,35 +1495,35 @@ if(!$.zoomooz) {
                 };
             }
         }
-        
+
         var zoomContainer = zoomTarget.closest(".zoomContainer");
-        if(zoomContainer.length!=0) {
+        if(zoomContainer.length!==0) {
             settings.root = zoomContainer;
         }
-        
+
         var $root = settings.root;
-            
+
         if(!$root.hasClass("zoomTarget")) {
-        
+
             var rootSettings = $root.zoomSettings({});
-            
+
             rootSettings.animationendcallback = function() {
                 var $elem = $(this);
                 $(".selectedZoomTarget").removeClass("selectedZoomTarget zoomNotClickable");
                 $elem.addClass("selectedZoomTarget zoomNotClickable");
                 $elem.parent().addClass("selectedZoomTarget zoomNotClickable");
             };
-            
+
             setupClickHandler($root,$root,rootSettings);
             setupClickHandler($root.parent(),$root,rootSettings);
-            
+
             // FIXME: there could be many of these called simultaneously,
             // don't know what would happen then
             $root.click();
         }
-        
+
         clickTarget.on("click", function(evt) {
-            
+
             // closeclick not available here...
             if(settings.closeclick && zoomTarget.hasClass("selectedZoomTarget")) {
                 settings.root.click();
@@ -1536,17 +1533,17 @@ if(!$.zoomooz) {
             evt.stopPropagation();
         });
     }
-    
+
     //**********************************//
     //***  Setup functions           ***//
     //**********************************//
-    
+
     /* setup css styles in javascript to not need an extra zoomooz.css file for the user to load.
        having the styles here helps also at keeping the css requirements minimal. */
     function setupCssStyles() {
         var style = document.createElement('style');
         style.type = 'text/css';
-        
+
         function setupSelectionCss(enabled) {
             var selectionString = "-webkit-touch-callout: "+(enabled?"default":"none")+";";
             helpers.forEachPrefix(function(prefix) {
@@ -1554,7 +1551,7 @@ if(!$.zoomooz) {
             },true);
             return selectionString;
         }
-                   
+
         // FIXME: how to remove the html height requirement?
         // FIXME: how to remove the transform origin?
         style.innerHTML = ".zoomTarget{"+setupSelectionCss(false)+"}"+
@@ -1563,16 +1560,16 @@ if(!$.zoomooz) {
                           ".zoomNotClickable:hover{cursor:auto!important;}"+
                           /* padding to fix margin collapse issues */
                           ".zoomContainer{position:relative;padding:1px;margin:-1px;}";
-                          
+
         document.getElementsByTagName('head')[0].appendChild(style);
     }
-    
+
     //**********************************//
     //***  Static setup              ***//
     //**********************************//
-    
+
     setupCssStyles();
-    
+
     // make all elements with the zoomTarget class zooming
     $(document).ready(function() {
         // this needs to be after the "$.fn.zoomTarget" has been initialized
@@ -1580,8 +1577,7 @@ if(!$.zoomooz) {
     });
 
 })(jQuery);
-
-/*
+;/*
  * jquery.zoomooz-zoomContainer.js, part of:
  * http://janne.aukia.com/zoomooz
  *
@@ -1601,41 +1597,40 @@ if(!$.zoomooz) {
     if(!$.zoomooz) {
         $.zoomooz = {};
     }
-    
+
     //**********************************//
     //***  Variables                 ***//
     //**********************************//
-    
+
     //var helpers = $.zoomooz.helpers;
 
-    
+
     //**********************************//
     //***  jQuery functions          ***//
     //**********************************//
-    
+
     $.fn.zoomContainer = function(settings) {
-    
+
         // add next and previous calls to the canvas
         // (auto detect next and previous buttons)
-    
-    }
+
+    };
 
     //**********************************//
     //***  Static setup              ***//
     //**********************************//
-    
+
     // FIXME: move zoomContainer styling here?
     //setupCssStyles();
-    
+
     // make all elements with the zoomContainer class zooming containers
     $(document).ready(function() {
         // this needs to be after the "$.fn.zoomContainer" has been initialized
         $(".zoomContainer").zoomContainer();
     });
-    
-})(jQuery);
 
-/*
+})(jQuery);
+;/*
  * jquery.zoomooz-zoomButton.js, part of:
  * http://janne.aukia.com/zoomooz
  *
@@ -1654,35 +1649,35 @@ if(!$.zoomooz) {
     if(!$.zoomooz) {
         $.zoomooz = {};
     }
-    
+
     //**********************************//
     //***  Variables                 ***//
     //**********************************//
-    
+
     var helpers = $.zoomooz.helpers;
-    
+
     //**********************************//
     //***  jQuery functions          ***//
     //**********************************//
-    
+
     $.fn.zoomButton = function(baseSettings) {
         this.each(function() {
             var settings = setupZoomButtonSettings($(this),baseSettings);
             setupClickHandler($(this),settings);
         });
-    }
-    
+    };
+
     //**********************************//
     //***  Setup functions           ***//
     //**********************************//
-    
+
     function setupZoomButtonSettings($elem, settings) {
-    
+
         var defaultSettings = constructDefaultSettings();
         var elementSettings = jQuery.extend({},settings);
-        
+
         // FIXME: could move the core declarative stuff to a separate lib or file
-        
+
         for(var key in defaultSettings) {
             if (defaultSettings.hasOwnProperty(key) && !elementSettings[key]) {
                 if(defaultSettings[key] instanceof jQuery) {
@@ -1692,10 +1687,10 @@ if(!$.zoomooz) {
                 }
             }
         }
-        
+
         return jQuery.extend({}, defaultSettings, elementSettings);
     }
-    
+
     function constructDefaultSettings() {
         return {
             type: "next",
@@ -1703,30 +1698,30 @@ if(!$.zoomooz) {
             wrap: "true"
         };
     }
-    
+
     //**********************************//
     //***  Helper functions          ***//
     //**********************************//
-    
+
     function setupClickHandler(clickTarget, settings) {
-    
+
         clickTarget.addClass("zoomButton");
-        
+
         var $root;
-        
+
         if(settings.root.hasClass("zoomContainer")) {
             $root = settings.root;
         } else {
             $root = settings.root.find(".zoomContainer");
         }
-        
+
         var displayList = (function() {
             var listData = jQuery.makeArray($root.find(".zoomTarget"));
-            
+
             function _getIndex(elem) {
                 return listData.indexOf(elem);
             }
-            
+
             function _getNext(elem) {
                 var index = _getIndex(elem)+1;
                 if(index<listData.length && index!==0) {
@@ -1735,7 +1730,7 @@ if(!$.zoomooz) {
                     return null;
                 }
             }
-            
+
             function _getPrev(elem) {
                 var index = _getIndex(elem)-1;
                 if(index<0) {
@@ -1744,34 +1739,34 @@ if(!$.zoomooz) {
                     return listData[index];
                 }
             }
-            
+
             function _getFirst() {
                 return listData[0];
             }
-            
+
             function _getLast() {
                 return listData[listData.length-1];
             }
-            
+
             return {
                 next: _getNext,
                 prev: _getPrev,
                 last: _getLast,
                 first: _getFirst
-            }
+            };
         }());
-        
+
         clickTarget.on("click", function(evt) {
-            
+
             var target;
             var performZoom = true;
-            
+
             var $selected = $root.find(".selectedZoomTarget");
-            
+
             if($selected.length===0) {
                 $selected = displayList.first();
             }
-            
+
             if(settings.type.indexOf("prev")===0) {
                 target = displayList.prev($selected[0]);
                 if(target === null) {
@@ -1791,26 +1786,26 @@ if(!$.zoomooz) {
                     }
                 }
             }
-            
+
             if(performZoom) {
                 // not this easy! would need to read the data fields
                 //target.zoomTo();
-                
+
                 // FIXME: hacky...
                 target.click();
             } else {
                 // don't do anything if no wrap
                 // (would be great if the button was disabled)
             }
-            
+
             evt.stopPropagation();
         });
     }
-    
+
     //**********************************//
     //***  Static setup              ***//
     //**********************************//
-    
+
     // make all elements with the zoomButton class activate
     $(document).ready(function() {
         // this needs to be after the "$.fn.zoomButton" has been initialized
@@ -1818,4 +1813,3 @@ if(!$.zoomooz) {
     });
 
 })(jQuery);
-

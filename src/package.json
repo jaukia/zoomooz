@@ -1,0 +1,8 @@
+{
+  "name": "zoomooz",
+  "version": "1.1.5",
+  "devDependencies": {
+    "grunt": "~0.4.0",
+    "grunt-contrib-jshint": "~0.1.1"
+  }
+}

@@ -98,7 +98,7 @@
                 animateTransition($target, current_affine, final_affine, settings, animateEndCallback, animateStartedCallback);
             }
         });
-    }
+    };
     
     $.fn.setTransformation = function(transformation) {
         this.each(function() {
@@ -107,7 +107,7 @@
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
             $target.css(constructZoomRootCssTransform(matrixCompose(final_affine)));
         });
-    }
+    };
     
     //**********************************//
     //***  Element positioning       ***//
@@ -131,7 +131,7 @@
             var transtiming = constructEasingCss(easing);
             propMap["-webkit-transition-timing-function"] = transtiming;
             propMap["-o-transition-timing-function"] = transtiming;
-            propMap["-moz-transition-timing-function"] = transdur;
+            propMap["-moz-transition-timing-function"] = transtiming;
         }
         
         return propMap;
@@ -265,14 +265,14 @@
         }
         
         var easingFunc = function(t) {
-            return CubicBezierAtTime(t, params[0], params[1], params[2], params[3], dur);
+            return cubicBezierAtTime(t, params[0], params[1], params[2], params[3], dur);
         };
         
         return easingFunc;
     }
     
     // From: http://www.netzgesta.de/dev/cubic-bezier-timing-function.html
-    function CubicBezierAtPosition(t,P1x,P1y,P2x,P2y) {
+    function cubicBezierAtPosition(t,P1x,P1y,P2x,P2y) {
         var x,y,k=((1-t)*(1-t)*(1-t));
         x=P1x*(3*t*t*(1-t))+P2x*(3*t*(1-t)*(1-t))+k;
         y=P1y*(3*t*t*(1-t))+P2y*(3*t*(1-t)*(1-t))+k;
@@ -282,7 +282,7 @@
     // From: http://www.netzgesta.de/dev/cubic-bezier-timing-function.html
     // 1:1 conversion to js from webkit source files
     // UnitBezier.h, WebCore_animation_AnimationBase.cpp
-    function CubicBezierAtTime(t,p1x,p1y,p2x,p2y,duration) {
+    function cubicBezierAtTime(t,p1x,p1y,p2x,p2y,duration) {
         var ax=0,bx=0,cx=0,ay=0,by=0,cy=0;
         // `ax t^3 + bx t^2 + cx t' expanded using Horner's rule.
         function sampleCurveX(t) {return ((ax*t+bx)*t+cx)*t;}

@@ -18,36 +18,36 @@
     if(!$.zoomooz) {
         $.zoomooz = {};
     }
-    
+
     //**********************************//
     //***  Variables                 ***//
     //**********************************//
-    
+
     //var helpers = $.zoomooz.helpers;
 
-    
+
     //**********************************//
     //***  jQuery functions          ***//
     //**********************************//
-    
+
     $.fn.zoomContainer = function(settings) {
-    
+
         // add next and previous calls to the canvas
         // (auto detect next and previous buttons)
-    
-    }
+
+    };
 
     //**********************************//
     //***  Static setup              ***//
     //**********************************//
-    
+
     // FIXME: move zoomContainer styling here?
     //setupCssStyles();
-    
+
     // make all elements with the zoomContainer class zooming containers
     $(document).ready(function() {
         // this needs to be after the "$.fn.zoomContainer" has been initialized
         $(".zoomContainer").zoomContainer();
     });
-    
+
 })(jQuery);
