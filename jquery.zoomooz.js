@@ -1036,7 +1036,7 @@ if(!$.zoomooz) {
         };
 
         // FIXME: feat detection would be better
-        var isFF = (window.mozInnerScreenX !== null);
+        var isFF = (window.mozInnerScreenX !== undefined);
         retObject.scrollresetbeforezoom = isFF;
 
         return retObject;
