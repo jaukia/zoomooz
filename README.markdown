@@ -16,12 +16,14 @@ There is an optional build process. Currently the only thing it does is that it 
 
   http://nodejs.org/#download
     
-2. Install node-jake and uglify-js:
+2. Install grunt and requirements for it:
 
-        npm install -g jake
-        npm install uglify-js
+        cd src
+        npm install grunt
+        grunt
+        (install any missing requirements based on instructions)
 
 ### Running the build
 
     cd src
-    jake
+    grunt
