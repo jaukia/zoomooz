@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# requires pyobjc, to install:
+# > easy_install pyobjc
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 EXAMPLE_DIR=file://$DIR/../examples
 THUMB_DIR=../website-assets/images/thumbnails/
