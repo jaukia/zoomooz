@@ -412,7 +412,7 @@ Matrix.I = function(n) {
  * and GPL Version 2 (GPL-LICENSE.txt) licenses.
  *
  */
- 
+
 /*jslint sub: true */
 
 if(!$.zoomooz) {
@@ -425,13 +425,13 @@ if(!$.zoomooz) {
     //**********************************//
     //***  Variables                 ***//
     //**********************************//
-    
+
     var browser_prefixes = ["-moz-","-webkit-","-o-","-ms-"];
-    
+
     //**********************************//
     //***  Helpers                   ***//
     //**********************************//
-    
+
     ns.forEachPrefix = function(func,includeNoPrefix) {
         for(var i=0;i<browser_prefixes.length;i++) {
             func(browser_prefixes[i]);
@@ -440,7 +440,7 @@ if(!$.zoomooz) {
             func("");
         }
     };
-    
+
     ns.getElementTransform = function(elem) {
         var retVal;
         ns.forEachPrefix(function(prefix) {
@@ -448,9 +448,9 @@ if(!$.zoomooz) {
         },true);
         return retVal;
     };
-    
+
     return ns;
-    
+
 })(jQuery, {});;/*
  * jquery.zoomooz-anim.js, part of:
  * http://janne.aukia.com/zoomooz
@@ -463,11 +463,11 @@ if(!$.zoomooz) {
  *
  * LICENCE INFORMATION FOR DERIVED FUNCTIONS:
  *
- * Functions CubicBezierAtPosition and  
- * CubicBezierAtTime are written by Christian Effenberger, 
+ * Functions CubicBezierAtPosition and
+ * CubicBezierAtTime are written by Christian Effenberger,
  * and correspond 1:1 to WebKit project functions.
- * "WebCore and JavaScriptCore are available under the 
- * Lesser GNU Public License. WebKit is available under 
+ * "WebCore and JavaScriptCore are available under the
+ * Lesser GNU Public License. WebKit is available under
  * a BSD-style license."
  *
  */
@@ -480,10 +480,10 @@ if(!$.zoomooz) {
     //**********************************//
     //***  Variables                 ***//
     //**********************************//
-    
+
     var animation_start_time;
     var animation_interval_timer;
-    
+
     var regexp_filter_number = /([0-9.\-e]+)/g;
     var regexp_trans_splitter = /([a-z]+)\(([^\)]+)\)/g;
     var regexp_is_deg = /deg$/;
@@ -498,19 +498,19 @@ if(!$.zoomooz) {
            it with care and test on your target devices/browsers :). */
         nativeanimation: false
     };
-    
+
     var endCallbackTimeout;
 
     //**********************************//
     //***  Setup css hook for IE     ***//
     //**********************************//
-    
+
     jQuery.cssHooks["MsTransform"] = {
         set: function( elem, value ) {
             elem.style.msTransform = value;
         }
     };
-    
+
     jQuery.cssHooks["MsTransformOrigin"] = {
         set: function( elem, value ) {
             elem.style.msTransformOrigin = value;
@@ -520,10 +520,10 @@ if(!$.zoomooz) {
     //**********************************//
     //***  jQuery functions          ***//
     //**********************************//
-      
+
     $.fn.animateTransformation = function(transformation, settings, posOffset, animateEndCallback, animateStartedCallback) {
         settings = jQuery.extend({}, default_settings, settings);
-        
+
         // FIXME: what would be the best way to handle leftover animations?
         if(endCallbackTimeout) {
             clearTimeout(endCallbackTimeout);
@@ -533,15 +533,15 @@ if(!$.zoomooz) {
         if(settings.nativeanimation && animateEndCallback) {
             endCallbackTimeout = setTimeout(animateEndCallback, settings.duration);
         }
-        
+
         this.each(function() {
             var $target = $(this);
-            
+
             if(!transformation) transformation = new PureCSSMatrix();
-            
+
             var current_affine = constructAffineFixingRotation($target, posOffset);
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
-            
+
             if(settings.nativeanimation) {
                 $target.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
                 if(animateStartedCallback) {
@@ -552,7 +552,7 @@ if(!$.zoomooz) {
             }
         });
     };
-    
+
     $.fn.setTransformation = function(transformation) {
         this.each(function() {
             var $target = $(this);
@@ -561,41 +561,41 @@ if(!$.zoomooz) {
             $target.css(constructZoomRootCssTransform(matrixCompose(final_affine)));
         });
     };
-    
+
     //**********************************//
     //***  Element positioning       ***//
     //**********************************//
-    
+
     function constructZoomRootCssTransform(trans, duration, easing) {
         var propMap = {};
-        
+
         helpers.forEachPrefix(function(prefix) {
             propMap[prefix+"transform"] = trans;
         },true);
-        
-        if(duration) { 
+
+        if(duration) {
             var transdur = roundNumber(duration/1000,6)+"s";
             propMap["-webkit-transition-duration"] = transdur;
             propMap["-o-transition-duration"] = transdur;
             propMap["-moz-transition-duration"] = transdur;
         }
-        
+
         if(easing) {
             var transtiming = constructEasingCss(easing);
             propMap["-webkit-transition-timing-function"] = transtiming;
             propMap["-o-transition-timing-function"] = transtiming;
             propMap["-moz-transition-timing-function"] = transtiming;
         }
-        
+
         return propMap;
     }
-    
+
     //**********************************//
     //***  Non-native animation      ***//
     //**********************************//
-    
+
     function animateTransition($target, st, et, settings, animateEndCallback, animateStartedCallback) {
-        
+
         if(!st) {
             st = affineTransformDecompose(new PureCSSMatrix());
         }
@@ -607,17 +607,17 @@ if(!$.zoomooz) {
         if(settings.easing) {
             settings.easingfunction = constructEasingFunction(settings.easing, settings.duration);
         }
-        
+
         // first step
         animationStep($target, st, et, settings, animateEndCallback);
 
         if(animateStartedCallback) {
             animateStartedCallback();
         }
-        
-        animation_interval_timer = setInterval(function() { animationStep($target, st, et, settings, animateEndCallback); }, 1);    
+
+        animation_interval_timer = setInterval(function() { animationStep($target, st, et, settings, animateEndCallback); }, 1);
     }
-    
+
     function animationStep($target, affine_start, affine_end, settings, animateEndCallback) {
         var current_time = (new Date()).getTime() - animation_start_time;
         var time_value;
@@ -626,9 +626,9 @@ if(!$.zoomooz) {
         } else {
             time_value = current_time/settings.duration;
         }
-        
+
         $target.css(constructZoomRootCssTransform(matrixCompose(interpolateArrays(affine_start, affine_end, time_value))));
-    
+
         if(current_time>settings.duration) {
             clearInterval(animation_interval_timer);
             animation_interval_timer = null;
@@ -637,36 +637,36 @@ if(!$.zoomooz) {
                 animateEndCallback();
             }
         }
-        
+
     }
-    
+
     /* Based on pseudo-code in:
      * https://bugzilla.mozilla.org/show_bug.cgi?id=531344
      */
     function affineTransformDecompose(matrix) {
         var m = matrix.elements();
         var a=m.a, b=m.b, c=m.c, d=m.d, e=m.e, f=m.f;
-        
+
         if(Math.abs(a*d-b*c)<0.01) {
             console.log("fail!");
             return;
         }
-        
+
         var tx = e, ty = f;
-        
+
         var sx = Math.sqrt(a*a+b*b);
         a = a/sx;
         b = b/sx;
-        
+
         var k = a*c+b*d;
         c -= a*k;
         d -= b*k;
-        
+
         var sy = Math.sqrt(c*c+d*d);
         c = c/sy;
         d = d/sy;
         k = k/sy;
-        
+
         if((a*d-b*c)<0.0) {
             a = -a;
             b = -b;
@@ -675,11 +675,11 @@ if(!$.zoomooz) {
             sx = -sx;
             sy = -sy;
         }
-    
+
         var r = Math.atan2(b,a);
         return {"tx":tx, "ty":ty, "r":r, "k":Math.atan(k), "sx":sx, "sy":sy};
     }
-    
+
     function matrixCompose(ia) {
         var ret = "";
         /* this probably made safari 5.1.1. + os 10.6.8 + non-unibody mac? */
@@ -689,11 +689,11 @@ if(!$.zoomooz) {
         ret += "scale("+roundNumber(ia.sx,6)+","+roundNumber(ia.sy,6)+")";
         return ret;
     }
-    
+
     //**********************************//
     //***  Easing functions          ***//
     //**********************************//
-    
+
     function constructEasingCss(input) {
         if((input instanceof Array)) {
             return "cubic-bezier("+roundNumber(input[0],6)+","+roundNumber(input[1],6)+","+
@@ -702,7 +702,7 @@ if(!$.zoomooz) {
             return input;
         }
     }
-    
+
     function constructEasingFunction(input, dur) {
         var params = [];
         if((input instanceof Array)) {
@@ -716,14 +716,14 @@ if(!$.zoomooz) {
                 case "ease-in-out": params = [0.42,0.0,0.58,1.0]; break;
             }
         }
-        
+
         var easingFunc = function(t) {
             return cubicBezierAtTime(t, params[0], params[1], params[2], params[3], dur);
         };
-        
+
         return easingFunc;
     }
-    
+
     // From: http://www.netzgesta.de/dev/cubic-bezier-timing-function.html
     function cubicBezierAtPosition(t,P1x,P1y,P2x,P2y) {
         var x,y,k=((1-t)*(1-t)*(1-t));
@@ -731,7 +731,7 @@ if(!$.zoomooz) {
         y=P1y*(3*t*t*(1-t))+P2y*(3*t*(1-t)*(1-t))+k;
         return {x:Math.abs(x),y:Math.abs(y)};
     }
-    
+
     // From: http://www.netzgesta.de/dev/cubic-bezier-timing-function.html
     // 1:1 conversion to js from webkit source files
     // UnitBezier.h, WebCore_animation_AnimationBase.cpp
@@ -764,7 +764,7 @@ if(!$.zoomooz) {
     //**********************************//
     //***  CSS Matrix helpers        ***//
     //**********************************//
-    
+
     function constructAffineFixingRotation(elem, posOffset) {
         var rawTrans = helpers.getElementTransform(elem);
         var matr;
@@ -782,7 +782,7 @@ if(!$.zoomooz) {
         current_affine.r = getTotalRotation(rawTrans);
         return current_affine;
     }
-    
+
     function getTotalRotation(transString) {
         var totalRot = 0;
         var items;
@@ -803,10 +803,10 @@ if(!$.zoomooz) {
         }
         return totalRot;
     }
-    
+
     // TODO: use modulo instead of loops
     function fixRotationToSameLap(current_affine, final_affine) {
-        
+
         if(Math.abs(current_affine.r-final_affine.r)>Math.PI) {
             if(final_affine.r<current_affine.r) {
                 while(Math.abs(current_affine.r-final_affine.r)>Math.PI) {
@@ -820,11 +820,11 @@ if(!$.zoomooz) {
         }
         return final_affine;
     }
-    
+
     //**********************************//
     //***  Helpers                   ***//
     //**********************************//
-    
+
     function interpolateArrays(st, et, pos) {
         var it = {};
         for(var i in st) {
@@ -834,17 +834,17 @@ if(!$.zoomooz) {
         }
         return it;
     }
-    
+
     function roundNumber(number, precision) {
         precision = Math.abs(parseInt(precision,10)) || 0;
         var coefficient = Math.pow(10, precision);
         return Math.round(number*coefficient)/coefficient;
     }
-    
+
     function filterNumber(x) {
         return x.match(regexp_filter_number);
     }
-    
+
 })(jQuery);;/*
  * jquery.zoomooz-core.js, part of:
  * http://janne.aukia.com/zoomooz

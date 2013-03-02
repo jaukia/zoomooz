@@ -9,7 +9,7 @@
  * and GPL Version 2 (GPL-LICENSE.txt) licenses.
  *
  */
- 
+
 /*jslint sub: true */
 
 if(!$.zoomooz) {
@@ -22,13 +22,13 @@ if(!$.zoomooz) {
     //**********************************//
     //***  Variables                 ***//
     //**********************************//
-    
+
     var browser_prefixes = ["-moz-","-webkit-","-o-","-ms-"];
-    
+
     //**********************************//
     //***  Helpers                   ***//
     //**********************************//
-    
+
     ns.forEachPrefix = function(func,includeNoPrefix) {
         for(var i=0;i<browser_prefixes.length;i++) {
             func(browser_prefixes[i]);
@@ -37,7 +37,7 @@ if(!$.zoomooz) {
             func("");
         }
     };
-    
+
     ns.getElementTransform = function(elem) {
         var retVal;
         ns.forEachPrefix(function(prefix) {
@@ -45,7 +45,7 @@ if(!$.zoomooz) {
         },true);
         return retVal;
     };
-    
+
     return ns;
-    
+
 })(jQuery, {});

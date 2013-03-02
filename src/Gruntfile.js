@@ -1,9 +1,9 @@
 module.exports = function(grunt) {
 
   grunt.initConfig({
-  
+
     pkg: grunt.file.readJSON('package.json'),
-    
+
     concat: {
       options: {
         separator: ';'
@@ -13,10 +13,10 @@ module.exports = function(grunt) {
         dest: '../jquery.<%= pkg.name %>.js'
       }
     },
-    
+
     uglify: {
       options: {
-      
+
       },
       dist: {
         files: {
@@ -24,7 +24,7 @@ module.exports = function(grunt) {
         }
       }
     },
-    
+
     jshint: {
       files: ['js/*.js'],
       options: {
@@ -37,12 +37,12 @@ module.exports = function(grunt) {
         }
       }
     },
-    
+
     watch: {
       files: ['<%= jshint.files %>'],
       tasks: ['jshint']
     }
-    
+
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
