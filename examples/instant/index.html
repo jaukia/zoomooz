@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Simple test</title>
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>
+		
+		<script>
+		    $(document).ready(function() {
+		        $.zoomooz.setup({duration:0,nativeanimation:true});
+		    });
+		</script>
+		
+	</head>
+	<body class="zoomTarget" data-debug="true" data-duration="0">
+	    <div id="item1" class="zoomTarget" data-debug="true" data-duration="0"></div>
+		<div id="item2" class="zoomTarget" data-debug="true" data-duration="0"></div>
+		<div id="item3" class="zoomTarget" data-debug="true" data-duration="0">
+		    <div id="item3b" class="zoomTarget" data-debug="true" data-duration="0"></div>
+		</div>
+		<div id="item2b" class="zoomTarget" data-debug="true" data-duration="0"></div>
+		<div id="item4" class="zoomTarget" data-debug="true" data-duration="0"></div>
+	</body>
+	
+	<!--************************
+		**  GOOGLE ANALYTICS      **
+		*************************-->
+			
+			<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-16288001-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</html>
+	

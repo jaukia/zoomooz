@@ -77,7 +77,9 @@
             endCallbackTimeout = null;
         }
 
-        if(settings.nativeanimation && animateEndCallback) {
+        var interpolateAnim = !settings.nativeanimation && settings.duration>0;
+
+        if(!interpolateAnim && animateEndCallback) {
             endCallbackTimeout = setTimeout(animateEndCallback, settings.duration);
         }
 
@@ -89,13 +91,13 @@
             var current_affine = constructAffineFixingRotation($target, posOffset);
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
 
-            if(settings.nativeanimation) {
+            if(interpolateAnim) {
+                animateTransition($target, current_affine, final_affine, settings, animateEndCallback, animateStartedCallback);
+            } else {
                 $target.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
                 if(animateStartedCallback) {
                     animateStartedCallback();
                 }
-            } else {
-                animateTransition($target, current_affine, final_affine, settings, animateEndCallback, animateStartedCallback);
             }
         });
     };
@@ -125,13 +127,13 @@
             propMap["-webkit-transition-duration"] = transdur;
             propMap["-o-transition-duration"] = transdur;
             propMap["-moz-transition-duration"] = transdur;
-        }
-
-        if(easing) {
-            var transtiming = constructEasingCss(easing);
-            propMap["-webkit-transition-timing-function"] = transtiming;
-            propMap["-o-transition-timing-function"] = transtiming;
-            propMap["-moz-transition-timing-function"] = transtiming;
+            
+            if(easing) {
+                var transtiming = constructEasingCss(easing);
+                propMap["-webkit-transition-timing-function"] = transtiming;
+                propMap["-o-transition-timing-function"] = transtiming;
+                propMap["-moz-transition-timing-function"] = transtiming;
+            }
         }
 
         return propMap;

@@ -530,7 +530,9 @@ if(!$.zoomooz) {
             endCallbackTimeout = null;
         }
 
-        if(settings.nativeanimation && animateEndCallback) {
+        var interpolateAnim = !settings.nativeanimation && settings.duration>0;
+
+        if(!interpolateAnim && animateEndCallback) {
             endCallbackTimeout = setTimeout(animateEndCallback, settings.duration);
         }
 
@@ -542,13 +544,13 @@ if(!$.zoomooz) {
             var current_affine = constructAffineFixingRotation($target, posOffset);
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
 
-            if(settings.nativeanimation) {
+            if(interpolateAnim) {
+                animateTransition($target, current_affine, final_affine, settings, animateEndCallback, animateStartedCallback);
+            } else {
                 $target.css(constructZoomRootCssTransform(matrixCompose(final_affine), settings.duration, settings.easing));
                 if(animateStartedCallback) {
                     animateStartedCallback();
                 }
-            } else {
-                animateTransition($target, current_affine, final_affine, settings, animateEndCallback, animateStartedCallback);
             }
         });
     };
@@ -578,13 +580,13 @@ if(!$.zoomooz) {
             propMap["-webkit-transition-duration"] = transdur;
             propMap["-o-transition-duration"] = transdur;
             propMap["-moz-transition-duration"] = transdur;
-        }
-
-        if(easing) {
-            var transtiming = constructEasingCss(easing);
-            propMap["-webkit-transition-timing-function"] = transtiming;
-            propMap["-o-transition-timing-function"] = transtiming;
-            propMap["-moz-transition-timing-function"] = transtiming;
+            
+            if(easing) {
+                var transtiming = constructEasingCss(easing);
+                propMap["-webkit-transition-timing-function"] = transtiming;
+                propMap["-o-transition-timing-function"] = transtiming;
+                propMap["-moz-transition-timing-function"] = transtiming;
+            }
         }
 
         return propMap;
@@ -1525,7 +1527,7 @@ if(!$.zoomooz) {
         clickTarget.on("click", function(evt) {
 
             var $target = $(evt.target);
-
+            
             // avoiding stopPropagation to allow extra click handlers as well
             if($target.hasClass("zoomTarget") && !$target.is(clickTarget) ) {
                 return;

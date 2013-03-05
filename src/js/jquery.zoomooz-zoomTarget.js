@@ -86,7 +86,7 @@
         clickTarget.on("click", function(evt) {
 
             var $target = $(evt.target);
-
+            
             // avoiding stopPropagation to allow extra click handlers as well
             if($target.hasClass("zoomTarget") && !$target.is(clickTarget) ) {
                 return;
