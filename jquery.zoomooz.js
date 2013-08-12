@@ -580,7 +580,7 @@ if(!$.zoomooz) {
             propMap["-webkit-transition-duration"] = transdur;
             propMap["-o-transition-duration"] = transdur;
             propMap["-moz-transition-duration"] = transdur;
-            
+
             if(easing) {
                 var transtiming = constructEasingCss(easing);
                 propMap["-webkit-transition-timing-function"] = transtiming;
@@ -1314,7 +1314,15 @@ if(!$.zoomooz) {
 
         var trans;
         if ( elem === elem.ownerDocument.body ) {
-            var bOffset = jQuery.offset.bodyOffset( elem );
+        
+            var bOffset;
+            if(jQuery.offset.bodyOffset) {
+                // jQuery pre 1.9
+                bOffset = jQuery.offset.bodyOffset( elem );
+            } else {
+                bOffset = jQuery.fn.offset( elem );
+            }
+            
             trans = new PureCSSMatrix();
             trans = trans.translate(bOffset.left, bOffset.top);
             totalTransformation = totalTransformation.multiply(trans);
