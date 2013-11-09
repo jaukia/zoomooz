@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.1.7 moved Sylvester Matrix to a custom namespace
  * 1.1.5 zoom for scrolled pages without flickering
  * 1.1.0 carousel prev/next navigation
  * 1.0.6 support for jQuery 1.9

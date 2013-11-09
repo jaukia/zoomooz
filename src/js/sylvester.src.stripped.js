@@ -1,6 +1,8 @@
 // Everything but the relevant parts stripped out by Janne Aukia
 // for Zoomooz on April 4 2012 by using jscoverage coverage analysis tool.
 
+// Moved Matrix to a custom namespace
+
 // === Sylvester ===
 // Vector and Matrix mathematics modules for JavaScript
 // Copyright (c) 2007 James Coglan
@@ -23,17 +25,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-var Sylvester = {
-  version: '0.1.3',
-  precision: 1e-6
-};
+function zmMatrix() {}
 
-function Matrix() {}
-Matrix.prototype = {
+zmMatrix.prototype = {
 
   // Returns a copy of the matrix
   dup: function() {
-    return Matrix.create(this.elements);
+    return zmMatrix.create(this.elements);
   },
 
   // Maps the matrix to another matrix (of the same dimensions) according to the given function
@@ -46,13 +44,13 @@ Matrix.prototype = {
         els[i][j] = fn(this.elements[i][j], i + 1, j + 1);
       } while (--nj);
     } while (--ni);
-    return Matrix.create(els);
+    return zmMatrix.create(els);
   },*/
 
   // Returns true iff the matrix can multiply the argument from the left
   canMultiplyFromLeft: function(matrix) {
     var M = matrix.elements || matrix;
-    if (typeof(M[0][0]) == 'undefined') { M = Matrix.create(M).elements; }
+    if (typeof(M[0][0]) == 'undefined') { M = zmMatrix.create(M).elements; }
     // this.columns should equal matrix.rows
     return (this.elements[0].length == M.length);
   },
@@ -68,7 +66,7 @@ Matrix.prototype = {
 
     var returnVector = matrix.modulus ? true : false;
     var M = matrix.elements || matrix;
-    if (typeof(M[0][0]) == 'undefined') { M = Matrix.create(M).elements; }
+    if (typeof(M[0][0]) == 'undefined') { M = zmMatrix.create(M).elements; }
     if (!this.canMultiplyFromLeft(M)) { return null; }
     var ni = this.elements.length, ki = ni, i, nj, kj = M[0].length, j;
     var cols = this.elements[0].length, elements = [], sum, nc, c;
@@ -85,7 +83,7 @@ Matrix.prototype = {
       } while (--nj);
     } while (--ni);
 
-    M = Matrix.create(elements);
+    M = zmMatrix.create(elements);
     return returnVector ? M.col(1) : M;
   },
 
@@ -150,7 +148,7 @@ Matrix.prototype = {
   // Returns the result of attaching the given argument to the right-hand side of the matrix
   augment: function(matrix) {
     var M = matrix.elements || matrix;
-    if (typeof(M[0][0]) == 'undefined') { M = Matrix.create(M).elements; }
+    if (typeof(M[0][0]) == 'undefined') { M = zmMatrix.create(M).elements; }
     var T = this.dup(), cols = T.elements[0].length;
     var ni = T.elements.length, ki = ni, i, nj, kj = M[0].length, j;
     if (ni != M.length) { return null; }
@@ -167,10 +165,10 @@ Matrix.prototype = {
   inverse: function() {
     if (!this.isSquare() || this.isSingular()) { return null; }
     var ni = this.elements.length, ki = ni, i, j;
-    var M = this.augment(Matrix.I(ni)).toRightTriangular();
+    var M = this.augment(zmMatrix.I(ni)).toRightTriangular();
     var np, kp = M.elements[0].length, p, els, divisor;
     var inverse_elements = [], new_element;
-    // Matrix is non-singular so there will be no zeros on the diagonal
+    // zmMatrix is non-singular so there will be no zeros on the diagonal
     // Cycle through rows from last to first
     do { i = ni - 1;
       // First, normalise diagonal elements to 1
@@ -195,7 +193,7 @@ Matrix.prototype = {
         M.elements[j] = els;
       }
     } while (--ni);
-    return Matrix.create(inverse_elements);
+    return zmMatrix.create(inverse_elements);
   },
 
   // Set the matrix's elements from an array. If the argument passed
@@ -224,13 +222,13 @@ Matrix.prototype = {
 };
 
 // Constructor function
-Matrix.create = function(elements) {
-  var M = new Matrix();
+zmMatrix.create = function(elements) {
+  var M = new zmMatrix();
   return M.setElements(elements);
 };
 
 // Identity matrix of size n
-Matrix.I = function(n) {
+zmMatrix.I = function(n) {
   var els = [], k = n, i, nj, j;
   do { i = k - n;
     els[i] = []; nj = k;
@@ -238,5 +236,5 @@ Matrix.I = function(n) {
       els[i][j] = (i == j) ? 1 : 0;
     } while (--nj);
   } while (--n);
-  return Matrix.create(els);
+  return zmMatrix.create(els);
 };

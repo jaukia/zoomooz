@@ -30,13 +30,13 @@
 
     function CssMatrix(trans) {
         if(trans && trans !== null && trans!="none") {
-            if(trans instanceof Matrix) {
+            if(trans instanceof zmMatrix) {
                 this.setMatrix(trans);
             } else {
                 this.setMatrixValue(trans);
             }
         } else {
-            this.m = Matrix.I(3);
+            this.m = zmMatrix.I(3);
         }
     }
 
@@ -53,18 +53,18 @@
     }
 
     CssMatrix.prototype.setMatrixValue = function(transString) {
-        var mtr = Matrix.I(3);
+        var mtr = zmMatrix.I(3);
         var items;
         while((items = regexp_trans_splitter.exec(transString)) !== null) {
             var action = items[1].toLowerCase();
             var val = items[2].split(",");
             var trans;
             if(action=="matrix") {
-                trans = Matrix.create([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
+                trans = zmMatrix.create([[parseFloat(val[0]),parseFloat(val[2]),parseFloat(filterNumber(val[4]))],
                                [parseFloat(val[1]),parseFloat(val[3]),parseFloat(filterNumber(val[5]))],
                                [                0,                0,                              1]]);
             } else if(action=="translate") {
-                trans = Matrix.I(3);
+                trans = zmMatrix.I(3);
                 trans.elements[0][2] = parseFloat(filterNumber(val[0]));
                 trans.elements[1][2] = parseFloat(filterNumber(val[1]));
             } else if(action=="scale") {
@@ -75,16 +75,16 @@
                 } else {
                     sy = sx;
                 }
-                trans = Matrix.create([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
+                trans = zmMatrix.create([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
             } else if(action=="rotate") {
-                trans = Matrix.RotationZ(rawRotationToRadians(val[0]));
+                trans = zmMatrix.RotationZ(rawRotationToRadians(val[0]));
             } else if(action=="skew" || action=="skewx") {
                 // TODO: supports only one parameter skew
-                trans = Matrix.I(3);
+                trans = zmMatrix.I(3);
                 trans.elements[0][1] = Math.tan(rawRotationToRadians(val[0]));
             } else if(action=="skewy") {
                 // TODO: test that this works (or unit test them all!)
-                trans = Matrix.I(3);
+                trans = zmMatrix.I(3);
                 trans.elements[1][0] = Math.tan(rawRotationToRadians(val[0]));
             } else {
                 console.log("Problem with setMatrixValue", action, val);
@@ -109,19 +109,19 @@
     };
 
     CssMatrix.prototype.translate = function(x,y) {
-        var trans = Matrix.I(3);
+        var trans = zmMatrix.I(3);
         trans.elements[0][2] = x;
         trans.elements[1][2] = y;
         return new CssMatrix(this.m.multiply(trans));
     };
 
     CssMatrix.prototype.scale = function(sx,sy) {
-        var trans = Matrix.create([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
+        var trans = zmMatrix.create([[sx, 0, 0], [0, sy, 0], [0, 0, 1]]);
         return new CssMatrix(this.m.multiply(trans));
     };
 
     CssMatrix.prototype.rotate = function(rot) {
-        var trans = Matrix.RotationZ(rot);
+        var trans = zmMatrix.RotationZ(rot);
         return new CssMatrix(this.m.multiply(trans));
     };
 
