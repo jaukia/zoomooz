@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Webkit bug example</title>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+        <!--<script type="text/javascript" src="../../jquery.zoomooz.min.js"></script>-->
+        
+        <script type="text/javascript" src="../../src/js/jquery.zoomooz-helpers.js"></script>
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-anim.js"></script>
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-core.js"></script>
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-zoomTarget.js"></script>
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-zoomButton.js"></script>
+		<script type="text/javascript" src="../../src/js/jquery.zoomooz-zoomContainer.js"></script>
+		<script type="text/javascript" src="../../src/js/purecssmatrix.js"></script>
+		<script type="text/javascript" src="../../src/js/sylvester.src.stripped.js"></script>
+        
+        <!-- problem maybe related to $("#viewport").scrollLeft() being
+             greater than 2000px when starting zooming, although
+             the issue does not always occur exactly at that size -->
+        
+        <style type='text/css'>
+            html {
+                background-color:#eee;
+                font: 22px, serif;
+            }
+            
+            body {
+                margin: 0px;
+            }
+            
+            #viewport {
+                background-color: green;
+                height:100%;
+                width: 100%;
+                
+                /* this needs to have some kind of positioning, absolute
+                   or relative, to have the pos of elements inside it calculated correctly,
+                   since otherwise the computeTotalTransformation does not work correctly
+                   (offsetParent for items would be outside the #content, and offset
+                   would be calculated relative to the parent..) */
+                position:absolute;
+                
+                overflow-y:hidden;
+                overflow-x:scroll;
+            }
+            
+            .zoomContainer div {
+                position: absolute;
+                background-color:#eeeedf;
+                width:250px;
+                margin:20px;
+                padding:50px;
+                overflow:hidden;
+            }
+            
+            #it3 {
+                left: 2600px;
+                top: 60px; 
+            }
+            
+            #it4 {
+                left: 3200px;
+                top: 60px; 
+            }
+            
+            #it5 {
+                left: 5000px;
+                top: 60px; 
+            }
+        </style>
+        
+        <script>
+            $(document).ready(function() {
+                setTimeout(function() {
+                    $("#viewport").scrollLeft(2600);
+                    setTimeout(function() {
+                        $("#it4").click();
+                    },500);
+                },500);
+            });
+        </script>
+    </head>
+    <body>
+        <div id="viewport" class="zoomViewport">
+            <div id="content" class="zoomContainer">
+                <div id="it3" class="zoomTarget">Item 1.</div>
+                <div id="it4" class="zoomTarget">This should be centered.</div>
+                <div id="it5" class="zoomTarget">Item 3.</div>
+            </div>
+        </div>  
+    </body>
+</html>
+

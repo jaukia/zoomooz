@@ -87,10 +87,8 @@
             var $target = $(this);
 
             if(!transformation) transformation = new PureCSSMatrix();
-
             var current_affine = constructAffineFixingRotation($target, posOffset);
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
-
             if(interpolateAnim) {
                 animateTransition($target, current_affine, final_affine, settings, animateEndCallback, animateStartedCallback);
             } else {

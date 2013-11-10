@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.1.8 made scroll reset default to true to fix issues on webkit + long zooms #74
  * 1.1.7 moved Sylvester Matrix to a custom namespace
  * 1.1.5 zoom for scrolled pages without flickering
  * 1.1.0 carousel prev/next navigation
@@ -186,12 +187,9 @@
             root: $(document.body),
             debug: false,
             animationendcallback: null,
-            closeclick: false
+            closeclick: false,
+            preservescroll: false
         };
-
-        // FIXME: feat detection would be better
-        var isFF = (window.mozInnerScreenX !== undefined);
-        retObject.scrollresetbeforezoom = isFF;
 
         return retObject;
     }
@@ -204,7 +202,11 @@
 
         // scrolling:
 
-        var useScrollResetBeforeZoom = settings.scrollresetbeforezoom;
+        // preservescroll may make zoom starts and ends smoother
+        // especially on mobile devices. however, with scrolled content,
+        // it may lead to totally broken zooms, when user has scrolled
+        // on webkit over some magic limit, such as 2000px.
+        var useScrollResetBeforeZoom = !settings.preservescroll;
 
         var scrollData = null;
         var startedZoomFromScroll;
@@ -412,7 +414,7 @@
         if(scrollData) {
             initTransformation = initTransformation.translate(scrollData.x,scrollData.y);
         }
-
+        
         var viewportTransformation =
             initTransformation
             .translate(xmarginfix,ymarginfix)
@@ -421,7 +423,7 @@
             .scale(scale,scale)
             .multiply(endtrans)
             .translate(xrotorigin,yrotorigin);
-
+            
         return viewportTransformation;
     }
 

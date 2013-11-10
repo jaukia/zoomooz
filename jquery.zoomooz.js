@@ -538,10 +538,8 @@ if(!$.zoomooz) {
             var $target = $(this);
 
             if(!transformation) transformation = new PureCSSMatrix();
-
             var current_affine = constructAffineFixingRotation($target, posOffset);
             var final_affine = fixRotationToSameLap(current_affine, affineTransformDecompose(transformation));
-
             if(interpolateAnim) {
                 animateTransition($target, current_affine, final_affine, settings, animateEndCallback, animateStartedCallback);
             } else {
@@ -850,6 +848,7 @@ if(!$.zoomooz) {
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.1.8 made scroll reset default to true to fix issues on webkit + long zooms #74
  * 1.1.7 moved Sylvester Matrix to a custom namespace
  * 1.1.5 zoom for scrolled pages without flickering
  * 1.1.0 carousel prev/next navigation
@@ -1033,12 +1032,9 @@ if(!$.zoomooz) {
             root: $(document.body),
             debug: false,
             animationendcallback: null,
-            closeclick: false
+            closeclick: false,
+            preservescroll: false
         };
-
-        // FIXME: feat detection would be better
-        var isFF = (window.mozInnerScreenX !== undefined);
-        retObject.scrollresetbeforezoom = isFF;
 
         return retObject;
     }
@@ -1051,7 +1047,11 @@ if(!$.zoomooz) {
 
         // scrolling:
 
-        var useScrollResetBeforeZoom = settings.scrollresetbeforezoom;
+        // preservescroll may make zoom starts and ends smoother
+        // especially on mobile devices. however, with scrolled content,
+        // it may lead to totally broken zooms, when user has scrolled
+        // on webkit over some magic limit, such as 2000px.
+        var useScrollResetBeforeZoom = !settings.preservescroll;
 
         var scrollData = null;
         var startedZoomFromScroll;
@@ -1259,7 +1259,7 @@ if(!$.zoomooz) {
         if(scrollData) {
             initTransformation = initTransformation.translate(scrollData.x,scrollData.y);
         }
-
+        
         var viewportTransformation =
             initTransformation
             .translate(xmarginfix,ymarginfix)
@@ -1268,7 +1268,7 @@ if(!$.zoomooz) {
             .scale(scale,scale)
             .multiply(endtrans)
             .translate(xrotorigin,yrotorigin);
-
+            
         return viewportTransformation;
     }
 

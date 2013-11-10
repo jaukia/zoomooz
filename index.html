@@ -42,7 +42,7 @@
               <li><a href="http://github.com/jaukia/zoomooz">Fork On <strong>GitHub</strong></a></li>
             </ul>
 
-            <div id="version">Latest version: 1.1.7 (Nov 9, 2013, moved Sylvester Matrix to a custom namespace)</div>
+            <div id="version">Latest version: 1.1.8 (Nov 10, 2013, made scroll reset default to true to fix issues on webkit + long zooms #74)</div>
 
             <p>Zoomooz is a jQuery plugin for making web page elements zoom. It can be used for making Prezi like slideshows and for zooming to images or other details.</p>
 
@@ -324,7 +324,11 @@
     animationendcallback: null,
     // this specifies, that clicking an element that is zoomed to zooms
     // back out
-    closeclick: false
+    closeclick: false,
+    // don't reset scroll before zooming. less jaggy zoom starts and ends on
+    // mobile browsers, but causes issues when zooming to elements when scrolled
+    // to a specific distance in document, typically around 2000px on webkit.
+    preservescroll: false
 }
 // settings can be set for both the zoomTo and zoomTarget calls:
 $("#element").zoomTo(settings);</code></pre>
