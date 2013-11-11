@@ -125,7 +125,7 @@
         }());
 
         clickTarget.on("click", function(evt) {
-
+    
             var target;
             var performZoom = true;
 
@@ -159,8 +159,10 @@
                 // not this easy! would need to read the data fields
                 //target.zoomTo();
 
-                // FIXME: hacky...
-                target.click();
+                // FIXME: hacky, and i have truly no idea, why the timeout is needed.
+                setTimeout(function() {
+                    target.click();
+                },10);
             } else {
                 // don't do anything if no wrap
                 // (would be great if the button was disabled)

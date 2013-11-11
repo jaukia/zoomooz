@@ -848,6 +848,7 @@ if(!$.zoomooz) {
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.1.9 hacky fix for the back and forward buttons
  * 1.1.8 made scroll reset default to true to fix issues on webkit + long zooms #74
  * 1.1.7 moved Sylvester Matrix to a custom namespace
  * 1.1.5 zoom for scrolled pages without flickering
@@ -1772,7 +1773,7 @@ if(!$.zoomooz) {
         }());
 
         clickTarget.on("click", function(evt) {
-
+    
             var target;
             var performZoom = true;
 
@@ -1806,8 +1807,10 @@ if(!$.zoomooz) {
                 // not this easy! would need to read the data fields
                 //target.zoomTo();
 
-                // FIXME: hacky...
-                target.click();
+                // FIXME: hacky, and i have truly no idea, why the timeout is needed.
+                setTimeout(function() {
+                    target.click();
+                },10);
             } else {
                 // don't do anything if no wrap
                 // (would be great if the button was disabled)

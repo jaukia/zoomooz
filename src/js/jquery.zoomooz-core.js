@@ -3,6 +3,7 @@
  * http://janne.aukia.com/zoomooz
  *
  * Version history:
+ * 1.1.9 hacky fix for the back and forward buttons
  * 1.1.8 made scroll reset default to true to fix issues on webkit + long zooms #74
  * 1.1.7 moved Sylvester Matrix to a custom namespace
  * 1.1.5 zoom for scrolled pages without flickering
