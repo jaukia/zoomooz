@@ -1767,24 +1767,31 @@ if(!$.zoomooz) {
                 $selected = displayList.first();
             }
 
-            if(settings.type.indexOf("prev")===0) {
-                target = displayList.prev($selected[0]);
-                if(target === null) {
-                    if(settings.wrap) {
-                        target = displayList.last();
-                    } else {
-                        performZoom = false;
+            switch (settings.type) {
+                case "close":
+                    target = $root;
+                    break;
+                case "prev":
+                    target = displayList.prev($selected[0]);
+                    if (target === null) {
+                        if (settings.wrap) {
+                            target = displayList.last();
+                        } else {
+                            performZoom = false;
+                        }
                     }
-                }
-            } else {
-                target = displayList.next($selected[0]);
-                if(target === null) {
-                    if(settings.wrap) {
-                        target = displayList.first();
-                    } else {
-                        performZoom = false;
+                    break;
+                case "next":
+                default:
+                    target = displayList.next($selected[0]);
+                    if (target === null) {
+                        if (settings.wrap) {
+                            target = displayList.first();
+                        } else {
+                            performZoom = false;
+                        }
                     }
-                }
+                    break;
             }
 
             if(performZoom) {
