@@ -169,9 +169,9 @@
                           ".noScroll{overflow:hidden !important;}" +
                           "* {"+transformOrigin+"}";
 
-        document.getElementsByTagName('head')[0].appendChild(style);
 
-        $(document).ready(function() {
+        $(document).ready(function () {
+            document.getElementsByTagName('head')[0].appendChild(style);
             var scrollBarWidth = window.innerWidth - $("body").width();
             style.innerHTML += "body.noScroll,html.noScroll body{margin-right:"+scrollBarWidth+"px;}";
         });
