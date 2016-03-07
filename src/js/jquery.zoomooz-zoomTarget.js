@@ -129,10 +129,9 @@
     //***  Static setup              ***//
     //**********************************//
 
-    setupCssStyles();
-
     // make all elements with the zoomTarget class zooming
-    $(document).ready(function() {
+    $(document).ready(function () {
+        setupCssStyles();
         // this needs to be after the "$.fn.zoomTarget" has been initialized
         $(".zoomTarget").zoomTarget();
     });

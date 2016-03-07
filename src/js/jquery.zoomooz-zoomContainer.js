@@ -41,11 +41,10 @@
     //***  Static setup              ***//
     //**********************************//
 
-    // FIXME: move zoomContainer styling here?
-    //setupCssStyles();
-
     // make all elements with the zoomContainer class zooming containers
-    $(document).ready(function() {
+    $(document).ready(function () {
+        // FIXME: move zoomContainer styling here?
+        //setupCssStyles();
         // this needs to be after the "$.fn.zoomContainer" has been initialized
         $(".zoomContainer").zoomContainer();
     });
