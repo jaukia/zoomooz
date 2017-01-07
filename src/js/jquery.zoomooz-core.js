@@ -465,7 +465,7 @@
 
         var trans;
         if ( elem === elem.ownerDocument.body ) {
-            var bOffset = jQuery.offset.bodyOffset( elem );
+            var bOffset = jQuery.fn.offset( elem );
             trans = new PureCSSMatrix();
             trans = trans.translate(bOffset.left, bOffset.top);
             totalTransformation = totalTransformation.multiply(trans);
