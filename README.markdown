@@ -6,6 +6,14 @@ Basically, just have a look at the examples and start hacking away.
 
 For more information and usage, see: http://jaukia.github.io/zoomooz/
 
+## Installing via npm
+
+```
+npm install zoomooz
+```
+
+In your javascript code, add `require("zoomooz")`
+
 ## Building
 
 There is an optional build process. Currently the only thing it does is that it merges and minifies Javascript files, so running it is not necessary.
